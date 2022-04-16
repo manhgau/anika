@@ -1,0 +1,9 @@
+*{box-sizing:border-box}
+.form-control{width:100%;padding:10px;margin:10px 0;border:1px solid #ccc;border-radius:3px;display:block;}
+.form-group{background:#FFF;padding:10px 20px}
+.btn{display:inline-block;padding:6px 12px;color:#FFF!important;text-decoration:none;margin:0 10px;font-size:1.1em}
+.btn-info{background:#4fd0ef;}
+.btn-preview{color:blue;font-size:13px;font-weight:400;text-decoration:underline;margin:0 20px}
+.group-name{display:inline-block;width:50%;float:left}
+.group-action{display:inline-block;width:50%;text-align:right;float:left}
+.clear{float:none;clear:both;height:0;width:100%}

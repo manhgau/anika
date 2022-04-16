@@ -1,0 +1,1 @@
+<script src="/admin/assets/js/jquery.tokeninput.js"></script>

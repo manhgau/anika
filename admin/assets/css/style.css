@@ -1,0 +1,129 @@
+@charset "utf-8";
+/* CSS Document */
+/*fonttype*/
+@font-face {
+	font-family: 'robotoR';
+	src: url('fonts/Roboto-Regular.eot');
+	src: local('Ã¢ËœÂº'), url('fonts/Roboto-Regular.ttf') format('truetype'), url('fonts/Roboto-Regular.woff') format('woff'), url('fonts/Roboto-Regular.svg#Roboto-Regular') format('svg');
+}
+@font-face {
+	font-family: 'robotoB';
+	src: url('fonts/Roboto-Bold.eot');
+	src: local('Ã¢ËœÂº'), url('fonts/Roboto-Bold.ttf') format('truetype'), url('fonts/Roboto-Bold.woff') format('woff'), url('fonts/Roboto-Bold.svg#Roboto-Bold') format('svg');
+}
+@font-face {
+	font-family: 'robotoCDB';
+	src: url('fonts/RobotoCondensed-Bold.eot');
+	src: local('Ã¢ËœÂº'), url('fonts/RobotoCondensed-Bold.ttf') format('truetype'), url('fonts/RobotoCondensed-Bold.woff') format('woff'), url('fonts/RobotoCondensed-Bold.svg#RobotoCondensed-Bold') format('svg');
+}
+@font-face {
+	font-family: 'robotoCDR';
+	src: url('fonts/RobotoCondensed-Regular.eot');
+	src: local('Ã¢ËœÂº'), url('fonts/RobotoCondensed-Regular.ttf') format('truetype'), url('fonts/RobotoCondensed-Regular.woff') format('woff'), url('fonts/RobotoCondensed-Regular.svg#RobotoCondensed-Regular') format('svg');
+}
+@font-face {
+	font-family: 'UTMCol';
+	src: url('fonts/UTM_Colossalis.eot');
+	src: local('Ã¢ËœÂº'), url('fonts/UTM_Colossalis.ttf') format('truetype'), url('fonts/UTM_Colossalis.woff') format('woff'), url('fonts/UTM_Colossalis.svg#UTM_Colossalis') format('svg');
+}
+html {
+	-ms-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+}
+/*reset css*/
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+body{
+    padding:5px;
+}
+p{
+    font-size: 14px;
+    line-height: 20px;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-family: Arial, sans-serif;
+    margin-bottom: 20px;    
+    text-align:justify;
+}
+img {
+    display:block;
+    margin:0 auto
+}
+a {
+    color: #0251f1;
+    text-decoration:none;
+}
+h3, h2 {
+    font-weight:600;
+    line-height:28px;
+    font-size:16px;
+    margin:10px 0;
+    color:#444
+}
+.highlight{
+    padding:10px;
+    background:#b8e1f9;
+    color:#222;
+    margin-bottom:20px;
+}
+.highlight p:last-child{
+    margin-bottom:0!important;
+}
+/*#youtube-video-embed-container {
+	position: relative;
+	margin:10px 0;
+	width:100%;
+	height: 0;
+	padding-bottom: 56.25%
+}
+#youtube-video-embed-container > iframe {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%
+}*/
+
+.entry-inner.highlight {
+    background:url('images/quote-double.png') no-repeat 50% 40px rgba(63, 170, 97, 0.1);
+    padding:90px 20px 40px 20px;
+    border-radius:20px;
+    margin:40px 0
+}
+ .entry-inner.highlight p {
+    font-size:1.0rem;
+    font-family:'droid-serif'!important;
+    text-align:center
+}
+.button {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0 1rem 0;
+    padding: 0.85em 1em;
+    border: 1px solid transparent;
+    border-radius: 0;
+    -webkit-transition: background-color 0.25s ease-out, color 0.25s ease-out;
+    transition: background-color 0.25s ease-out, color 0.25s ease-out;
+    font-family: inherit;
+    font-size: 0.9rem;
+    -webkit-appearance: none;
+    line-height: 1;
+    text-align: center;
+    cursor: pointer;
+    background-color: #1779ba;
+    color: #fefefe;
+}
+.rounded {
+    border-radius: 30px;
+    color: #FFF;
+    padding: 12px 50px
+}
+.bg-gradient-green {
+    background: linear-gradient(90.43deg, #3FAA61 0.4%, #3FAF61 39.59%, #3FBD61 84.45%, #3FC361 99.66%);
+}

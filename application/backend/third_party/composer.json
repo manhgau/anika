@@ -1,0 +1,17 @@
+{
+    "name": "name/saribds",
+    "type": "project",
+    "require": {
+        "facebook/php-business-sdk": "^8.0.3",
+        "facebook/graph-sdk": "^5.7",
+        "hybridauth/hybridauth": "^3.7",
+        "phpoffice/phpspreadsheet": "^1.22",
+        "firebase/php-jwt": "^6.1"
+    },
+    "authors": [
+        {
+            "name": "Minhvu",
+            "email": "vuminhndvn@gmail.com"
+        }
+    ]
+}

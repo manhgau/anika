@@ -1,0 +1,1 @@
+<script type="text/javascript" src="/admin/assets/js/ajaxUpload/single-upload.js"></script>

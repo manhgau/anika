@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Content Highlight</title>
+<link rel="stylesheet" href="style/style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script type="text/javascript" src="../../tiny_mce_popup.js"></script>
+    <script type="text/javascript" src="js/dialog.js"></script>
+    <script type="text/javascript" src="js/extend.js"></script>
+    <script type="text/javascript">
+    $(function(){$('#input-vid').focus();});
+    </script>
+</head>
+<body>
+  <h1 class="page-title">Chèn Video Youtube vào nội dung bài viết</h1>
+  <div class="content">
+    <label>Video ID:</label>
+    <input type="text" name="youtube-vid" class="form-control" id="input-vid" placeholder="Nhập video ID">
+  </div>
+  <p>
+    <a class="btn btn-sm btn-info exec-insert-youtube-video" href="javascript:;">Chèn & viết tiếp</a>
+    &nbsp;
+    <a href="javascript:;" data-href="dialog.htm" class="btn-preview btn btn-sm btn-default">Quay lại</a>
+  </p>
+  <div style="margin:30px 10px;padding:15px;background:#e4e4e4;text-align:center">
+    <p style="margin-bottom:10px">Video ID là phần được bôi vàng trong ảnh dưới đây</p>
+    <img src="img/how-catch-youtube-vid.jpg" style="max-width:100%">
+  </div>
+</body>
+</html>
