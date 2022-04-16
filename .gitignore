@@ -1,0 +1,12 @@
+uploads/*
+!uploads/index.html
+.*/
+application/backend/third_party/*
+!application/backend/third_party/index.html
+!application/backend/third_party/composer.json
+!application/backend/third_party/ci_log4php
+!application/backend/third_party/phpmailer
+application/backend/config/production/*
+application/backend/config/development/*
+application/backend/ci_sessions/*
+!application/backend/ci_sessions
