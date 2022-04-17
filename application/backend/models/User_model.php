@@ -77,6 +77,33 @@ class User_model extends MY_Model
         }
     }
 
+    public function get_list_member($offset=0, $limit=10){
+        $this->db->select();
+        $this->db->from('member');
+        $this->db->limit($limit, $offset);
+        $query = $this->db->get();
+        $data = $query->result();
+        return $data;
+    }
+    public function get_default_member($offset=0, $limit=1, $id){
+        $this->db->select();
+        $this->db->from('member');
+        $this->db->where('id',$id);
+        $this->db->limit($limit, $offset);
+        $query = $this->db->get();
+        $data = $query->result();
+        if (is_array($data) && count($data) > 0){
+            return $data;
+        }else{
+            return NULL;
+        }
+        // echo "<xmp>";
+        // print_r($data);
+        // die;
+
+    }
+
+
     private function get_permission_for_user($user_id)
     {
         $this->db->select('action_perm,category_perm');

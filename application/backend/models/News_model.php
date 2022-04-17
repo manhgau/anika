@@ -399,4 +399,35 @@
             $data = $this->get($id, TRUE);
             return $data->hit_view;
         }
+        public function get_list_new($offset=0, $limit=10, $type){
+            $this->db->select();
+            $this->db->from('real_news');
+            $this->db->where('type',$type);
+            $this->db->limit($limit, $offset);
+            $query = $this->db->get();
+            $data = $query->result();
+            if (is_array($data) && count($data) > 0){
+                return $data;
+            }else{
+                return NULL;
+            }
+
+        }
+        public function get_default_new($offset=0, $limit=1, $id){
+            $this->db->select();
+            $this->db->from('real_news');
+            $this->db->where('id',$id);
+            $this->db->limit($limit, $offset);
+            $query = $this->db->get();
+            $data = $query->result();
+            if (is_array($data) && count($data) > 0){
+                return $data;
+            }else{
+                return NULL;
+            }
+            // echo "<xmp>";
+            // print_r($data);
+            // die;
+    
+        }
     }
