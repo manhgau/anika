@@ -41,7 +41,7 @@
             if($id) {
                 if ( ! $this->has_permission('edit')) $this->not_permission();
                 $this->data['category'] = $this->category_model->get($id);
-                if(! count($this->data['category']) ) {
+                if(! $this->data['category'] ) {
                     $this->data['errors'][] = 'category could not be found!';
                     redirect(base_url('category'));
                 }

@@ -4,33 +4,25 @@
             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
         </a>
     </li>
-    <li><a href="/realnews/index"><i class="fa fa-file-text"></i> Bài viết </a></li>
+    <li><a href="/realnews/index"><i class="fa fa-file-text"></i> Sản phẩm </a></li>
     <li><a href="/member"><i class="fa fa-users"></i> <?php echo lang('member') ?> </a></li>
     <li><a href="/pointload"><i class="fa fa-usd"></i> <?php echo lang('point') ?> </a></li>
     <li><a href="/pointload/refund?status=pending"><i class="fa fa-retweet"></i> <?php echo lang('refund_request') ?> <span class="badge bg-orange" id="refund_pending_number"></span></a></li>
     <li><a href="/member/post?status=pending"><i class="fa fa-plane"></i> <?php echo lang('post_request') ?> <span class="badge bg-orange" id="post_pending_number"></span></a></li>
 
-    <?php /*   
-    <li class="treeview <?php echo (in_array($this->router->class,array('realnews','category'))) ? 'active' : '';?>">
+    <li class="treeview <?php echo (in_array($this->router->class,array('news','category'))) ? 'active' : '';?>">
         <a href="#">
             <i class="fa fa-file-text"></i>
-            <span> Bài viết </span>
+            <span> Tin tức </span>
             <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
-            <li><a href="<?php echo base_url('realnews/edit'); ?>"><i class="fa fa-plus"></i> Thêm mới </a></li>
-            <li><a href="<?php echo base_url('realnews'); ?>"><i class="fa fa-list"></i> Danh sách </a></li>
-            
-            <li><a href="<?php echo base_url('news/?cat=20'); ?>"><i class="fa fa-list"></i> Investment Updates </a></li>
-            <li><a href="<?php echo base_url('news/myNews'); ?>"><i class="fa fa-list"></i> Bài viết của tôi </a></li>
+            <li><a href="<?php echo base_url('news/index'); ?>"><i class="fa fa-list"></i> Danh sách </a></li>
             <li><a href="<?php echo base_url('category'); ?>"><i class="fa fa-list"></i> Chuyên mục </a></li>
-            <?php if ($userdata['level'] <= 2) : ?>
-            <li><a href="<?php echo base_url('news/reportNewsByAuthor'); ?>"><i class="fa fa-bar-chart"></i> Thống kê </a></li>
-            <?php endif; ?>
-            
         </ul>
     </li>
 
+    <?php /*   
     <li class="treeview <?php echo ($this->router->class=='memtor') ? 'active' : '';?>">
         <a href="#">
             <i class="fa fa-user"></i>
