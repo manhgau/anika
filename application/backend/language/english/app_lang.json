@@ -35,7 +35,6 @@
 	"rent_price_month":"Giá thuê tháng",
 	"not_bought":"Quý khách chưa mua thông tin nhà nên không thể hoàn điểm",
 	"not_login":"Vui lòng đăng nhập để tiếp tục",
-	"success":"Thành công",
 	"success_and_wait_to_approve":"Gửi thành công. Bài viết của bạn sẽ được duyệt sau ít phút.",
 	"bad request":"Yêu cầu không hợp lệ",
 	"bad_request":"Yêu cầu không hợp lệ",
@@ -50,5 +49,16 @@
 	"address":"Địa chỉ",
 	"not_permission":"Not permission",
 	"owner_phone_already":"SDT này từng đăng nhà. Bạn có chắc đây là nhà thứ 2 của bạn?",
-	"this_address_has_post":"Địa chỉ này đã có chủ nhà đăng"
+	"this_address_has_post":"Địa chỉ này đã có chủ nhà đăng",
+	"achievements":"Thành tích",
+	"news":"Tin tức",
+	"slideshow":"slideshow",
+	"banner":"banner",
+	"list":"danh sách chi tiết",
+	"defaul":"Thông tin chi tiết",
+	"purchase":"mua bán",
+	"over":"hết hàng",
+	"coming_soon":"sắp có hàng",
+	"other":"Khác",
+	"still": "còn hàng"
 }
