@@ -105,3 +105,26 @@ CREATE TABLE `news_type` (
   `fixed_money` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `relation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(250) NOT NULL,
+  `position` int(2) NOT NULL DEFAULT '1',
+  `image` varchar(200) DEFAULT NULL,
+  `image_trans` varchar(200) DEFAULT NULL,
+  `url` varchar(200) DEFAULT NULL,
+  `description` varchar(250) DEFAULT NULL,
+  `status` int(1) NOT NULL DEFAULT '1',
+  `content` text,
+  `email` varchar(150) DEFAULT NULL,
+  `facebook` varchar(255) DEFAULT NULL,
+  `instagram` varchar(255) DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `is_hot` tinyint(1) DEFAULT NULL,
+  `group_index` tinyint(2) DEFAULT '0',
+  `deposit_amount` int(10) unsigned DEFAULT '0',
+  `invest_location` varchar(255) DEFAULT '',
+  `deposit_text` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
