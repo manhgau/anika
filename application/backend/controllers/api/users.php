@@ -22,6 +22,7 @@ class Users extends REST_Controller {
 		parent::__construct();
 		$this->load->model('api_model');
 		$this->load->model('user_model');
+		$this->load->model('banner_model');
     }
 
     // Call list users and default user
@@ -40,6 +41,7 @@ class Users extends REST_Controller {
         ]);
     }
     public function member_default_get(){
+        die("111");
         $limit  = max(1, (int)$_GET['limit']??1);
         $page  = max(1, (int)$_GET['page']??0);
         $offset = ($page - 1) * $limit;
@@ -67,6 +69,36 @@ class Users extends REST_Controller {
         }
         }
     }
+    public function list_banner()
+	{
+		die("222");
+		$limit  = max(1, (int)$_GET['limit']??1);
+        $page  = max(1, (int)$_GET['page']??1);
+        $offset = ($page - 1) * $limit;
+        $type = isset($_GET['type'])?$_GET['type']:"";
+        $banner = $this->banner_model->get_list_banner($offset, $limit ,$type);
+
+        if (!isset($type)){
+            echo json_encode([
+                'status'    =>  1,
+                'message'   =>  'Danh sách tin tức',
+                'data'      =>  $banner
+            ]);
+        }
+        if($news == NULL){
+            echo json_encode([
+                'status'    =>  3,
+                'message'   =>  'Không có tin tức loại này',
+                'data'      =>  NULL
+            ]);
+        }else{
+            echo json_encode([
+                'status'    =>  1,
+                'message'   =>  'Danh sách tin tức loại'." ".$type,
+                'data'      =>  $banner
+            ]);
+        }
+	}
 }
 
 
