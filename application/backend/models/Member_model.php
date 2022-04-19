@@ -187,6 +187,19 @@
         {
             return true;
         }
+        public function get_detail_member( $id){
+            $this->db->select('a.*, b.name AS office_name,c.name AS department_name');
+            $this->db->from($this->_table_name . ' as a');
+            $this->db->join('office as b', 'a.office_id=b.id', 'inner');
+            $this->db->join('department as c', 'a.department_id=c.id', 'inner');
+            if($id>0){
+                $this->db->where('a.id',$id);
+            }
+            $data = $this->db->get()->result();
+            return $data;
+            
+    
+        }
 
 
 }

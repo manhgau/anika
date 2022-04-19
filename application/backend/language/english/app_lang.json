@@ -54,11 +54,11 @@
 	"news":"Tin tức",
 	"slideshow":"slideshow",
 	"banner":"banner",
-	"list":"danh sách chi tiết",
-	"defaul":"Thông tin chi tiết",
+	"list":"danh sách ",
+	"detail":"Thông tin chi tiết",
 	"purchase":"mua bán",
 	"over":"hết hàng",
 	"coming_soon":"sắp có hàng",
-	"other":"Khác",
+	"list_new_hot":"danh sách tin tức nổi vật",
 	"still": "còn hàng"
 }

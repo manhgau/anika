@@ -21,6 +21,8 @@ class apiApp extends CI_Controller {
 		$this->load->model('post_model');
 		$this->load->model('init_model');
 		$this->load->model('partner_model');
+		$this->load->model('fieldActivity_model');
+		$this->load->model('categoryproducts_model');
 
 		$reqType = strtolower($this->input->server('REQUEST_METHOD'));
 		if ($reqType === 'post') {
@@ -83,11 +85,30 @@ class apiApp extends CI_Controller {
 	}
 	public function appInit()
 	{
-		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
-		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
-        $offset = ($page - 1) * $limit;
-        //$type = isset($_GET['category'])?$_GET['category']:"";
-		$data = $this->init_model->get_app_init();		
+		$rs = $this->banner_model->get_list_banners(0, 3 ,2);
+		if(is_array($rs) && count($rs) > 0) {
+			foreach($rs as $item){
+				$slider[] = [
+					'image' 	=> $item->image,
+					'order'  	=> $item->order,
+				];
+			}
+		}
+		$data = $this->init_model->get_app_init();
+		$settings = [];
+		if(is_array($data) && count($data) > 0) {
+			foreach($data as $item){				
+				$settings[$item->name] =$item->value;	
+			}
+		}   
+		$settings_init= array_merge($settings,$slider);	
+
+		$sliders = $this->banner_model->get_list_banners(0, 3 ,2);
+		$data = [
+			'siteOptions' => $settings,
+			'slider' => $sliders
+		];
+
 		$this->__jsonResponse(200, 'success', $data);
 	}
 	public function listPartner() {
@@ -121,12 +142,13 @@ class apiApp extends CI_Controller {
 		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
 		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
         $offset = ($page - 1) * $limit;
-        $type = isset($_GET['category'])?$_GET['category']:"";
+        $category = isset($_GET['category'])?$_GET['category']:"";
+		$is_hot = isset($_GET['is_hot'])?$_GET['is_hot']:"";
 		
 		if (!isset($_GET['category'])){
 			$this->__jsonResponse(400, $this->lang->line('input_not_valid'));
 		}
-        $rs = $this->post_model->get_list_post($offset, $limit ,$type);				
+        $rs = $this->post_model->get_list_post($offset, $limit ,$category,$is_hot);				
 		$banners = [];
 		
 		if(is_array($rs) && count($rs) > 0){
@@ -142,17 +164,22 @@ class apiApp extends CI_Controller {
 					}
 					$banners[] = [
 					'id' 	=> $item->id,
-					'name'  => $item->	title,
-					'name'  => $item->	description,
+					'name'  => $item->title,
 					'image' => $item->image,
 					'category '  => $category,
 					'url' 	=> $item->url,
 				];
 			}
 		}		
-		        
+		if(isset($_GET['is_hot'])){
+			if($banners){		
+				$this->__jsonResponse(200, $this->lang->line('list_new_hot'),$banners);
+			}else{
+				$this->__jsonResponse(500, 'request_already',[]);			
+			}
+		}       
         if($banners){
-			$this->__jsonResponse(200, 'success',$banners);			
+			$this->__jsonResponse(200, $this->lang->line('list')." ".$category,$banners);			
         }else{
 			$this->__jsonResponse(500, 'request_already',[]);			
         }
@@ -161,13 +188,13 @@ class apiApp extends CI_Controller {
 		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
 		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
         $offset = ($page - 1) * $limit;
-        $type = isset($_GET['type'])?$_GET['type']:"";
+        $category_id = isset($_GET['category_id'])?$_GET['category_id']:"";
 		
-		if (!isset($_GET['type'])){
+		if (!isset($_GET['category_id'])){
 			$this->__jsonResponse(400, $this->lang->line('input_not_valid'));
 		}
-        $rs = $this->products_model->get_list_products($offset, $limit ,$type);				
-		$banners = [];
+        $rs = $this->products_model->get_list_products($limit, $offset, $category_id);				
+		$list_prd = [];
 		
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $item){
@@ -185,22 +212,25 @@ class apiApp extends CI_Controller {
 							$status = $this->lang->line('other');
 							break;	
 						}
-					$banners[] = [
-					'id' 			=> $item->id,
-					'name'  		=> $item->	title,
-					'slugname'  	=> $item->	slugname,
-					'content'  		=> $item->	content,
-					'status'  		=> $status,
-					'image' 		=> $item->image,
-					'type' 			=> $item->type,
-					'service_type' 	=> $item-> service_type,
-					'url' 			=> $item->url,
+
+					$list_prd[] = [
+					'id' 				=> $item->id,
+					'name'  			=> $item->	title,
+					'slugname'  		=> $item->	slugname,
+					'intro'  			=> $item->	intro,
+					'content'  			=> $item->	content,
+					'category_name' => $item->category_name,
+					'status'  			=> $status,
+					'image' 			=> $item->image,
+					'type' 				=> $item->type,
+					'service_type' 		=> $item-> service_type,
+					'url' 				=> $item->url,
 				];
 			}
 		}		
 		        
-        if($banners){
-			$this->__jsonResponse(200, 'success',$banners);			
+        if($list_prd){
+			$this->__jsonResponse(200, 'success',$list_prd);			
         }else{
 			$this->__jsonResponse(500, 'request_already',[]);			
         }
@@ -218,5 +248,76 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400, $this->lang->line('input_not_valid'),[]);
 		}
 	}
+	public function  getProfile(){
+		$id = isset($_GET['id'])?$_GET['id']:"";
+		if(!isset($_GET['id'])){
+			$this->__jsonResponse(400, $this->lang->line('input_not_valid'));
+		}
+		$rs = $this->member_model->get_detail_member($id);
+		if(is_array($rs) && count($rs) > 0){
+			foreach($rs as $item){
+				$profile[] = [
+					'id' 					=> $item->id,
+					'fullname' 				=> $item->fullname,
+					'email' 				=> $item->email,
+					'phone' 				=> $item->phone,
+					'office_name' 			=> $item->office_name,
+					'department_name' 		=> $item->department_name,
+					'addres' 				=> $item->addres,
+					'url_fb' 				=> $item->url_fb,
+				];
+			}
+		}
+		if($rs){
+			$this->__jsonResponse(200, $this->lang->line('detail'),$profile);
+		}else{
+			$this->__jsonResponse(400, $this->lang->line('input_not_valid'),[]);
+		}
+
+	}
+	public function field_activity(){
+		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
+		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
+        $offset = ($page - 1) * $limit;
+		$rs = $this->fieldActivity_model->get_list_field($offset, $limit);
+		if(is_array($rs) && count($rs) > 0){
+			foreach($rs as $item){
+				$field[] = [
+					'id' 			=> $item->id,
+					'name'  		=> $item->name,
+					'image' 		=> $item->image,
+					'url' 			=> $item->url,
+				];
+			}
+		}
+		if($rs){
+			$this->__jsonResponse(200, 'success',$field);
+		}else{
+			$this->__jsonResponse(400, $this->lang->line('input_not_valid'),[]);
+		}
+		
+	}
+	public function categoryProducts(){
+		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
+		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
+        $offset = ($page - 1) * $limit;
+		$rs = $this->categoryproducts_model->get_list_category_products($offset, $limit);
+		if(is_array($rs) && count($rs) > 0){
+			foreach($rs as $item){
+				$category_prd[] = [
+					'id' 					=> $item->id,
+					'name'  				=> $item->title,
+					'image' 				=> $item->img,
+					'description' 			=> $item->description,
+				];
+			}
+		}
+		if($rs){
+			$this->__jsonResponse(200, 'success',$category_prd);
+		}else{
+			$this->__jsonResponse(400, $this->lang->line('input_not_valid'),[]);
+		}
+	}
+
     
 }
