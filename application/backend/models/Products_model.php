@@ -15,11 +15,11 @@
 
         }
         public function get_detail_product($id){
-            $this->db->select('*');
-            $this->db->from($this->_table_name );
-            $this->db->where('id', $id);
-            $query = $this->db->get();
-            $data = $query->result();  
+            $this->db->select('a.*, b.title AS category_name');
+            $this->db->from($this->_table_name . ' as a');
+            $this->db->join('category_products as b', 'a.category_id=b.id', 'inner');
+            $this->db->where('a.id',$id);
+            $data = $this->db->get()->result();
             return $data;
         }
     }

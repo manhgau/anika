@@ -16,4 +16,13 @@
             $data = $query->result();  
             return $data;
         }
+        public function get_detail_post($id){
+            $this->db->select('*');
+            $this->db->from($this->_table_name );
+            $this->db->where('id',$id);
+            $this->db->where('status', 1);
+            $query = $this->db->get();
+            $data = $query->result();  
+            return $data;
+        }
     }
