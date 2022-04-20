@@ -202,29 +202,49 @@
     
         }
 
-        public function login_form(array $data){
-            $this->db->select('id, username,fullname,email,phone');
+        public function do_login(array $data){                        
+            $this->db->select('id, email, phone, password');
             $this->db->from($this->_table_name);
-            $this->db->where('email',$data['email']);
-            $this->db->where('phone',$data['phone']);
-            $data = $this->db->get()->result();
-            print_r($data);
-            die;
-            return $data;
+            if($data['phone'] == NULL){
+                echo ("1111");
+                $this->db->where('email',$data['email']);
+            }
+            if($data['email'] == NULL){
+                echo ("122222");
+                $this->db->where('phone',$data['phone']);
+            }
+            $this->db->limit(1,0);
+            $user = $this->db->get()->result();                            
+            if($user){
+                if(is_array($user) && count($user) > 0){
+                    foreach($user as $item){
+                        $password = $item->password;
+                    }
+                    if(password_verify($data['password'], $password)){
+                        return $item->id;
+                    }else{
+                        return false; 
+                    }
+                }                   
+            }else{
+                return false;
+            }
+                                 
         }
+
         private function __check_phone_email ($email,$phone){
             $this->db->select("email, phone");
             $this->db->where("email", $email );
             $this->db->or_where("phone", $phone );
-            $data = $query=$this->db->count_all_results($this->_table_name);
+            $data =$this->db->count_all_results($this->_table_name);
             return $data;
         }
-        public function registration_form(array $data){
+        public function do_registration(array $data){
             $check = $this->__check_phone_email($data['email'],$data['phone']);
             if($check){
                 return 1;
             }else{
-                $insert=$this->db->insert($this->_table_name, $data);
+                $this->db->insert($this->_table_name, $data);
                 $insert_id = $this->db->insert_id();
                 return  $insert_id;
             }
@@ -235,7 +255,7 @@
                 return 1;
             }else{
                 $this->db->where('id',$id);
-                $update=$this->db->update($this->_table_name, $data);
+                $this->db->update($this->_table_name, $data);
                 return 2;
             }
         }

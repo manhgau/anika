@@ -315,10 +315,10 @@ class apiApp extends CI_Controller {
 	
 						$product[] = [
 						'id' 				=> $item->id,
-						'name'  			=> $item->	title,
-						'slugname'  		=> $item->	slugname,
-						'intro'  			=> $item->	intro,
-						'content'  			=> $item->	content,
+						'name'  			=> $item->title,
+						'slugname'  		=> $item->slugname,
+						'intro'  			=> $item->intro,
+						'content'  			=> $item->content,
 						'category_name' 	=> $item->category_name,
 						'status'  			=> $status,
 						'image' 			=> $this->config->item('UPLOAD_DOMAIN').$item->thumbnail,
@@ -423,11 +423,14 @@ class apiApp extends CI_Controller {
 		$memberData = array();
         $memberData['email'] = $this->request['email'];
         $memberData['phone'] = $this->request['phone'];
-        $memberData['password'] = $this->request['password'];
-		if(!empty( $memberData['email']) && !empty( $memberData['phone'])){
-			$login_form= $this->member_model->login_form($memberData);
-			if($login_form){
-				$this->__jsonResponse(200,$this->lang->line('success'),$login_form);
+        $memberData['password'] = $this->request['password'];	
+		// var_dump($memberData);
+		// die;	
+		if(!empty($memberData['password']) && (!empty($memberData['email']) || !empty( $memberData['phone'])) ){			
+			$do_login= $this->member_model->do_login($memberData);
+			if($do_login){
+				$member = $this->member_model->get_detail_member($do_login);
+				$this->__jsonResponse(200,$this->lang->line('success'),$member);
 			}else{
 				$this->__jsonResponse(500,$this->lang->line('trouble'),[]);
 			}
@@ -435,23 +438,23 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400,$this->lang->line('request'),[]);
 		}
 	}
-	public function registrationForm(){
+	public function registrationForm(){			
 		$memberData = array();
         $memberData['email'] 			= $this->request['email'];
         $memberData['phone'] 			= $this->request['phone'];
-        $memberData['password'] 		= $this->request['password'];
-        $memberData['password_confirm'] = $this->request['password_confirm'];
+        $memberData['password'] 		= password_hash($this->request['password'], PASSWORD_DEFAULT);
         $memberData['department_id'] 	= $this->request['department_id'];
-        $memberData['url_fb'] 			= $this->request['url_fb'];
-		if(!empty( $memberData['email']) && !empty( $memberData['phone']) && !empty($memberData['password']) && !empty($memberData['password_confirm'])){
-			if ($memberData['password'] == $memberData['password_confirm'] ){
-				$memberData['password'] = password_hash($memberData['password'], PASSWORD_DEFAULT);
-				$registration_form= $this->member_model->registration_form($memberData);
-				if($registration_form){
-					if($registration_form == 1){
+        //$memberData['url_fb'] 			= $this->request['url_fb'];
+		$password_confirm = $this->request['password_confirm'];
+		
+		if(!empty( $memberData['email']) && !empty( $memberData['phone']) && !empty($memberData['password']) && !empty($password_confirm)){
+			if(password_verify($password_confirm, $memberData['password'])){
+				$do_registration= $this->member_model->do_registration($memberData);
+				if($do_registration){
+					if($do_registration == 1){
 						$this->__jsonResponse(401,$this->lang->line('request_already'),[]);
 					}else{
-						$data= $this->member_model->get_detail_member($registration_form);
+						$data= $this->member_model->get_detail_member($do_registration);
 						$this->__jsonResponse(200,$this->lang->line('Ok'),$data);
 					}
 				}else{
