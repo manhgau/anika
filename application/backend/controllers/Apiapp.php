@@ -1,11 +1,5 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
-//require_once APPPATH . 'third_party/vendor/autoload.php';
-use Facebook\Facebook; 
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-
 class apiApp extends CI_Controller {
 
 	private $me;
@@ -23,6 +17,7 @@ class apiApp extends CI_Controller {
 		$this->load->model('partner_model');
 		$this->load->model('fieldActivity_model');
 		$this->load->model('categoryproducts_model');
+		$this->load->library('jwttoken');	
 
 		$reqType = strtolower($this->input->server('REQUEST_METHOD'));
 		if ($reqType === 'post') {
@@ -424,13 +419,32 @@ class apiApp extends CI_Controller {
         $memberData['email'] = $this->request['email'];
         $memberData['phone'] = $this->request['phone'];
         $memberData['password'] = $this->request['password'];	
-		// var_dump($memberData);
-		// die;	
 		if(!empty($memberData['password']) && (!empty($memberData['email']) || !empty( $memberData['phone'])) ){			
 			$do_login= $this->member_model->do_login($memberData);
 			if($do_login){
 				$member = $this->member_model->get_detail_member($do_login);
-				$this->__jsonResponse(200,$this->lang->line('success'),$member);
+				$token = $this->jwttoken::createToken();
+                if(is_array($member) && count($member) > 0){
+                    foreach($member as $item){
+                        $payload[] = [
+							'id'  				=> $item->id,
+							'fullname' 			=> $item->fullname,
+							'email' 			=> $item->email,
+							'phone' 			=> $item->phone,
+							'url_fb' 			=> $item->url_fb,
+							'office_name' 		=> $item->office_name,
+							'department_name' 	=> $item->department_name,
+							'token'				=> $token
+						];
+                    }
+
+                } 
+				$jwt_encode = $this->jwttoken::encode($payload);
+					$data = [
+						'profile'	=> $member,
+						'token' 	=> $jwt_encode
+					];
+					$this->__jsonResponse(200,$this->lang->line('success'),$data);
 			}else{
 				$this->__jsonResponse(500,$this->lang->line('trouble'),[]);
 			}
@@ -454,7 +468,28 @@ class apiApp extends CI_Controller {
 					if($do_registration == 1){
 						$this->__jsonResponse(401,$this->lang->line('request_already'),[]);
 					}else{
-						$data= $this->member_model->get_detail_member($do_registration);
+						$member= $this->member_model->get_detail_member($do_registration);
+						$token = $this->jwttoken::createToken();
+						if(is_array($member) && count($member) > 0){
+							foreach($member as $item){
+								$payload[] = [
+									'id'  				=> $item->id,
+									'fullname' 			=> $item->fullname,
+									'email' 			=> $item->email,
+									'phone' 			=> $item->phone,
+									'url_fb' 			=> $item->url_fb,
+									'office_name' 		=> $item->office_name,
+									'department_name' 	=> $item->department_name,
+									'token'				=> $token
+								];
+							}
+		
+						} 
+						$jwt_encode = $this->jwttoken::encode($payload);
+						$data = [
+							'profile' => $member,
+							'token' => $jwt_encode
+						];
 						$this->__jsonResponse(200,$this->lang->line('Ok'),$data);
 					}
 				}else{
@@ -466,6 +501,9 @@ class apiApp extends CI_Controller {
 		}else{
 			$this->__jsonResponse(400,$this->lang->line('request'),[]);
 		}
+	}
+	public function loginWeb(){
+		
 	}  
  
 }
