@@ -23,6 +23,16 @@
               $this->__jsonResponse(500, $e->getMessage());
           }
     }
+     function get_google_user_by_token($token){
+        try {
+            $client = new \Google_Client(['client_id' => config('services.google.client_id')]);
+            $payload = $client->verifyIdToken($idToken);
+            return $payload;
+        } catch (\Exception $e) {
+            Log::error('Error when login with google: ' . $e->getMessage());
+            return $this->responseErrors(config('code.user.login_google_failed'), trans('messages.user.login_google_failed'));
+        }
+    }
     function sortMoney(int $money)
     {
         if (!$money) 
