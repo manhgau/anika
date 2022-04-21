@@ -260,46 +260,6 @@
                 return 2;
             }
         }
-        private function __check_id_web($id){
-            $this->db->select("id, fb_id");
-            $this->db->from($this->_table_name);
-            $this->db->where("fb_id", $id );
-            $data =$this->db->get()->result();
-            return $data;
-        } 
-        private function __insert_member(array $data){
-            $this->db->insert($this->_table_name, $data);
-            $insert_id = $this->db->insert_id();
-            return  $insert_id;
-        }
-        public function login(array $data){
-            $isIdAredly = $this->__check_id_web($data['fb_id']);
-            if($isIdAredly){
-                $isIdAredly = json_decode(json_encode($isIdAredly),true);
-                return array(
-                    'code'  => 1,
-                    'status'=> 'true',
-                    'data'  =>  $isIdAredly[0]['id']
-                );
-            }
-            $check = $this->__check_phone_email($data['email'],$data['phone']);
-            if($check > 0){
-                return array(
-                    'code'  => 2,
-                    'status'=> 'false',
-                );
-            }else{
-                $insert = $this->__insert_member($data);
-                if($insert){
-                    return array(
-                        'code'  => 1,
-                        'status'=> 'Them thanh cong',
-                        'data'  =>  $insert
-                    );
-                }
-            }
-        }
-
 
 
 }
