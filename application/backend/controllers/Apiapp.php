@@ -503,7 +503,34 @@ class apiApp extends CI_Controller {
 		}
 	}
 	public function loginWeb(){
-		
+		$token = trim($_GET['token']);
+		$type = $_GET['type'];
+		// $token ='EAAAAAYsX7TsBAIfpLu5DzPlD9W3OFjri3EOVOmoZCOtwZA4atyty';
+		// $type = 'facebook';
+		// var_dump($token);
+		// var_dump($type);
+		// die;
+		if(!isset($_GET['token']) && !iseet($_GET['type'])){
+			$this->__jsonResponse(400, $this->lang->line('input_not_valid'));
+		}
+		// if ($type == 'facebook'){
+		// 	//die("1122");
+		// 	$data_member = get_facebook_user_by_token($token);
+		// }
+		// if ($type == 'google'){
+		// 	$data_member = get_google_user_by_token($token);
+		// }
+		// var_dump($data_member);
+		// die;
+		$data_member = [
+			'fb_id'    => '123',
+			'email'     => 'lilmanh@gmail.com',
+			'phone'     => '09378276',
+			'fullname'  => 'Nguyễn Mạnh'
+		];
+		$rs = $this->member_model->login($data_member);
+		var_dump($rs);
 	}  
+ 
  
 }
