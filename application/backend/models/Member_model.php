@@ -187,6 +187,8 @@
         {
             return true;
         }
+
+
         // Dùng trong CI APIapp
         public function get_detail_member($id){
             $this->db->select('a.id,a.fullname,a.email,a.phone,a.addres,a.url_fb, b.name AS office_name,c.name AS department_name');
@@ -206,7 +208,6 @@
             $this->db->select('id, email, phone, password');
             $this->db->from($this->_table_name);
             if($data['phone'] == NULL){
-                echo ("1111");
                 $this->db->where('email',$data['email']);
             }
             if($data['email'] == NULL){
