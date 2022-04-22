@@ -261,5 +261,19 @@
             }
         }
 
+        public function send_verification_code($email){
+            $check_email = $this->__check_email($email);
+            if($check_email){
+                return array(
+                    'code' => 1,
+                    'status'=>"ok"
+                );
+            }else{
+                return array(
+                    'code' => 2,
+                    'status'=>"email không tồn tại"
+                );
+            }
+        }
 
 }

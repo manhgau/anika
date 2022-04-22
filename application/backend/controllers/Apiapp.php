@@ -18,6 +18,7 @@ class apiApp extends CI_Controller {
 		$this->load->model('fieldActivity_model');
 		$this->load->model('categoryproducts_model');
 		$this->load->library('jwttoken');	
+		$this->load->library('keyemail');	
 
 		$reqType = strtolower($this->input->server('REQUEST_METHOD'));
 		if ($reqType === 'post') {
@@ -500,6 +501,22 @@ class apiApp extends CI_Controller {
 		$rs = $this->member_model->login($data_member);
 		var_dump($rs);
 	}  
+	public function verificationCodes(){
+		$email_post = $this->request['email'];
+		if(!empty($email_post)){
+			$rs = $this->member_model->send_verification_code($email_post);
+			
+			if ($rs['code'] == 1){
+				$key = $this->keyemail::instanceMethodOne();
+				var_dump($key);
+				die;
+			}else{
+				$this->__jsonResponse(500,$this->lang->line('do_not_exist'),[]);
+			}
+		}else{
+			$this->__jsonResponse(400,$this->lang->line('request'),[]);
+		}
+	}
  
  
 }
