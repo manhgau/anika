@@ -29,6 +29,7 @@ class apiApp extends CI_Controller {
 		else
 			$this->__jsonResponse(404, 'bad_request');
     }
+	
 	public function __jsonResponse($code=200, $msg='success', $data=[])
 	{
         $result['code'] = $code;
@@ -38,6 +39,7 @@ class apiApp extends CI_Controller {
         echo json_encode($result);
         exit();
 	}
+	
 	public function listBanner()
 	{
 		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
@@ -78,6 +80,7 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(500, $this->lang->line('do_not_exist'),[]);			
         }
 	}
+	
 	public function appInit()
 	{
 		$rs = $this->banner_model->get_list_banners(0, 3 ,2);
@@ -105,6 +108,7 @@ class apiApp extends CI_Controller {
 
 		$this->__jsonResponse(200, 'success', $data);
 	}
+	
 	public function listPartner() {
 		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
 		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
@@ -126,6 +130,7 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(500, $this->lang->line('do_not_exist'),[]);			
         }
 	}
+	
 	public function detailPartner() {				
 		$id = isset($_GET['id'])?$_GET['id']:"";
 		if(isset($_GET['id'])){
@@ -154,6 +159,7 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400, $this->lang->line('input_not_valid'),[]);
 		}
 	}
+	
 	public function listPost() {
 		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
 		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
@@ -200,6 +206,7 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(500, $this->lang->line('news_not_exist'),[]);			
         }
 	}
+	
 	public function detailPost() {				
 		$id = isset($_GET['id'])?$_GET['id']:"";
 		if(isset($_GET['id'])){
@@ -227,111 +234,73 @@ class apiApp extends CI_Controller {
 				}
 			}
 			if($rs){
-				$this->__jsonResponse(200, $this->lang->line('detail'),$post);			
+				$this->__jsonResponse(200, 'detail', $post);			
 			}else{
-				$this->__jsonResponse(500, $this->lang->line('news_not_exist'),[]);			
+				$this->__jsonResponse(500, 'news_not_exist');			
 			}
 		}else{
-			$this->__jsonResponse(400, $this->lang->line('input_not_valid'),[]);
+			$this->__jsonResponse(400, 'input_not_valid');
 		}
 	}
-	public function listProducts() {
-		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
-		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
-        $offset = ($page - 1) * $limit;
-        $category_id = isset($_GET['category_id'])?$_GET['category_id']:"";
-		
-		if (!isset($_GET['category_id'])){
-			$this->__jsonResponse(400, $this->lang->line('input_not_valid'));
-		}
-        $rs = $this->products_model->get_list_products($limit, $offset, $category_id);				
-		$list_prd = [];
-		
-		if(is_array($rs) && count($rs) > 0){
-			foreach($rs as $item){
-					switch($item->	status){
-						case "con":
-							$status = $this->lang->line('still');
-							break;
-						case "het":
-							$status = $this->lang->line('over');
-							break;
-						case "sap":
-							$status = $this->lang->line('coming_soon');
-							break;
-						case "khac":	
-							$status = $this->lang->line('other');
-							break;	
-						}
-
-					$list_prd[] = [
-					'id' 				=> $item->id,
-					'name'  			=> $item->	title,
-					'slugname'  		=> $item->	slugname,
-					'intro'  			=> $item->	intro,
-					'content'  			=> $item->	content,
-					'category_name' 	=> $item->category_name,
-					'status'  			=> $status,
-					'image' 			=> $this->config->item('UPLOAD_DOMAIN').$item->thumbnail,
-					'type' 				=> $item->type,
-					'service_type' 		=> $item-> service_type,
-					'url' 				=> $item->url,
-				];
-			}
-		}		
-		        
-        if($list_prd){
-			$this->__jsonResponse(200, 'success',$list_prd);			
-        }else{
-			$this->__jsonResponse(500, $this->lang->line('do_not_exist'),[]);			
-        }
-	}
-
-	public function detailProduct() {				
-		$id = isset($_GET['id'])?$_GET['id']:"";
-		if(isset($_GET['id'])){
-			$rs = $this->products_model->get_detail_product($id);
-			if(is_array($rs) && count($rs) > 0){
-				foreach($rs as $item){
-						switch($item->	status){
-							case "con":
-								$status = $this->lang->line('still');
-								break;
-							case "het":
-								$status = $this->lang->line('over');
-								break;
-							case "sap":
-								$status = $this->lang->line('coming_soon');
-								break;
-							case "khac":	
-								$status = $this->lang->line('other');
-								break;	
-							}
 	
-						$product[] = [
-						'id' 				=> $item->id,
-						'name'  			=> $item->title,
-						'slugname'  		=> $item->slugname,
-						'intro'  			=> $item->intro,
-						'content'  			=> $item->content,
-						'category_name' 	=> $item->category_name,
-						'status'  			=> $status,
-						'image' 			=> $this->config->item('UPLOAD_DOMAIN').$item->thumbnail,
-						'type' 				=> $item->type,
-						'service_type' 		=> $item-> service_type,
-						'url' 				=> $item->url,
-					];
-				}
-			}	
-			if($rs){
-				$this->__jsonResponse(200, $this->lang->line('detail'),$product);			
-			}else{
-				$this->__jsonResponse(500,$this->lang->line('do_not_exist'),[]);			
+	public function listProducts() {
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		if ($page < 1) $page = 1;
+        $offset = ($page - 1) * $limit;
+        $category_id = isset($_GET['category_id'])? intval($_GET['category_id']) : null;
+        $data = [
+        	'pagination' => [
+        		'page' => $page,
+        		'limit' => $limit,
+        		'prev' => ($page>1) ? $page-1 : 1,
+        		'next' => false 
+        	]
+        ];
+		
+		if (!$category_id)
+			$this->__jsonResponse(400, 'input_not_valid');
+
+		$category = $this->categoryproducts_model->get($category_id, true);
+		if (!$category)
+			$this->__jsonResponse(400, 'bad_request', $data);
+
+		$data['category'] = $category;
+
+        $rs = $this->products_model->get_list_products($limit, $offset, $category_id);	
+        if (!$rs) 
+			$this->__jsonResponse(404, 'notfound', $data);
+
+		if(is_array($rs) && count($rs) > 0){
+			foreach($rs as $key => $item) {
+				$item->status_name = lang($item->status);
+				$item->image = getImageUrl($item->thumbnail);
+				$item->category_name = $category->title;
+				unset($item->content);
+				$rs[$key] = $item;
 			}
-		}else{
-			$this->__jsonResponse(400, $this->lang->line('input_not_valid'),[]);
 		}
+		
+		$data['list'] = $rs;
+		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
+		$this->__jsonResponse(200, 'success',$data);
 	}
+
+	public function detailProduct() {
+		$id = isset($_GET['id'])?intval($_GET['id']):null;
+		if (! $id) 
+			$this->__jsonResponse(400, 'input_not_valid',[]);
+
+		$product = $this->products_model->get_detail_product($id);
+		
+		if(!$product)
+			$this->__jsonResponse(404, 'not_found');	
+
+		$product->status_name = lang($product->status);
+		$product->image = getImageUrl($product->thumbnail);
+		$this->__jsonResponse(200, 'success', $product);		
+	}
+
 	public function fieldActivity(){
 		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
 		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
