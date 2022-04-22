@@ -53,3 +53,5 @@ $route['default_controller'] = 'home';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['^admin'] = 'dashboard';
+
+$route['api/app_init'] = 'api/api/app_init';

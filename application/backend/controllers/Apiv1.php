@@ -298,6 +298,36 @@ class Apiv1 extends CI_Controller {
 			$this->__jsonResponse(200, 'data empty', NULL);
 	}
 
+	public function listBanner()
+	{
+		$limit  = max(1, (int)$_GET['limit']??1);
+        $page  = max(1, (int)$_GET['page']??1);
+        $offset = ($page - 1) * $limit;
+        $type = isset($_GET['type'])?$_GET['type']:"";
+        $banner = $this->news_model->get_list_banner($offset, $limit ,$type);
+
+        if (!isset($type)){
+            echo json_encode([
+                'status'    =>  1,
+                'message'   =>  'Danh sách tin tức',
+                'data'      =>  $banner
+            ]);
+        }
+        if($news == NULL){
+            echo json_encode([
+                'status'    =>  3,
+                'message'   =>  'Không có tin tức loại này',
+                'data'      =>  NULL
+            ]);
+        }else{
+            echo json_encode([
+                'status'    =>  1,
+                'message'   =>  'Danh sách tin tức loại'." ".$type,
+                'data'      =>  $banner
+            ]);
+        }
+	}
+
 	public function appInit()
 	{
 		$data = [];
@@ -306,6 +336,7 @@ class Apiv1 extends CI_Controller {
 		$data['service_type'] = $this->realnews_model->getService();
 		$data['type'] = $this->realnews_model->getType();
 		$data['news_status'] = $this->realnews_model->getStatus();
+		$data['slide_banner'] = $this->listBanner();
 		$prices = $this->realnews_model->publishPrice();
 		foreach ($prices as $key => $value) {
 			$data['publish_price'][$value] = $value . ' ' . lang('point');
@@ -328,6 +359,7 @@ class Apiv1 extends CI_Controller {
 		$check = isNotSalePhone($this->request['phone']);
 		$this->__jsonResponse(($check=='success') ? 200 : 400, $check);
 	}
+
 
 }
 

@@ -76,7 +76,7 @@ class User_model extends MY_Model
             return true;
         }
     }
-
+    
     private function get_permission_for_user($user_id)
     {
         $this->db->select('action_perm,category_perm');

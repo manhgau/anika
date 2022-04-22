@@ -187,6 +187,118 @@
         {
             return true;
         }
+        // Dùng trong CI APIapp
+        public function get_detail_member($id){
+            $this->db->select('a.id,a.fullname,a.email,a.phone,a.addres,a.url_fb, b.name AS office_name,c.name AS department_name');
+            $this->db->from($this->_table_name . ' as a');
+            $this->db->join('office as b', 'a.office_id=b.id', 'left');
+            $this->db->join('department as c', 'a.department_id=c.id', 'left');
+            if($id>0){
+                $this->db->where('a.id',$id);
+            }
+            $data = $this->db->get()->result();
+            return $data;
+            
+    
+        }
+
+        public function do_login(array $data){                        
+            $this->db->select('id, email, phone, password');
+            $this->db->from($this->_table_name);
+            if($data['phone'] == NULL){
+                echo ("1111");
+                $this->db->where('email',$data['email']);
+            }
+            if($data['email'] == NULL){
+                echo ("122222");
+                $this->db->where('phone',$data['phone']);
+            }
+            $this->db->limit(1,0);
+            $user = $this->db->get()->result();                            
+            if($user){
+                if(is_array($user) && count($user) > 0){
+                    foreach($user as $item){
+                        $password = $item->password;
+                    }
+                    if(password_verify($data['password'], $password)){
+                        return $item->id;
+                    }else{
+                        return false; 
+                    }
+                }                   
+            }else{
+                return false;
+            }
+                                 
+        }
+
+        private function __check_phone_email ($email,$phone){
+            $this->db->select("email, phone");
+            $this->db->where("email", $email );
+            $this->db->or_where("phone", $phone );
+            $data =$this->db->count_all_results($this->_table_name);
+            return $data;
+        }
+        public function do_registration(array $data){
+            $check = $this->__check_phone_email($data['email'],$data['phone']);
+            if($check){
+                return 1;
+            }else{
+                $this->db->insert($this->_table_name, $data);
+                $insert_id = $this->db->insert_id();
+                return  $insert_id;
+            }
+        }
+        public function update_profile(array $data, $id){
+            $check = $this->__check_phone_email($data['email'],$data['phone']);
+            if($check > 0){
+                return 1;
+            }else{
+                $this->db->where('id',$id);
+                $this->db->update($this->_table_name, $data);
+                return 2;
+            }
+        }
+        private function __check_id_web($id){
+            $this->db->select("id, fb_id");
+            $this->db->from($this->_table_name);
+            $this->db->where("fb_id", $id );
+            $data =$this->db->get()->result();
+            return $data;
+        } 
+        private function __insert_member(array $data){
+            $this->db->insert($this->_table_name, $data);
+            $insert_id = $this->db->insert_id();
+            return  $insert_id;
+        }
+        public function login(array $data){
+            $isIdAredly = $this->__check_id_web($data['fb_id']);
+            if($isIdAredly){
+                $isIdAredly = json_decode(json_encode($isIdAredly),true);
+                return array(
+                    'code'  => 1,
+                    'status'=> 'true',
+                    'data'  =>  $isIdAredly[0]['id']
+                );
+            }
+            $check = $this->__check_phone_email($data['email'],$data['phone']);
+            if($check > 0){
+                return array(
+                    'code'  => 2,
+                    'status'=> 'false',
+                );
+            }else{
+                $insert = $this->__insert_member($data);
+                if($insert){
+                    return array(
+                        'code'  => 1,
+                        'status'=> 'Them thanh cong',
+                        'data'  =>  $insert
+                    );
+                }
+            }
+        }
+
 
 
 }
