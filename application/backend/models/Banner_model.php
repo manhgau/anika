@@ -68,7 +68,7 @@
         //     }
         //     return false;
         // }
-        public function get_category($id){
+        public function get_category($id){            
             $this->db->select();
             $this->db->from('category_banner');
             $this->db->where('id',$id);
@@ -76,7 +76,7 @@
             return $data;
         }
         public function get_list_banners($offset=0, $limit=10 ,$category_id=0)
-        {            
+        {                       
             $this->db->select('a.*, b.name AS category_name');
             $this->db->from($this->_table_name . ' as a');
             $this->db->join('category_banner as b', 'a.category_id=b.id', 'inner');

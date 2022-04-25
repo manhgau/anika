@@ -1,38 +1,4 @@
 <?php
-    // function get_facebook_user_by_token($token){
-    //     $fb = new \Facebook\Facebook([
-    //         'app_id' => config_item('FB_APP_ID'),
-    //         'app_secret' => config_item('FB_APP_SECRET_KEY'),
-    //         'default_graph_version' => 'v2.10',
-    //       ]);
-  
-    //       try {
-    //           // Get the \Facebook\GraphNodes\GraphUser object for the current user.
-    //           // If you provided a 'default_access_token', the '{access-token}' is optional.
-    //           $response = $fb->get('/me?fields=id,name,email', $accessToken);
-    //           $me = $response->getGraphUser();
-    //           return $me;
-    //       } catch(\Facebook\Exceptions\FacebookResponseException $e) {
-    //             // When Graph returns an error
-    //           // $msg= 'Graph returned an error: ' . $e->getMessage();
-    //           $this->__jsonResponse(400, $e->getMessage());
-          
-    //       } catch(\Facebook\Exceptions\FacebookSDKException $e) {
-    //             // When validation fails or other local issues
-    //           // $msg = 'Facebook SDK returned an error: ' . $e->getMessage();
-    //           $this->__jsonResponse(500, $e->getMessage());
-    //       }
-    // }
-    //  function get_google_user_by_token($token){
-    //     try {
-    //         $client = new \Google_Client(['client_id' => config('services.google.client_id')]);
-    //         $payload = $client->verifyIdToken($idToken);
-    //         return $payload;
-    //     } catch (\Exception $e) {
-    //         Log::error('Error when login with google: ' . $e->getMessage());
-    //         return $this->responseErrors(config('code.user.login_google_failed'), trans('messages.user.login_google_failed'));
-    //     }
-    // }
     function sortMoney(int $money)
     {
         if (!$money) 

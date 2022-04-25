@@ -20,7 +20,7 @@ class apiApp extends CI_Controller {
 		$this->load->library('jwttoken');	
 		$this->load->library('keyemail');	
 		$this->load->library('my_phpmailer');
-		//$this->load->library('facebook'); 
+		$this->load->library('facebook'); 
 		//$this->load->library('google');
 
 		$reqType = strtolower($this->input->server('REQUEST_METHOD'));
@@ -62,13 +62,11 @@ class apiApp extends CI_Controller {
 		if (!$category_id){
 			$this->__jsonResponse(400, 'input_not_valid');
         }
-		$category = $this->banner_model->get_category($category_id, true);
-		// var_dump($category);
-		// die;
+		$category = $this->banner_model->get_category($category_id, true);		
 		if (!$category)
 			$this->__jsonResponse(400, 'bad_request', $data);
 
-		$data['category'] = $category;
+		$data['category'] = $category;	
         $rs = $this->banner_model->get_list_banners($offset, $limit ,$category_id);	
 		if (!$rs) 
 		$this->__jsonResponse(404, 'notfound', $data);	
@@ -146,9 +144,9 @@ class apiApp extends CI_Controller {
 		}
 		$partner = $this->partner_model->get_detail_partner($id);
 		if(!$partner){
-			$this->__jsonResponse(404, 'notfound', $data);
+			$this->__jsonResponse(404, 'notfound');
 		}
-		$partner->image = getImageUrl($product->image);
+		$partner->image = getImageUrl($partner->image);
 		$this->__jsonResponse(200, 'success', $partner);
 	}
 	
@@ -446,7 +444,6 @@ class apiApp extends CI_Controller {
 		$token = trim($_GET['token']);
 		$type = $_GET['type'];
 		if($token && $type == 'facebook'){
-			die("1234");
 				$userData = array(); 
 			
 			/* Authenticate user with facebook */
@@ -456,12 +453,13 @@ class apiApp extends CI_Controller {
 	
 				/* Preparing data for database insertion */
 				$userData['oauth_provider'] = 'facebook'; 
-				$userData['oauth_uid']    = !empty($fbUser['id'])?$fbUser['id']:'';; 
+				$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';; 
 				$userData['first_name']    = !empty($fbUser['first_name'])?$fbUser['first_name']:''; 
 				$userData['last_name']    = !empty($fbUser['last_name'])?$fbUser['last_name']:''; 
 				$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:''; 
 			}
 		}
+		$this->__jsonResponse(400, 'input_not_valid');
 	}  
 	public function authGoogle(){
 		$token = trim($_GET['token']);
@@ -480,10 +478,11 @@ class apiApp extends CI_Controller {
 				
 				/* Preparing data for database insertion */
 			   $userData['oauth_provider'] = 'google'; 
-			   $userData['oauth_uid']         = $gpInfo['id']; 
+			   $userData['gg_id']         = $gpInfo['id']; 
 			   $userData['first_name']     = $gpInfo['given_name']; 
 			   $userData['last_name']         = $gpInfo['family_name']; 
 			   $userData['email']             = $gpInfo['email']; 
+			   $userData['phone']             = $gpInfo['phone']; 
 			 }
 			//
 			$userData['oauth_provider'] = 'google';

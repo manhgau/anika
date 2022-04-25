@@ -20,7 +20,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */ 
  
 /* Include the autoloader provided in the SDK */
-//require_once APPPATH .'third_party/facebook-php-graph-sdk/autoload.php';  
+require_once APPPATH .'/third_party/php-graph-sdk-5.x/src/Facebook/autoload.php';  
  
 use Facebook\Facebook as FB; 
 use Facebook\Authentication\AccessToken; 
@@ -28,7 +28,7 @@ use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException; 
 use Facebook\Helpers\FacebookJavaScriptHelper; 
 use Facebook\Helpers\FacebookRedirectLoginHelper; 
-Class Facebook 
+class Facebook 
 { 
     /** 
      * @var FB 
