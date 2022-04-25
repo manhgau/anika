@@ -50,7 +50,7 @@
             else 
             {
                 if ( ! $this->has_permission('add')) $this->not_permission();
-                $banner = $this->banner_model->get_new( $type );
+                $banner = $this->banner_model->get_new($type);
                 $banner->type = $type;
                 $this->data['banner'] = $banner;
                 $this->data['breadcrumbs']['Thêm mới'] = base_url('banner/edit/');

@@ -4,7 +4,7 @@
             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
         </a>
     </li>
-    <li class="treeview <?php echo (in_array($this->router->class,array('news','category'))) ? 'active' : '';?>">
+    <li class="treeview <?php echo (in_array($this->router->class, array('news', 'category'))) ? 'active' : ''; ?>">
         <a href="#">
             <i class="fa fa-file-text"></i>
             <span><?php echo lang('manage_product') ?></span>
@@ -16,7 +16,7 @@
             <li><a href="<?php echo base_url('category_product/index'); ?>"><i class="fa fa-list"></i> Danh mục sản phẩm </a></li>
         </ul>
     </li>
-    <li class="treeview <?php echo (in_array($this->router->class,array('news','category'))) ? 'active' : '';?>">
+    <li class="treeview <?php echo (in_array($this->router->class, array('news', 'category'))) ? 'active' : ''; ?>">
         <a href="#">
             <i class="fa fa-file-text"></i>
             <span><?php echo lang('manage_post') ?></span>
@@ -34,7 +34,7 @@
     <li><a href="/pointload/refund?status=pending"><i class="fa fa-retweet"></i> <?php echo lang('refund_request') ?> <span class="badge bg-orange" id="refund_pending_number"></span></a></li>
     <li><a href="/member/post?status=pending"><i class="fa fa-plane"></i> <?php echo lang('post_request') ?> <span class="badge bg-orange" id="post_pending_number"></span></a></li>
 
-    <li class="treeview <?php echo (in_array($this->router->class,array('news','category'))) ? 'active' : '';?>">
+    <li class="treeview <?php echo (in_array($this->router->class, array('news', 'category'))) ? 'active' : ''; ?>">
         <a href="#">
             <i class="fa fa-file-text"></i>
             <span><?php echo lang('news') ?></span>
@@ -45,7 +45,7 @@
             <li><a href="<?php echo base_url('category'); ?>"><i class="fa fa-list"></i> Chuyên mục </a></li>
         </ul>
     </li>
-   
+
 
     <?php /*   
     <li class="treeview <?php echo ($this->router->class=='memtor') ? 'active' : '';?>">
@@ -163,7 +163,7 @@
     */ ?>
 
     <?php if ($userdata['level'] <= 2) : ?>
-    <?php /*
+        <?php /*
     <li class="treeview <?php echo ($this->router->class=='report') ? 'active' : '';?>">
         <a href="#">
             <i class="fa fa-line-chart"></i>
@@ -175,7 +175,7 @@
         </ul>
     </li>
     */ ?>
-<?php /*
+        <?php /*
     <li class="treeview <?php echo ($this->router->class=='page') ? 'active' : '';?>">
         <a href="#">
             <i class="fa fa-file"></i>
@@ -219,35 +219,36 @@
     <?php endif; ?>
 
     <?php if ($userdata['level'] == 1) : ?>
-    <li class="treeview <?php echo ($this->router->class=='user') ? 'active' : '';?>">
-        <a href="#">
-            <i class="fa fa-users"></i> <span>Quản trị viên</span>
-            <i class="fa fa-angle-left pull-right"></i>
-        </a>
-        <ul class="treeview-menu">
-            <li><a href="<?php echo base_url('user/edit'); ?>"><i class="fa fa-plus"></i> Thêm mới </a></li>
-            <li><a href="<?php echo base_url('user'); ?>"><i class="fa fa-list"></i> Danh sách </a></li>
-            <?php /*
+        <li class="treeview <?php echo ($this->router->class == 'user') ? 'active' : ''; ?>">
+            <a href="#">
+                <i class="fa fa-users"></i> <span>Quản trị viên</span>
+                <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="<?php echo base_url('user/edit'); ?>"><i class="fa fa-plus"></i> Thêm mới </a></li>
+                <li><a href="<?php echo base_url('user'); ?>"><i class="fa fa-list"></i> Danh sách </a></li>
+                <?php /*
             <?php if ((int)$userdata['level'] === 1) :?>
             <li><a href="<?php echo base_url('user/user_permission'); ?>"><i class="fa fa-list"></i> Phân quyền </a></li>
             <?php endif; ?>
             */ ?>
-        </ul>
-    </li>
-    <li class="treeview <?php echo (in_array($this->router->class,array('setting','banner'))) ? 'active' : '';?>">
-        <a href="#">
-            <i class="fa fa-cog"></i> <span>Cài đặt</span>
-            <i class="fa fa-angle-left pull-right"></i>
-        </a>
-        <ul class="treeview-menu">
-            <li><a href="<?php echo base_url('banner');?>"><i class="fa fa-angle-double-right"></i> Banner </a></li>
-            <?php /*
-            <li><a href="<?php echo base_url('banner/?type=7');?>"><i class="fa fa-angle-double-right"></i> Supported by </a></li>
-            */ ?>
-            <li><a href="<?php echo base_url('setting/seo_option');?>"><i class="fa fa-angle-double-right"></i> SEO Options </a></li>
-            <li><a href="<?php echo base_url('setting/option');?>"><i class="fa fa-angle-double-right"></i> Site Options </a></li>
-            
-        </ul>
-    </li>
+            </ul>
+        </li>
+        <li class="treeview <?php echo (in_array($this->router->class, array('setting', 'banner'))) ? 'active' : ''; ?>">
+            <a href="#">
+                <i class="fa fa-cog"></i> <span>Cài đặt</span>
+                <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                
+                <li><a href="<?php echo base_url('setting_anika/general_setting'); ?>"><i class="fa fa-angle-double-right"></i> Cài đặt chung </a></li>
+                <li><a href="<?php echo base_url('banner'); ?>"><i class="fa fa-angle-double-right"></i> Banner </a></li>
+                <li><a href="<?php echo base_url('setting_department'); ?>"><i class="fa fa-angle-double-right"></i> Danh sách phòng ban </a></li>
+                <li><a href="<?php echo base_url('setting_business'); ?>"><i class="fa fa-angle-double-right"></i> Lĩnh vực kinh doanh </a></li>
+
+                
+            </ul>
+
+        </li>
     <?php endif; ?>
 </ul>
