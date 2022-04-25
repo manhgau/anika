@@ -240,13 +240,10 @@
                 <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
-                
-                <li><a href="<?php echo base_url('setting_anika/general_setting'); ?>"><i class="fa fa-angle-double-right"></i> Cài đặt chung </a></li>
-                <li><a href="<?php echo base_url('banner'); ?>"><i class="fa fa-angle-double-right"></i> Banner </a></li>
-                <li><a href="<?php echo base_url('setting_department'); ?>"><i class="fa fa-angle-double-right"></i> Danh sách phòng ban </a></li>
-                <li><a href="<?php echo base_url('setting_business'); ?>"><i class="fa fa-angle-double-right"></i> Lĩnh vực kinh doanh </a></li>
-
-                
+                <li><a href="/setting/option"><i class="fa fa-angle-double-right"></i> Cài đặt chung </a></li>
+                <li><a href="/banner"><i class="fa fa-angle-double-right"></i> Banner </a></li>
+                <li><a href="/setting_department"><i class="fa fa-angle-double-right"></i> Danh sách phòng ban </a></li>
+                <li><a href="/setting_business"><i class="fa fa-angle-double-right"></i> Lĩnh vực kinh doanh </a></li>
             </ul>
 
         </li>
