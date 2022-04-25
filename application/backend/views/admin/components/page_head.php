@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <title><?php echo $meta_title; ?> - MYK_CMS</title>
+    <title><?php echo 'Dashboard - ', $this->input->server('HTTP_HOST'); ?></title>
     <link rel="shortcut icon" type="image/png" sizes="32x32" href="<?php echo base_url('favicon.png');?>">
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
