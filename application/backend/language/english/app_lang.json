@@ -68,5 +68,7 @@
 	"request":"Cung cấp thông tin người dùng đầy đủ để tạo",
 	"Ok":"Người dùng đã được thêm thành công",
 	"Do_not_exist":"Yêu cầu của bạn không tồn tại",
-	"password_incorrect":"Mật khẩu không chính xác, Vui lòng thử lại"
+	"password_incorrect":"Mật khẩu không chính xác, Vui lòng thử lại",
+	"manage_product": "Quản lý sản phẩm",
+	"manage_post": "Quản lý bài viết"
 }

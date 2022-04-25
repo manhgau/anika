@@ -92,6 +92,12 @@
         return '/category/' . $slugname;
     }
 
+    function link_preview_category_product($id, $slugname)
+    {
+        //http://thuonghieucongluan.com.vn/khoang-trong-dinh-gia-thuong-hieu-a45552.html
+        return '/category_product/' . $slugname;
+    }
+
     function linkToDetailRealNews($slugname, $code)
     {
         return base_url("/home/newsDetail/{$slugname}/{$code}");

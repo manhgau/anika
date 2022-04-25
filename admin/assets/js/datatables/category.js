@@ -4,11 +4,11 @@ $(document).ready(function () {
     
     var table = $('#datatable').DataTable({
         dom: "Bfrtip",
-        pageLength: 50,
+        pageLength: 10,
         "oLanguage": {
             "sSearch": "Tìm kiếm:&nbsp;"
         },
-        lengthMenu: [ 10, 25, 50, 75, 100 ],
+        lengthMenu: [ 10, 20, 50, 75, 100],
         columnDefs: [
             {
                 targets: 0,
@@ -19,25 +19,11 @@ $(document).ready(function () {
                 render: function (data, type, full, meta){
                     return '<input type="checkbox" name="id[]">';
                 }
-            },
-            {
-                targets: 3,
-                render: function (data, type, full, meta) {
-                    if (data == 1) {
-                        return '<i class="fa fa-check green"></i>';
-                    } 
-                    if(data==2) {
-                        return '<i class="fa fa-minus orange"></i>';
-                    }
-                    if(data==3){
-                        return '<i class="fa fa-times red"></i>';
-                    }
-                }
             }
         ],
         buttons : [
             {text : '<i class="fa fa-plus"></i> Thêm mới', action : bunk_addnew, className:"btn btn-sm btn-success"},
-            {text : '<i class="fa fa-trash"></i> Xóa', action : bunk_delete, className:"btn btn-sm btn-danger"}
+            // {text : '<i class="fa fa-trash"></i> Xóa', action : bunk_delete, className:"btn btn-sm btn-danger"}
         ],
         order: [[0, 'desc']],
         rowCallback: function (row, data, dataIndex) {
