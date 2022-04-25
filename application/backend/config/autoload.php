@@ -132,4 +132,4 @@ $autoload['language'] = array('hotel_lang', 'label_lang', 'restaurant_lang', 'tr
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array('user_model', 'user_permission_model', 'history_model', 'news_model', 'category_model', 'category_news_model', 'location_model');
+$autoload['model'] = array('user_model', 'user_permission_model', 'history_model', 'news_model', 'category_model', 'category_news_model', 'location_model','category_product_model');

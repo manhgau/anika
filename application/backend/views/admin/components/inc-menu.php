@@ -4,6 +4,30 @@
             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
         </a>
     </li>
+    <li class="treeview <?php echo (in_array($this->router->class,array('news','category'))) ? 'active' : '';?>">
+        <a href="#">
+            <i class="fa fa-file-text"></i>
+            <span><?php echo lang('manage_product') ?></span>
+            <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="<?php echo base_url('manage_product/index'); ?>"><i class="fa fa-list"></i> Danh sách sản phẩm</a></li>
+            <li><a href="<?php echo base_url('manage_product/edit'); ?>"><i class="fa fa-list"></i> Thêm mới </a></li>
+            <li><a href="<?php echo base_url('category_product/index'); ?>"><i class="fa fa-list"></i> Danh mục sản phẩm </a></li>
+        </ul>
+    </li>
+    <li class="treeview <?php echo (in_array($this->router->class,array('news','category'))) ? 'active' : '';?>">
+        <a href="#">
+            <i class="fa fa-file-text"></i>
+            <span><?php echo lang('manage_post') ?></span>
+            <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="<?php echo base_url('manage_post/index'); ?>"><i class="fa fa-list"></i> Danh sách bài viết</a></li>
+            <li><a href="<?php echo base_url('manage_post/edit'); ?>"><i class="fa fa-list"></i> Thêm mới </a></li>
+            <li><a href="<?php echo base_url('category_post/index'); ?>"><i class="fa fa-list"></i> Danh mục bài viết </a></li>
+        </ul>
+    </li>
     <li><a href="/realnews/index"><i class="fa fa-file-text"></i> Sản phẩm </a></li>
     <li><a href="/member"><i class="fa fa-users"></i> <?php echo lang('member') ?> </a></li>
     <li><a href="/pointload"><i class="fa fa-usd"></i> <?php echo lang('point') ?> </a></li>
@@ -13,7 +37,7 @@
     <li class="treeview <?php echo (in_array($this->router->class,array('news','category'))) ? 'active' : '';?>">
         <a href="#">
             <i class="fa fa-file-text"></i>
-            <span> Tin tức </span>
+            <span><?php echo lang('news') ?></span>
             <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
@@ -21,6 +45,7 @@
             <li><a href="<?php echo base_url('category'); ?>"><i class="fa fa-list"></i> Chuyên mục </a></li>
         </ul>
     </li>
+   
 
     <?php /*   
     <li class="treeview <?php echo ($this->router->class=='memtor') ? 'active' : '';?>">

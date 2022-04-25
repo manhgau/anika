@@ -159,16 +159,16 @@ class MY_Controller extends CI_Controller {
         return $str;
     }
 
-    public function has_permission($action='view',$category=0) {
+    public function has_permission($action='view',$category_product=0) {
         $permission_conf = config_item('permission');
 
         if($permission_conf[$action] & $this->data['userdata']['action_perm'])
         {
-            if ($category)
+            if ($category_product)
             {
-                    //Fetch all category perm for user
-                $list_id = $this->category_model->get_category_perm_in($this->data['userdata']['category_perm']);
-                if ( ! in_array($category,$list_id))
+                    //Fetch all category_product perm for user
+                $list_id = $this->category_product_model->get_category_perm_in($this->data['userdata']['category_product_perm']);
+                if ( ! in_array($category_product,$list_id))
                 {
                     return FALSE;
                 }

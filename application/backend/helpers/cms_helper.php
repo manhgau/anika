@@ -373,6 +373,7 @@
         }
     }
 
+
     function has_cat_child($list_category, $parent_id)
     {
         foreach ($list_category as $key => $val) {

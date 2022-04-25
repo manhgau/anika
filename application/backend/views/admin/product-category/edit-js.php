@@ -1,4 +1,4 @@
-<script type="text/javascript" src="<?php echo base_url('admin/assets/js/plugins/select/select2.full.js'); ?>"></script>
+<!-- <script type="text/javascript" src="<?php echo base_url('admin/assets/js/plugins/select/select2.full.js'); ?>"></script>
 <script type="text/javascript">
     $(function(){
         $('select.select2-category').select2();
@@ -53,4 +53,4 @@ $(document).on('click', '.remove-item', function(){
     var a = $(this).parent('li');
     a.remove();
 });
-</script>
+</script> -->
