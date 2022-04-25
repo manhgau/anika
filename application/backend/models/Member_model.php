@@ -198,7 +198,7 @@
             if($id>0){
                 $this->db->where('a.id',$id);
             }
-            $data = $this->db->get()->result();
+            $data = $this->db->get()->row();
             return $data;
             
     
@@ -260,7 +260,96 @@
                 return 2;
             }
         }
+        private function __check_id_fb($id){
+            $this->db->select("id, fb_id");
+            $this->db->from($this->_table_name);
+            $this->db->where("fb_id", $id );
+            $data =$this->db->get()->result();
+            return $data;
+        } 
+        private function __check_id_gg($id){
+            $this->db->select("id, gg_id");
+            $this->db->from($this->_table_name);
+            $this->db->where("g_id", $id );
+            $data =$this->db->get()->result();
+            return $data;
+        } 
+        private function __insert_member(array $data){
+            $this->db->insert($this->_table_name, $data);
+            $insert_id = $this->db->insert_id();
+            return  $insert_id;
+        }
+        public function auth_facebook(array $data){
+            $isIdAredly = $this->__check_id_fb($data['fb_id']);
+            if($isIdAredly){
+                $isIdAredly = json_decode(json_encode($isIdAredly),true);
+                return array(
+                    'code'  => 1,
+                    'status'=> 'true',
+                    'data'  =>  $isIdAredly[0]['id']
+                );
+            }
+            $check = $this->__check_phone_email($data['email'],$data['phone']);
+            if($check > 0){
+                return array(
+                    'code'  => 2,
+                    'status'=> 'false',
+                );
+            }else{
+                $insert = $this->__insert_member($data);
+                if($insert){
+                    return array(
+                        'code'  => 1,
+                        'status'=> 'Them thanh cong',
+                        'data'  =>  $insert
+                    );
+                }
+            }
+        }
 
+        public function auth_google(){
+            $isIdAredly = $this->__check_id_gg($data['fb_id']);
+            if($isIdAredly){
+                $isIdAredly = json_decode(json_encode($isIdAredly),true);
+                return array(
+                    'code'  => 1,
+                    'status'=> 'true',
+                    'data'  =>  $isIdAredly[0]['id']
+                );
+            }
+            $check = $this->__check_phone_email($data['email'],$data['phone']);
+            if($check > 0){
+                return array(
+                    'code'  => 2,
+                    'status'=> 'false',
+                );
+            }else{
+                $insert = $this->__insert_member($data);
+                if($insert){
+                    return array(
+                        'code'  => 1,
+                        'status'=> 'Them thanh cong',
+                        'data'  =>  $insert
+                    );
+                }
+            }
+        }
+        private function __check_email($email){
+            $this->db->select("email");
+            $this->db->from($this->_table_name);
+            $this->db->where("email", $email );
+            $data =$this->db->get()->result();
+            return $data;
+        }
+        public function update_key_email($email, $key){
+            $data = [
+                'key_email' => $key,
+                'expire'    => time() + (60*60*24)
+            ];
+            $this->db->where('email',$email);
+            $this->db->update($this->_table_name, $data);
+            return TRUE;
+        }
         public function send_verification_code($email){
             $check_email = $this->__check_email($email);
             if($check_email){
@@ -274,6 +363,29 @@
                     'status'=>"email không tồn tại"
                 );
             }
+        }
+        
+        private function __check_key_email($key){
+            $this->db->select("key_email,expire");
+            $this->db->from($this->_table_name);
+            $this->db->where("key_email", $key );
+            $this->db->where("expire >", time());
+            $data =$this->db->get()->result();
+            return $data;
+        }
+
+        public function update_password($password,$key){
+            if($this->__check_key_email($key)){
+                $update = [
+                    'key_email'     =>  NULL,
+                    'expire'        =>  NULL,
+                    'password'      =>  $password
+                ];
+                $this->db->where('key_email',$key);
+                $result =$this->db->update($this->_table_name, $update);
+                return $result;
+            }
+            return FALSE;
         }
 
 }

@@ -19,6 +19,9 @@ class apiApp extends CI_Controller {
 		$this->load->model('categoryproducts_model');
 		$this->load->library('jwttoken');	
 		$this->load->library('keyemail');	
+		$this->load->library('my_phpmailer');
+		//$this->load->library('facebook'); 
+		//$this->load->library('google');
 
 		$reqType = strtolower($this->input->server('REQUEST_METHOD'));
 		if ($reqType === 'post') {
@@ -43,65 +46,61 @@ class apiApp extends CI_Controller {
 	
 	public function listBanner()
 	{
-		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
-		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
-        $type = isset($_GET['type'])?$_GET['type']:"";
-		if (!isset($_GET['type'])){
-			$this->__jsonResponse(400, $this->lang->line('input_not_valid'));
+        $category_id = isset($_GET['category_id'])? intval($_GET['category_id']) : null;
+		$data = [
+        	'pagination' => [
+        		'page' => $page,
+        		'limit' => $limit,
+        		'prev' => ($page>1) ? $page-1 : 1,
+        		'next' => false 
+        	]
+        ];
+		if (!$category_id){
+			$this->__jsonResponse(400, 'input_not_valid');
         }
+		$category = $this->banner_model->get_category($category_id, true);
+		// var_dump($category);
+		// die;
+		if (!$category)
+			$this->__jsonResponse(400, 'bad_request', $data);
 
-        $rs = $this->banner_model->get_list_banners($offset, $limit ,$type);				
-		$banners = [];
-
+		$data['category'] = $category;
+        $rs = $this->banner_model->get_list_banners($offset, $limit ,$category_id);	
+		if (!$rs) 
+		$this->__jsonResponse(404, 'notfound', $data);	
 		if(is_array($rs) && count($rs) > 0){
-			foreach($rs as $item){
-				switch($item->type){
-					case 2:
-						$type = $this->lang->line('slideshow');
-						break;
-					case 1:
-					default:	
-						$type = $this->lang->line('banner');
-						break;	
-				}
-				$banners[] = [
-					'id' 	=> $item->id,
-					'name'  => $item->name,
-					'image' => $this->config->item('UPLOAD_DOMAIN').$item->image,
-					'type'  => $type,
-					'url' 	=> $item->url,
-				];
+			foreach($rs as $key => $item){
+				$item->image = getImageUrl($item->image);
+				$rs[$key] = $item;
 			}
 		}		
-		        
-        if($banners){
-			$this->__jsonResponse(200, 'success',$banners);			
-        }else{
-			$this->__jsonResponse(500, $this->lang->line('do_not_exist'),[]);			
-        }
+		$data['list'] = $rs;
+		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
+		$this->__jsonResponse(200, 'success',$data);      
 	}
 	
 	public function appInit()
 	{
-		$rs = $this->banner_model->get_list_banners(0, 3 ,2);
-		if(is_array($rs) && count($rs) > 0) {
-			foreach($rs as $item){
-				$slider[] = [
-					'image' 	=> $item->image,
-					'order'  	=> $item->order,
-				];
+		$sliders = $this->banner_model->get_list_banners(0, 3 ,1);
+		if(is_array($sliders) && count($sliders) > 0) {
+			foreach($sliders as $key => $item){
+				$item->image = getImageUrl($item->image);
+				$sliders[$key] = $item;
 			}
 		}
 		$data = $this->init_model->get_app_init();
-		$settings = [];
 		if(is_array($data) && count($data) > 0) {
-			foreach($data as $item){				
+			foreach($data as $key => $item){				
 				$settings[$item->name] =$item->value;	
 			}
-		}   
+		} 
 
-		$sliders = $this->banner_model->get_list_banners(0, 3 ,2);
+		$settings['logo_start'] = getImageUrl($settings['logo_start']);
+		$settings['logo_in_app'] = getImageUrl($settings['logo_in_app']);
 		$data = [
 			'siteOptions' => $settings,
 			'slider' => $sliders
@@ -111,137 +110,95 @@ class apiApp extends CI_Controller {
 	}
 	
 	public function listPartner() {
-		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
-		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
+		$data = [
+        	'pagination' => [
+        		'page' => $page,
+        		'limit' => $limit,
+        		'prev' => ($page>1) ? $page-1 : 1,
+        		'next' => false 
+        	]
+        ];
+
 		$rs = $this->partner_model->get_list_partner($offset, $limit );
+		if (!$rs) 
+		$this->__jsonResponse(404, 'notfound', $data);	
 		if(is_array($rs) && count($rs) > 0){
-			foreach($rs as $item){
-				$list_partner[] = [
-					'id' 			=> $item->id,
-					'name'  		=> $item->name,
-					'image' 		=> $this->config->item('UPLOAD_DOMAIN').$item->image,
-					'url' 			=> $item->url,
-				];
+			foreach($rs as $key => $item){
+				$item->image = getImageUrl($item->image);
+				unset($item->content);
+				unset($item->description);
+				$rs[$key] = $item;
 			}
 		}
-		if($rs){
-			$this->__jsonResponse(200,$this->lang->line('lisst'),$list_partner);			
-        }else{
-			$this->__jsonResponse(500, $this->lang->line('do_not_exist'),[]);			
-        }
+		$data['list'] = $rs;
+		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
+		$this->__jsonResponse(200, 'success',$data);    
 	}
 	
 	public function detailPartner() {				
-		$id = isset($_GET['id'])?$_GET['id']:"";
-		if(isset($_GET['id'])){
-			$rs = $this->partner_model->get_detail_partner($id);
-			if(is_array($rs) && count($rs) > 0){
-				foreach($rs as $item){
-					$partner[] = [
-						'id' 					=> $item->id,
-						'name'  				=> $item->name,
-						'image' 				=> $this->config->item('UPLOAD_DOMAIN').$item->image,
-						'url' 					=> $item->url,
-						'description' 			=> $item->description,
-						'content' 				=> $item->content,
-						'email' 				=> $item->email,
-						'phone' 				=> $item->phone,
-						'address' 				=> $item->address,
-					];
-				}
-			}
-			if($rs){
-				$this->__jsonResponse(200,$this->lang->line('detail'),$partner);			
-			}else{
-				$this->__jsonResponse(500, $this->lang->line('do_not_exist'),[]);			
-			}
-		}else{
-			$this->__jsonResponse(400, $this->lang->line('input_not_valid'),[]);
+		$id = isset($_GET['id'])?$_GET['id']:null;
+		if(!$id){
+			$this->__jsonResponse(400, 'input_not_valid');
 		}
+		$partner = $this->partner_model->get_detail_partner($id);
+		if(!$partner){
+			$this->__jsonResponse(404, 'notfound', $data);
+		}
+		$partner->image = getImageUrl($product->image);
+		$this->__jsonResponse(200, 'success', $partner);
 	}
 	
 	public function listPost() {
-		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
-		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
-        $category = isset($_GET['category'])?$_GET['category']:"";
-		$is_hot = isset($_GET['is_hot'])?$_GET['is_hot']:"";
+		$data = [
+        	'pagination' => [
+        		'page' => $page,
+        		'limit' => $limit,
+        		'prev' => ($page>1) ? $page-1 : 1,
+        		'next' => false 
+        	]
+        ];
+        $category_id = isset($_GET['category_id'])? intval($_GET['category_id']) : null;
+		$is_hot = isset($_GET['is_hot'])?intval($_GET['is_hot']):null;
 		
-		if (!isset($_GET['category'])){
-			$this->__jsonResponse(400, $this->lang->line('input_not_valid'));
-		}
-        $rs = $this->post_model->get_list_post($offset, $limit ,$category,$is_hot);				
-		$list_post = [];
-		
+		if (!$category_id)
+			$this->__jsonResponse(400, 'input_not_valid');
+		$category = $this->post_model->get_category($category_id, true);
+		if (!$category)
+			$this->__jsonResponse(400, 'bad_request', $data);
+
+		$data['category'] = $category;
+        $rs = $this->post_model->list_post($offset, $limit, $category_id, $is_hot);	
+		if (!$rs) 
+		$this->__jsonResponse(404, 'notfound', $data);				
 		if(is_array($rs) && count($rs) > 0){
-			foreach($rs as $item){
-				switch($item->category){
-					case 2:
-						$category = $this->lang->line('achievements');
-						break;
-					case 1:
-					//default:	
-						$category = $this->lang->line('news');
-						break;	
-					}
-					$list_post[] = [
-					'id' 			=> $item->id,
-					'name'  		=> $item->title,
-					'image' 		=> $this->config->item('UPLOAD_DOMAIN').$item->thumbnail,
-					'category '  	=> $category,
-					'url' 			=> $item->url,
-				];
+			foreach($rs as $key => $item){
+				$item->thumbnail = getImageUrl($item->thumbnail);
+				$rs[$key] = $item;
 			}
 		}		
-		if(isset($_GET['is_hot'])){
-			if($rs){		
-				$this->__jsonResponse(200, $this->lang->line('list_new_hot'),$list_post);
-			}else{
-				$this->__jsonResponse(500, $this->lang->line('news_not_exist'),[]);			
-			}
-		}       
-        if($rs){
-			$this->__jsonResponse(200, $this->lang->line('list')." ".$category,$list_post);			
-        }else{
-			$this->__jsonResponse(500, $this->lang->line('news_not_exist'),[]);			
-        }
+		$data['list'] = $rs;
+		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
+		$this->__jsonResponse(200, 'success',$data);  
+
 	}
 	
 	public function detailPost() {				
-		$id = isset($_GET['id'])?$_GET['id']:"";
-		if(isset($_GET['id'])){
-			$rs = $this->post_model->get_detail_post($id);
-			$post = [];
-		
-			if(is_array($rs) && count($rs) > 0){
-				foreach($rs as $item){
-					switch($item->category){
-						case 2:
-							$category = $this->lang->line('achievements');
-							break;
-						case 1:
-						//default:	
-							$category = $this->lang->line('news');
-							break;	
-						}
-						$post[] = [
-						'id' 			=> $item->id,
-						'name'  		=> $item->title,
-						'image' 		=> $this->config->item('UPLOAD_DOMAIN').$item->thumbnail,
-						'category '  	=> $category,
-						'url' 			=> $item->url,
-					];
-				}
-			}
-			if($rs){
-				$this->__jsonResponse(200, 'detail', $post);			
-			}else{
-				$this->__jsonResponse(500, 'news_not_exist');			
-			}
-		}else{
-			$this->__jsonResponse(400, 'input_not_valid');
-		}
+		$id = isset($_GET['id'])?intval($_GET['id']):null;
+		if(!$id)
+		$this->__jsonResponse(400, 'input_not_valid',[]);
+		$post = $this->post_model->detail_post($id);
+		if(!$post)
+			$this->__jsonResponse(404, 'not_found');	
+		$post->thumbnail = getImageUrl($post->thumbnail);
+		$this->__jsonResponse(200, 'success', $post);
 	}
 	
 	public function listProducts() {
@@ -303,59 +260,71 @@ class apiApp extends CI_Controller {
 	}
 
 	public function fieldActivity(){
-		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
-		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
+		$data = [
+        	'pagination' => [
+        		'page' => $page,
+        		'limit' => $limit,
+        		'prev' => ($page>1) ? $page-1 : 1,
+        		'next' => false 
+        	]
+        ];
 		$rs = $this->fieldActivity_model->get_list_field($offset, $limit);
+		if (!$rs) 
+		$this->__jsonResponse(404, 'notfound', $data);	
 		if(is_array($rs) && count($rs) > 0){
-			foreach($rs as $item){
-				$field[] = [
-					'id' 			=> $item->id,
-					'name'  		=> $item->name,
-					'image' 		=> $this->config->item('UPLOAD_DOMAIN').$item->image,
-					'url' 			=> $item->url,
-				];
+			foreach($rs as $key => $item){
+				$item->image = getImageUrl($item->image);
+				unset($item->status);
+				$rs[$key] = $item;
 			}
 		}
-		if($rs){
-			$this->__jsonResponse(200, 'success',$field);
-		}else{
-			$this->__jsonResponse(500, $this->lang->line('do_not_exist'),[]);
-		}
-		
+		$data['list'] = $rs;
+		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
+		$this->__jsonResponse(200, 'success',$data);   
 	}
+
 	public function categoryProducts(){
-		$limit  = (int)isset($_GET['limit'])?$_GET['limit']:10;		
-		$page  = (int)isset($_GET['page'])?$_GET['page']:1;        
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
+		$data = [
+        	'pagination' => [
+        		'page' => $page,
+        		'limit' => $limit,
+        		'prev' => ($page>1) ? $page-1 : 1,
+        		'next' => false 
+        	]
+        ];
 		$rs = $this->categoryproducts_model->get_list_category_products($offset, $limit);
+		if (!$rs) 
+		$this->__jsonResponse(404, 'notfound', $data);	
 		if(is_array($rs) && count($rs) > 0){
-			foreach($rs as $item){
-				$category_prd[] = [
-					'id' 					=> $item->id,
-					'name'  				=> $item->title,
-					'image' 				=> $this->config->item('UPLOAD_DOMAIN').$item->image,
-					'description' 			=> $item->description,
-				];
+			foreach($rs as $key => $item){
+				$item->image = getImageUrl($item->image);
+				unset($item->status);
+				$rs[$key] = $item;
 			}
 		}
-		if($rs){
-			$this->__jsonResponse(200, 'success',$category_prd);
-		}else{
-			$this->__jsonResponse(500,$this->lang->line('do_not_exist'),[]);
-		}
+		$data['list'] = $rs;
+		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
+		$this->__jsonResponse(200, 'success',$data);   
 	}
-	public function  getProfile(){
-		$id = isset($_GET['id'])?$_GET['id']:"";
-		if(!isset($_GET['id'])){
-			$this->__jsonResponse(400, $this->lang->line('input_not_valid'));
+
+	public function  getProfile()
+	{
+		$id = isset($_GET['id'])?$_GET['id']:null;
+		if(!$id){
+			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
 		$profile = $this->member_model->get_detail_member($id);
-		if($profile){
-			$this->__jsonResponse(200, $this->lang->line('detail'),$profile);
-		}else{
-			$this->__jsonResponse(500,$this->lang->line('do_not_exist'),[]);
-		}
+		if(!$profile)
+			$this->__jsonResponse(404, 'not_found');
+		$this->__jsonResponse(200, 'success', $profile);
 
 	}
 	public function updateProfile(){
@@ -372,7 +341,7 @@ class apiApp extends CI_Controller {
 			$my_profile= $this->member_model->update_profile($profile,$id);
 			if($my_profile){
 				if($my_profile == 1){
-					$this->__jsonResponse(401,$this->lang->line('request_already'),[]);
+					$this->__jsonResponse(401,'request_already',[]);
 				}else{
 					$profile_new = $this->member_model->get_detail_member($id);
 					$this->__jsonResponse(200,$this->lang->line('success'),$profile_new);
@@ -460,62 +429,120 @@ class apiApp extends CI_Controller {
 							'profile' => $member,
 							'token' => $jwt_encode
 						];
-						$this->__jsonResponse(200,$this->lang->line('Ok'),$data);
+						$this->__jsonResponse(200,'OK',$data);
 					}
 				}else{
-					$this->__jsonResponse(500,$this->lang->line('trouble'),[]);
+					$this->__jsonResponse(500,'trouble',[]);
 				}
 			}else{
-				$this->__jsonResponse(401,$this->lang->line('password_incorrect'),[]);
+				$this->__jsonResponse(404,'password_incorrect',[]);
 			}
 		}else{
-			$this->__jsonResponse(400,$this->lang->line('request'),[]);
+			$this->__jsonResponse(400,'request',[]);
 		}
 	}
-	public function loginWeb(){
+	
+	public function authFacebook(){
 		$token = trim($_GET['token']);
 		$type = $_GET['type'];
-		// $token ='EAAAAAYsX7TsBAIfpLu5DzPlD9W3OFjri3EOVOmoZCOtwZA4atyty';
-		// $type = 'facebook';
+		if($token && $type == 'facebook'){
+			die("1234");
+				$userData = array(); 
+			
+			/* Authenticate user with facebook */
+			if($this->facebook->is_authenticated()){ 
+			/* Get user info from facebook */
+				$fbUser = $this->facebook->request('get', '/me?fields=id,first_name,last_name,email,link,gender,picture'); 
+	
+				/* Preparing data for database insertion */
+				$userData['oauth_provider'] = 'facebook'; 
+				$userData['oauth_uid']    = !empty($fbUser['id'])?$fbUser['id']:'';; 
+				$userData['first_name']    = !empty($fbUser['first_name'])?$fbUser['first_name']:''; 
+				$userData['last_name']    = !empty($fbUser['last_name'])?$fbUser['last_name']:''; 
+				$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:''; 
+			}
+		}
+	}  
+	public function authGoogle(){
+		$token = trim($_GET['token']);
+		$type = $_GET['type'];
+		$token ='EAAAAAYsX7TsBAIfpLu5DzPlD9W3OFjri3EOVOmoZCOtwZA4atyty';
+		//$type = 'facebook';
 		// var_dump($token);
 		// var_dump($type);
 		// die;
-		if(!isset($_GET['token']) && !iseet($_GET['type'])){
-			$this->__jsonResponse(400, $this->lang->line('input_not_valid'));
+		if($token && $type == 'google'){
+             /* Authenticate user with google */
+			 if($this->google->getAuthenticate()){ 
+             
+				/* Get user info from google */
+			   $gpInfo = $this->google->getUserInfo(); 
+				
+				/* Preparing data for database insertion */
+			   $userData['oauth_provider'] = 'google'; 
+			   $userData['oauth_uid']         = $gpInfo['id']; 
+			   $userData['first_name']     = $gpInfo['given_name']; 
+			   $userData['last_name']         = $gpInfo['family_name']; 
+			   $userData['email']             = $gpInfo['email']; 
+			 }
+			//
+			$userData['oauth_provider'] = 'google';
+			$userData['oauth_uid']      = '10739576423966946874545';
+			$userData['first_name']     = 'Nguyễn';
+			$userData['last_name']      = 'Thuận';
+			$userData['email']          = 'thuan123@gmail.com';
+			$userData['phone']          = '0947483736';
 		}
-		// if ($type == 'facebook'){
-		// 	//die("1122");
-		// 	$data_member = get_facebook_user_by_token($token);
-		// }
-		// if ($type == 'google'){
-		// 	$data_member = get_google_user_by_token($token);
-		// }
-		// var_dump($data_member);
-		// die;
-		$data_member = [
-			'fb_id'    => '123',
-			'email'     => 'lilmanh@gmail.com',
-			'phone'     => '09378276',
-			'fullname'  => 'Nguyễn Mạnh'
-		];
-		$rs = $this->member_model->login($data_member);
-		var_dump($rs);
-	}  
+		$this->__jsonResponse(400, 'input_not_valid');
+
+	}
+
 	public function verificationCodes(){
 		$email_post = $this->request['email'];
-		if(!empty($email_post)){
-			$rs = $this->member_model->send_verification_code($email_post);
-			
-			if ($rs['code'] == 1){
-				$key = $this->keyemail::instanceMethodOne();
-				var_dump($key);
-				die;
-			}else{
-				$this->__jsonResponse(500,$this->lang->line('do_not_exist'),[]);
+		// var_dump($email_post);
+		// die;
+		if(!$email_post)
+			$this->__jsonResponse(400,'request',[]);
+		$rs = $this->member_model->send_verification_code($email_post);
+		
+		if ($rs['code'] == 1){
+			$key = $this->keyemail::instanceMethodOne();
+			if($key){
+				$data=$this->member_model->update_key_email($email_post,$key);
+				if($data == TRUE){
+					$email = 'manhgauuet123@gmail.com';
+					$name = 'Manh gau';
+					$title = 'MynkCMS Alert';
+					$body = $key;
+					$htmlContent = true;
+					$attachFile = APPPATH . 'third_party/phpmailer/examples/images/phpmailer.png';
+					if ($this->my_phpmailer->send_mail($email, $name, $title, $body, $htmlContent, $attachFile)) {
+						echo 'Email sent';
+					}
+					else
+						echo 'failed';				
+				}
 			}
 		}else{
-			$this->__jsonResponse(400,$this->lang->line('request'),[]);
+			$this->__jsonResponse(500,'do_not_exist',[]);
+			}
+	}
+
+	public function updatePassword(){
+		$key				=(int) $this->request['key'];
+		$password			= password_hash($this->request['password'], PASSWORD_DEFAULT);
+		$password_confirm	= $this->request['password_confirm'];
+		if(!empty($key) && !empty($password) && !empty($password_confirm)){
+			if(password_verify($password_confirm, $password)){
+				$rs = $this->member_model->update_password($password,$key);
+				if($rs == TRUE){
+					$this->__jsonResponse(200,'success');
+				}
+				$this->__jsonResponse(404,'not_found',[]);
+			}
+			$this->__jsonResponse(500,'password_incorrect',[]);
 		}
+		$this->__jsonResponse(400, 'input_not_valid');
 	}
  
  
