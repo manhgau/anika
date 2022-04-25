@@ -1,7 +1,5 @@
 <?php 
     $statusFilter = $this->manage_product_model->getStatus();
-    $typeFilter = $this->manage_product_model->getType();
-    $serviceFilter = $this->manage_product_model->getService();
     $product = $this->manage_product_model->getList();
 ?>
 <section class="content">
@@ -23,11 +21,10 @@
                                     echo form_hidden('productCategories', json_encode($categoryOptions));
                                     echo form_element([
                                         'name' => 'category_id',
+                                        'value' => '',
                                         'type' => 'select',
                                         'options' => $categoryOptions,
                                     ]);
-
-                                    
                                 ?>
                             </div>
                          

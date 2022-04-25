@@ -193,8 +193,8 @@ class Manage_product_model extends MY_Model {
 					$value['category_id'] = intval($value['category_id']);
 					$value['thumbnail'] = getImageUrl($value['thumbnail']);
 					$value['status_name'] = $this->allStatus[ $value['status'] ]['name'];
-					$value['type_name'] = $this->allType[ $value['type'] ]['name'];
-					$value['service_type_name'] = implode(', ', $this->getServiceName($value['service_type']));
+					// $value['type_name'] = $this->allType[ $value['type'] ]['name'];
+					// $value['service_type_name'] = implode(', ', $this->getServiceName($value['service_type']));
 					// $value['price_name'] = doubleval($value['price']/TYDONG) . ' tỷ';
 					// $value['rent_price_hour_name'] = $value['rent_price_hour']/TRIEUDONG . ' tr';
 					// $value['rent_price_day_name'] = $value['rent_price_day']/TRIEUDONG . ' tr';

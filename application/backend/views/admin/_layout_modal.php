@@ -1,5 +1,5 @@
 <?php $this->load->view('admin/components/page_head'); ?>
-<body class="bg-green">
+<body class="bg-blue">
 <div class="container">
     <?php $this->load->view($sub_view); ?>
 </div>

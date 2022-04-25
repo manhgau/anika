@@ -13,7 +13,7 @@
             <div class="form-group" id="gg-captcha"></div>
         </div>
         <div class="footer">                                                               
-            <?php echo form_submit('submit','Sign me in','class="btn bg-green btn-block"');?>
+            <?php echo form_submit('submit','Sign me in','class="btn bg-blue btn-block"');?>
             <?php displayAlert(); ?>
         </div>
     </form>
@@ -23,17 +23,3 @@
         </div>
     <?php endif ?>
 </div>
-<?php /*
-<script type="text/javascript">
-  var onloadCallback = function() {
-    grecaptcha.render('gg-captcha', {
-      'sitekey' : '<?php echo GG_RECAPTCHA_SITE_KEY; ?>',
-      'callback' : verifyCallback
-    });
-  };
-  var verifyCallback = function(response) {
-    $('form').find('input[name="submit"]').prop('disabled', false);
-  };
-</script>  
-<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit&hl=vi" async defer></script>
-*/ ?>
