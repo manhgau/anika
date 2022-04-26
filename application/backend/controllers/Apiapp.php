@@ -313,10 +313,14 @@ class apiApp extends CI_Controller {
 
 	public function  getProfile()
 	{
+		$token = isset($_GET['token'])?$_GET['token']:"";
+		// if(!$token){
+		// 	$this->__jsonResponse(400, 'input_not_valid',[]);
+		// }
+		$data_profile = $this->jwttoken::decode($token);
+		print_r($data_profile);
+		die;
 		$id = isset($_GET['id'])?$_GET['id']:null;
-		if(!$id){
-			$this->__jsonResponse(400, 'input_not_valid',[]);
-		}
 		$profile = $this->member_model->get_detail_member($id);
 		if(!$profile)
 			$this->__jsonResponse(404, 'not_found');
@@ -324,13 +328,14 @@ class apiApp extends CI_Controller {
 
 	}
 	public function updateProfile(){
-		$profile = array();
+		$token = isset($_GET['token'])?$_GET['token']:"";
 		$id = isset($_GET['id'])?$_GET['id']:"";
+		$profile = array();
         $profile['fullname'] = $this->request['fullname'];
         $profile['email'] 	= $this->request['email'];
         $profile['phone'] 	= $this->request['phone'];
         $profile['addres'] 	= $this->request['addres'];;
-		if(!isset($_GET['id'])){
+		if(!$token){
 			$this->__jsonResponse(400, $this->lang->line('input_not_valid'));
 		}
 		if(!empty( $profile['email']) && !empty( $profile['phone']) && !empty( $profile['fullname']) && !empty( $profile['addres'])){
@@ -375,6 +380,10 @@ class apiApp extends CI_Controller {
 
                 } 
 				$jwt_encode = $this->jwttoken::encode($payload);
+				$data = $this->jwttoken::decode($jwt_encode);
+				var_dump($jwt_encode);
+				var_dump($data);
+				die;
 					$data = [
 						'profile'	=> $member,
 						'token' 	=> $jwt_encode
