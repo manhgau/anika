@@ -1,12 +1,12 @@
 <?php
-class Business_setting_model extends MY_Model{
+class Setting_bussiness_model extends MY_Model{
     
     protected $_table_name  = 'field_activity';
     protected $_primary_key = 'id';
     protected $_order_by    = 'id ASC';
     public    $rules        = array (
         'name'            => array(
-            'field'   => 'title',
+            'field'   => 'name',
             'rules'   => 'trim|max_length[100]|required' ),
         'status'           => array(
             'field'   => 'status',
@@ -21,13 +21,13 @@ class Business_setting_model extends MY_Model{
         parent::__construct();
     }
     
-    // public function get_new() {
-    //     $data = parent::getNew();
-    //     $data->status = 1;
-    //     // $data->parent_id = 0;
-    //     // $data->level = 1;
-    //     return $data;
-    // }
+    public function get_new() {
+        $data = parent::getNew();
+        $data->status = 1;
+        // $data->parent_id = 0;
+        // $data->level = 1;
+        return $data;
+    }
     
     public function getList()
     {

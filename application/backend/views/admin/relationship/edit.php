@@ -25,7 +25,7 @@
                                 <div class="col-xs-6">
                                     <p>
                                         <button id="upload" type="button" name="bt_image"><span>Tải ảnh</span></button>
-                                     hoặc <button id="upload-copyright" type="button" name="bt_image"><span>Tải ảnh và chèn logo</span></button> <small>(640x***)</small>
+                                     <!-- hoặc <button id="upload-copyright" type="button" name="bt_image"><span>Tải ảnh và chèn logo</span></button> <small>(640x***)</small> -->
                                     </p>
                                     <p><span id="status"></span><span id="status-copyright"></span></p>
                                 </div>
@@ -78,17 +78,6 @@
                     <div class="form-group">
                         <label>Khu vực đầu tư</label>
                         <input type="text" class="form-control" name="invest_location" value="<?php echo $relationship->invest_location; ?>" placeholder="Southeast Asia">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Số tiền ký quỹ</label>
-                            <?php echo form_input('deposit_text', $relationship->deposit_text, ['class' => 'form-control', 'placeholder' => '$ 1,000 - 10,000']); ?>
-                            <?php /*
-                                <div class="input-group">
-                                <span class="input-group-addon" id="basic-deposit_amount">$</span>
-                                    <input type="number" min="1000" name="deposit_amount" value="<?= set_value('deposit_amount', $relationship->deposit_amount) ?>" step="1000" class="form-control" placeholder="number" aria-describedby="basic-deposit_amount">
-                                </div>
-                            */ ?>
                     </div>
 
                     <div class="form-group">

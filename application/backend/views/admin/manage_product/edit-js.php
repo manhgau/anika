@@ -1,4 +1,6 @@
 <script type="text/javascript" src="<?php echo base_url();?>/admin/assets/js/ajaxUpload/single-upload.js"></script>
+<script type="text/javascript" src="<?php echo base_url('admin/assets/js/plugins/jquery-textext/js/textext.core.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo base_url('admin/assets/js/plugins/jquery-textext/js/textext.plugin.tags.js'); ?>"></script>
 <script src="/admin/assets/js/jquery.tokeninput.js"></script>
 <script src="https://unpkg.com/imask"></script>
 <script>
@@ -139,9 +141,9 @@
 
 
     $(() => {
-         // $('select[name="bank_name"]').select2();
-         // $('select[name="province_id"]').select2();
-         // $('select[name="district_id"]').select2();
+         $('select[name="bank_name"]').select2();
+         $('select[name="province_id"]').select2();
+         $('select[name="district_id"]').select2();
 
          vnDatepickerInit( $('input[name="rent_enddate"]') );
          showRentTime();

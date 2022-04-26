@@ -16,18 +16,7 @@
             <li><a href="<?php echo base_url('category_product/index'); ?>"><i class="fa fa-list"></i> Danh mục sản phẩm </a></li>
         </ul>
     </li>
-    <li class="treeview <?php echo (in_array($this->router->class, array('news', 'category'))) ? 'active' : ''; ?>">
-        <a href="#">
-            <i class="fa fa-file-text"></i>
-            <span><?php echo lang('manage_post') ?></span>
-            <i class="fa fa-angle-left pull-right"></i>
-        </a>
-        <ul class="treeview-menu">
-            <li><a href="<?php echo base_url('manage_post/index'); ?>"><i class="fa fa-list"></i> Danh sách bài viết</a></li>
-            <li><a href="<?php echo base_url('manage_post/edit'); ?>"><i class="fa fa-list"></i> Thêm mới </a></li>
-            <li><a href="<?php echo base_url('category_post/index'); ?>"><i class="fa fa-list"></i> Danh mục bài viết </a></li>
-        </ul>
-    </li>
+    <!--  -->
     <li><a href="/realnews/index"><i class="fa fa-file-text"></i> Sản phẩm </a></li>
     <li><a href="/member"><i class="fa fa-users"></i> <?php echo lang('member') ?> </a></li>
     <?php /*
@@ -60,7 +49,6 @@
         </ul>
     </li>
 
-
     <?php /*   
     <li class="treeview <?php echo ($this->router->class=='memtor') ? 'active' : '';?>">
         <a href="#">
@@ -74,19 +62,11 @@
             <li><a href="/memtor/feedback"><i class="fa fa-list"></i> Feedbacks </a></li>
         </ul>
     </li>
+        */
 
-    <li class="treeview <?php echo ($this->router->class=='relationship') ? 'active' : '';?>">
-        <a href="#">
-            <i class="fa fa-share-alt"></i>
-            <span>Partners</span>
-            <i class="fa fa-angle-left pull-right"></i>
-        </a>
-        <ul class="treeview-menu">
-            <li><a href="<?php echo base_url('relationship/edit'); ?>"><i class="fa fa-plus"></i> Thêm mới</a></li>
-            <li><a href="<?php echo base_url('relationship'); ?>"><i class="fa fa-list"></i> Danh sách</a></li>
-        </ul>
-    </li>
-
+    
+   
+    /* 
     <li class="<?php echo ($this->router->class=='portfolio') ? 'active' : '';?>">
         <a href="/portfolio">
             <i class="fa fa-share-alt"></i>
@@ -257,7 +237,7 @@
                 <li><a href="/setting/option"><i class="fa fa-angle-double-right"></i> Cài đặt chung </a></li>
                 <li><a href="/banner"><i class="fa fa-angle-double-right"></i> Banner </a></li>
                 <li><a href="/setting_department"><i class="fa fa-angle-double-right"></i> Danh sách phòng ban </a></li>
-                <li><a href="/setting_business"><i class="fa fa-angle-double-right"></i> Lĩnh vực kinh doanh </a></li>
+                <li><a href="/setting_bussiness"><i class="fa fa-angle-double-right"></i> Lĩnh vực kinh doanh </a></li>
             </ul>
 
         </li>

@@ -18,6 +18,8 @@
             else
                 $this->data['relationships'] = $this->relation_model->get_list_relation($status);
 
+                // print_r($this->data['relationships']);
+                // exit();
             //fetch breadcrumbs
             $this->data['breadcrumbs'] = array( 'Liên kết trang' => base_url('relationship'));
 
