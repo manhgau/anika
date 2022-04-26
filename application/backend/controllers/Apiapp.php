@@ -20,7 +20,7 @@ class apiApp extends CI_Controller {
 		$this->load->library('jwttoken');	
 		$this->load->library('keyemail');	
 		$this->load->library('my_phpmailer');
-		$this->load->library('facebook'); 
+		//$this->load->library('facebook'); 
 		//$this->load->library('google');
 
 		$reqType = strtolower($this->input->server('REQUEST_METHOD'));
@@ -441,18 +441,29 @@ class apiApp extends CI_Controller {
 	}
 	
 	public function authFacebook(){
-		$token = trim($_GET['token']);
+		$token = $_GET['token'];
 		$type = $_GET['type'];
 		if($token && $type == 'facebook'){
 				$userData = array(); 
-			
+				// $userData['oauth_provider'] = 'facebook'; 
+				$userData['fb_id']    		= '12344';
+				$userData['email']        	= 'manhlil9090@gmail.com';
+				$userData['phone']        	= '094839678893';
+				$first_name    	= 'Nguyễn';
+				$last_name    	= 'Mạnh';
+				$userData['fullname']       =  $first_name ." ".$last_name;
+				// print_r($userData);
+				// die;
+			$rs = $this->member_model->auth_facebook($userData);
+			var_dump($rs);
+			die;
 			/* Authenticate user with facebook */
 			if($this->facebook->is_authenticated()){ 
 			/* Get user info from facebook */
 				$fbUser = $this->facebook->request('get', '/me?fields=id,first_name,last_name,email,link,gender,picture'); 
 	
 				/* Preparing data for database insertion */
-				$userData['oauth_provider'] = 'facebook'; 
+				// $userData['oauth_provider'] = 'facebook'; 
 				$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';; 
 				$userData['first_name']    = !empty($fbUser['first_name'])?$fbUser['first_name']:''; 
 				$userData['last_name']    = !empty($fbUser['last_name'])?$fbUser['last_name']:''; 

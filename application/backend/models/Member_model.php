@@ -275,21 +275,23 @@
             return $data;
         } 
         private function __insert_member(array $data){
+
             $this->db->insert($this->_table_name, $data);
             $insert_id = $this->db->insert_id();
             return  $insert_id;
         }
-        private function __update_fb_id($id, $email, $phone){
-            $this->db->where('email',$email);
-            $this->db->where('phone',$phone);
-            $this->db->update($this->_table_name,'fb_id',$id);
-            return 2;
+        private function __update_fb_id(array $data){
+            $this->db->where('email',$data['email']);
+            $this->db->where('phone',$data['phone']);
+            $result =$this->db->update($this->_table_name,$data);
+            return $result;
+            
         }
         private function __update_gg_id($id, $email, $phone){
             $this->db->where('email',$email);
             $this->db->where('phone',$phone);
             $this->db->update($this->_table_name,'gg_id',$id);
-            return 2;
+            
         }
         public function auth_facebook(array $data){
             $isIdAredly = $this->__check_id_fb($data['fb_id']);
@@ -312,7 +314,7 @@
                     'data'  =>  $insert
                     );
             if($check_email && $check_phone){
-                $update_id =$this->__update_fb_id($data['fb_id'], $data['email'],$data['phone']);
+                $update_id =$this->__update_fb_id($data);
                 if($update_id){
                     $data= $this->__check_id_fb($data['fb_id']);
                     return array(
@@ -324,60 +326,45 @@
 
             }
             if($check_email || $check_phone){
-
+                
             }
         }
 
-        public function auth_google(array $data){
-            $isIdAredly = $this->__check_id_gg($data['fb_id']);
-            if($isIdAredly){
-                $isIdAredly = json_decode(json_encode($isIdAredly),true);
-                return array(
-                    'code'  => 1,
-                    'status'=> 'true',
-                    'data'  =>  $isIdAredly[0]['id']
-                );
-            }
-            $check_email = $this->__check_email($data['email']);
-            $check_phone = $this->__check_phone($data['phone']);
-            if(!$check_email && !$check_phone)
-                $insert = $this->__insert_member($data);
-                if($insert)
-                    return array(
-                    'code'  => 1,
-                    'status'=> 'Them thanh cong',
-                    'data'  =>  $insert
-                    );
-            if($check_email && $check_phone){
-                $update_id =$this->__update_gg_id($data['fb_id'], $data['email'],$data['phone']);
-                if($update_id){
-                    $data= $this->__check_id_gg($data['fb_id']);
-                    return array(
-                        'code'  => 1,
-                        'status'=> 'true',
-                        'data'  =>  $data['id']
-                    );
-                }
-            }
-            if($check_email || $check_phone){
-                #update id
-            }
-            // if($check > 0){
-            //     return array(
-            //         'code'  => 2,
-            //         'status'=> 'false',
-            //     );
-            // }else{
-            //     $insert = $this->__insert_member($data);
-            //     if($insert){
-            //         return array(
-            //             'code'  => 1,
-            //             'status'=> 'Them thanh cong',
-            //             'data'  =>  $insert
-            //         );
-            //     }
-            // }
-        }
+        // public function auth_google(array $data){
+        //     $isIdAredly = $this->__check_id_gg($data['fb_id']);
+        //     if($isIdAredly){
+        //         $isIdAredly = json_decode(json_encode($isIdAredly),true);
+        //         return array(
+        //             'code'  => 1,
+        //             'status'=> 'true',
+        //             'data'  =>  $isIdAredly[0]['id']
+        //         );
+        //     }
+        //     $check_email = $this->__check_email($data['email']);
+        //     $check_phone = $this->__check_phone($data['phone']);
+        //     if(!$check_email && !$check_phone)
+        //         $insert = $this->__insert_member($data);
+        //         if($insert)
+        //             return array(
+        //             'code'  => 1,
+        //             'status'=> 'Them thanh cong',
+        //             'data'  =>  $insert
+        //             );
+        //     if($check_email && $check_phone){
+        //         $update_id =$this->__update_gg_id($data['fb_id'], $data['email'],$data['phone']);
+        //         if($update_id == true){
+        //             $data= $this->__check_id_gg($data['fb_id']);
+        //             return array(
+        //                 'code'  => 1,
+        //                 'status'=> 'true',
+        //                 'data'  =>  $data['id']
+        //             );
+        //         }
+        //     }
+        //     if($check_email || $check_phone){
+        //         #update id
+        //     }
+        //}
         private function __check_email($email){
             $this->db->select("email");
             $this->db->from($this->_table_name);
