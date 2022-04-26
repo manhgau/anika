@@ -6,11 +6,11 @@
                     <div class="box-body">
                         <div class="form-group">
                             <label for="input-title">Tên lĩnh vực</label> <?php echo my_form_error('title'); ?>
-                            <input type="text" name="name" value="<?= set_value('title', html_entity_decode($business_setting->name)) ?>" class="form-control" id="input-title">
+                            <input type="text" name="name" value="<?= set_value('title', html_entity_decode($setting_bussiness->name)) ?>" class="form-control" id="input-title">
                         </div>
                        
                         <div class="form-group">
-                            <label for="input-status"><input type="checkbox" name="status" class="simple" id="input-status" value="1" <?php if ($business_setting->status == 1) echo 'checked="checked"'; ?> /> Công khai</label> <?php echo my_form_error('status'); ?>
+                            <label for="input-status"><input type="checkbox" name="status" class="simple" id="input-status" value="1" <?php if ($setting_bussiness->status == 1) echo 'checked="checked"'; ?> /> Công khai</label> <?php echo my_form_error('status'); ?>
 
                         </div>
                         <div class="form-group" style="">
@@ -18,7 +18,7 @@
                             <?php echo form_element([
                                 'type' => 'fileupload',
                                 'name' => 'image',
-                                'value' => $business_setting->image,
+                                'value' => $setting_bussiness->image,
                                 'button_label' => 'Chọn ảnh'
                             ]) ?>
                         </div>

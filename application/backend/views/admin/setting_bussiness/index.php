@@ -15,15 +15,15 @@
                         </thead>
                         <tbody>
                            
-                            <?php if(!empty($business_setting)) : foreach($business_setting as $cat) : ?>
+                            <?php if(!empty($setting_bussiness)) : foreach($setting_bussiness as $cat) : ?>
                             <tr>
                                 <td><?= $cat['id'];?></td>
                                 <td><?=$cat['name']; ?></td>
                                 <td class="text-center"><img src="<?php echo getImageUrl($cat['image']);?>" width="15" height="20" /></td>
                                 <td class="text-center"><i class="fa <?= ($cat['status'] == 1) ? 'fa-check-square-o text-success' : 'fa-square-o text-muted' ?>"></i></td>
                                 <td class="text-right text-center" >
-                                    <?php echo btn_edit('business_setting/edit/'.$cat['id']); ?>
-                                    <?php echo btn_delete('business_setting/delete/' . $cat['id']); ?>
+                                    <?php echo btn_edit('setting_bussiness/edit/'.$cat['id']); ?>
+                                    <?php echo btn_delete('setting_bussiness/delete/' . $cat['id']); ?>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

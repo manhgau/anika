@@ -1,59 +1,59 @@
 <?php
-        class Business_setting extends MY_Controller {
+        class Setting_bussiness extends MY_Controller {
                 public function __construct() 
                 {
                     parent::__construct();
-                    $this->load->model('business_setting_model');
+                    $this->load->model('setting_bussiness_model');
         
                     //fetch breadcrumbs
                     $this->data['breadcrumbs'] = array( 
                         // 'Danh sách sản phẩm' => base_url('products'),
-                        'Lĩnh vực kinh doanh' => base_url('business_setting')
+                        'Lĩnh vực kinh doanh' => base_url('setting_bussiness')
                     );
                 }
         
                 public function index() 
                 {
                     if ( ! $this->has_permission('view')) $this->not_permission();
-                    $this->data['business_setting'] = $this->business_setting_model->getList();
+                    $this->data['setting_bussiness'] = $this->setting_bussiness_model->getList();
 
-                    // print_r($this->data['business_setting']);
+                    // print_r($this->data['setting_bussiness']);
                     // exit();
 
                     //load view template
                     $this->data['meta_title'] = 'Listing category';
-                    $this->data['sub_view'] = 'admin/business_setting/index';
-                    $this->data['sub_js'] = 'admin/business_setting/index-js';
+                    $this->data['sub_view'] = 'admin/setting_bussiness/index';
+                    $this->data['sub_js'] = 'admin/setting_bussiness/index-js';
                     $this->load->view('admin/_layout_main',$this->data);
                 }
         
                 public function edit($id = NULL) 
                 {
                     $this->data['meta_title'] = 'Thêm danh mục ';
-                    $_list_catgory = $this->business_setting_model->getList();
+                    $_list_catgory = $this->setting_bussiness_model->getList();
                     $this->data['list_category'] = $_list_catgory;
                     if($id) {
                         if ( ! $this->has_permission('edit')) $this->not_permission();
-                        $this->data['business_setting'] = $this->business_setting_model->get($id);
-                        if(! $this->data['business_setting'] ) {
-                            $this->data['errors'][] = 'business_setting could not be found!';
-                            redirect(base_url('business_setting'));
+                        $this->data['setting_bussiness'] = $this->setting_bussiness_model->get($id);
+                        if(! $this->data['setting_bussiness'] ) {
+                            $this->data['errors'][] = 'setting_bussiness could not be found!';
+                            redirect(base_url('setting_bussiness'));
                         }
                     }
                     else {
                         if ( ! $this->has_permission('add')) $this->not_permission();
-                        $this->data['business_setting'] = $this->business_setting_model->get_new();
+                        $this->data['setting_bussiness'] = $this->setting_bussiness_model->get_new();
                         $action = 'insert';
                     }
 
-                    $rules = $this->business_setting_model->rules;
+                    $rules = $this->setting_bussiness_model->rules;
                     // print_r($rules);
                     // exit();
                     $this->form_validation->set_rules($rules);
                     if($this->form_validation->run() == TRUE) {                   
-                        $data = $this->business_setting_model->array_from_post(array('name','status','image'));
+                        $data = $this->setting_bussiness_model->array_from_post(array('name','status','image'));
                         if(!$data['name']) $data['name'] = $data['title'];
-                        if($save_id = $this->business_setting_model->save($data,$id)) {
+                        if($save_id = $this->setting_bussiness_model->save($data,$id)) {
                            
                             $this->session->set_flashdata('session_msg','Cập nhật danh mục thành công');
                         }
@@ -62,7 +62,7 @@
                         }
                         // print_r($data);
                         // exit(); 
-                        redirect(base_url('business_setting'));
+                        redirect(base_url('setting_bussiness'));
                     }
                     
                     //Load view
@@ -70,8 +70,8 @@
                     if($id) {
                         $this->data['meta_title'] = 'Sửa danh mục';
                     }
-                    $this->data['sub_view'] = 'admin/business_setting/edit';
-                    $this->data['sub_js'] = 'admin/business_setting/edit-js';
+                    $this->data['sub_view'] = 'admin/setting_bussiness/edit';
+                    $this->data['sub_js'] = 'admin/setting_bussiness/edit-js';
                     $this->load->view('admin/_layout_main',$this->data);
 
                 }
@@ -84,11 +84,11 @@
                         $post_id[] = $id;
                     }
                     foreach ($post_id as $key => $val) {
-                        $this->business_setting_model ->delete($id);
-                        $this->history_model->add_history(NULL,'Deleted',$id,'business_setting');
+                        $this->setting_bussiness_model ->delete($id);
+                        $this->history_model->add_history(NULL,'Deleted',$id,'setting_bussiness');
                     }
                     $this->session->set_flashdata('session_msg','Xóa dữ liệu thành công');
-                    redirect(base_url('business_setting'));
+                    redirect(base_url('setting_bussiness'));
                 }
         
                 // public function _unique_slug($str) 
