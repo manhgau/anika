@@ -237,7 +237,7 @@
                 <li><a href="/setting/option"><i class="fa fa-angle-double-right"></i> Cài đặt chung </a></li>
                 <li><a href="/banner"><i class="fa fa-angle-double-right"></i> Banner </a></li>
                 <li><a href="/setting_department"><i class="fa fa-angle-double-right"></i> Danh sách phòng ban </a></li>
-                <li><a href="/business_setting"><i class="fa fa-angle-double-right"></i> Lĩnh vực kinh doanh </a></li>
+                <li><a href="/setting_bussiness"><i class="fa fa-angle-double-right"></i> Lĩnh vực kinh doanh </a></li>
             </ul>
 
         </li>
