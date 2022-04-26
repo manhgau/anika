@@ -50,7 +50,7 @@ class apiApp extends CI_Controller {
 		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
-        $category_id = isset($_GET['category_id'])? intval($_GET['category_id']) : null;
+        $type = isset($_GET['type'])? intval($_GET['type']) : null;
 		$data = [
         	'pagination' => [
         		'page' => $page,
@@ -59,19 +59,15 @@ class apiApp extends CI_Controller {
         		'next' => false 
         	]
         ];
-		if (!$category_id){
+		if (!$type){
 			$this->__jsonResponse(400, 'input_not_valid');
         }
-		$category = $this->banner_model->get_category($category_id, true);		
-		if (!$category)
-			$this->__jsonResponse(400, 'bad_request', $data);
-
-		$data['category'] = $category;	
-        $rs = $this->banner_model->get_list_banners($offset, $limit ,$category_id);	
+        $rs = $this->banner_model->get_list_banners($offset, $limit ,$type);	
 		if (!$rs) 
 		$this->__jsonResponse(404, 'notfound', $data);	
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
+				//$item->type_name =lang($item->type);
 				$item->image = getImageUrl($item->image);
 				$rs[$key] = $item;
 			}
@@ -163,22 +159,25 @@ class apiApp extends CI_Controller {
         		'next' => false 
         	]
         ];
-        $category_id = isset($_GET['category_id'])? intval($_GET['category_id']) : null;
+        $category = isset($_GET['category'])? intval($_GET['category']) : null;
 		$is_hot = isset($_GET['is_hot'])?intval($_GET['is_hot']):null;
 		
-		if (!$category_id)
-			$this->__jsonResponse(400, 'input_not_valid');
-		$category = $this->post_model->get_category($category_id, true);
 		if (!$category)
+			$this->__jsonResponse(400, 'input_not_valid');
+		$get_category = $this->post_model->get_category($category, true);
+		if (!$get_category)
 			$this->__jsonResponse(400, 'bad_request', $data);
 
-		$data['category'] = $category;
-        $rs = $this->post_model->list_post($offset, $limit, $category_id, $is_hot);	
+		$data['category'] = $get_category;
+        $rs = $this->post_model->list_post($offset, $limit, $category, $is_hot);	
 		if (!$rs) 
 		$this->__jsonResponse(404, 'notfound', $data);				
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
 				$item->thumbnail = getImageUrl($item->thumbnail);
+				unset($item->meta_description);
+				unset($item->description);
+				unset($item->content);
 				$rs[$key] = $item;
 			}
 		}		

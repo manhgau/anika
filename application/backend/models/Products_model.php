@@ -9,6 +9,7 @@ class Products_model extends MY_Model {
         if($category_id>0){
             $this->db->where('a.category_id',$category_id);
         }
+        $this->db->order_by('a.id',"DESC");
         $this->db->limit($limit, $offset);
         $data = $this->db->get()->result();
         return $data;

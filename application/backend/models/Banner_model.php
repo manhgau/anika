@@ -68,20 +68,12 @@
         //     }
         //     return false;
         // }
-        public function get_category($id){            
-            $this->db->select();
-            $this->db->from('category_banner');
-            $this->db->where('id',$id);
-            $data = $this->db->get()->result();
-            return $data;
-        }
-        public function get_list_banners($offset=0, $limit=10 ,$category_id=0)
+        public function get_list_banners($offset=0, $limit=10 ,$type=0)
         {                       
-            $this->db->select('a.*, b.name AS category_name');
-            $this->db->from($this->_table_name . ' as a');
-            $this->db->join('category_banner as b', 'a.category_id=b.id', 'inner');
-            if($category_id>0){
-                $this->db->where('a.category_id',$category_id);
+            $this->db->select('*');
+            $this->db->from($this->_table_name );
+            if($type>0){
+                $this->db->where('type',$type);
             }
             $this->db->limit($limit, $offset);
             $data = $this->db->get()->result();
