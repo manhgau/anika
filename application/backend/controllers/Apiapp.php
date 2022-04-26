@@ -248,7 +248,6 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 
 		$product = $this->products_model->get_detail_product($id);
-		
 		if(!$product)
 			$this->__jsonResponse(404, 'not_found');	
 
@@ -331,7 +330,7 @@ class apiApp extends CI_Controller {
         $profile['fullname'] = $this->request['fullname'];
         $profile['email'] 	= $this->request['email'];
         $profile['phone'] 	= $this->request['phone'];
-        $profile['addres'] 	= $this->request['addres'];
+        $profile['addres'] 	= $this->request['addres'];;
 		if(!isset($_GET['id'])){
 			$this->__jsonResponse(400, $this->lang->line('input_not_valid'));
 		}
@@ -394,10 +393,8 @@ class apiApp extends CI_Controller {
         $memberData['email'] 			= $this->request['email'];
         $memberData['phone'] 			= $this->request['phone'];
         $memberData['password'] 		= password_hash($this->request['password'], PASSWORD_DEFAULT);
-        $memberData['department_id'] 	= $this->request['department_id'];
-        //$memberData['url_fb'] 			= $this->request['url_fb'];
+        $memberData['department_id'] 	= isset($this->request['department_id'])?$this->request['department_id']:"";
 		$password_confirm = $this->request['password_confirm'];
-		
 		if(!empty( $memberData['email']) && !empty( $memberData['phone']) && !empty($memberData['password']) && !empty($password_confirm)){
 			if(password_verify($password_confirm, $memberData['password'])){
 				$do_registration= $this->member_model->do_registration($memberData);
