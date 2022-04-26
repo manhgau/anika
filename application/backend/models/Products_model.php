@@ -10,6 +10,7 @@ class Products_model extends MY_Model {
             $this->db->where('a.category_id',$category_id);
         }
         $this->db->order_by('a.id',"DESC");
+        $this->db->where('a.is_public',"1");
         $this->db->limit($limit, $offset);
         $data = $this->db->get()->result();
         return $data;
@@ -23,6 +24,7 @@ class Products_model extends MY_Model {
         $this->db->from($this->_table_name . ' as a');
         $this->db->join('category_products as b', 'a.category_id=b.id', 'left');
         $this->db->where('a.id',$id);
+        $this->db->where('a.is_public',"1");
         $data = $this->db->get()->row();
         return $data;
     }
