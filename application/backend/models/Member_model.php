@@ -326,57 +326,78 @@
 
             }
             if($check_email || $check_phone){
-                
+                // print_r($check_email);
+                // print_r($check_email->fb_id);
+                if($check_email->fb_id || $check_phone->fb_id){
+                    return array(
+                        'code'  => 2,
+                        'status'=> 'false',
+                    );
+                }
+                return array(
+                    'code'  => 3,
+                    'status'=> 'lựa chọn có đồng bộ không',
+                );
             }
         }
 
-        // public function auth_google(array $data){
-        //     $isIdAredly = $this->__check_id_gg($data['fb_id']);
-        //     if($isIdAredly){
-        //         $isIdAredly = json_decode(json_encode($isIdAredly),true);
-        //         return array(
-        //             'code'  => 1,
-        //             'status'=> 'true',
-        //             'data'  =>  $isIdAredly[0]['id']
-        //         );
-        //     }
-        //     $check_email = $this->__check_email($data['email']);
-        //     $check_phone = $this->__check_phone($data['phone']);
-        //     if(!$check_email && !$check_phone)
-        //         $insert = $this->__insert_member($data);
-        //         if($insert)
-        //             return array(
-        //             'code'  => 1,
-        //             'status'=> 'Them thanh cong',
-        //             'data'  =>  $insert
-        //             );
-        //     if($check_email && $check_phone){
-        //         $update_id =$this->__update_gg_id($data['fb_id'], $data['email'],$data['phone']);
-        //         if($update_id == true){
-        //             $data= $this->__check_id_gg($data['fb_id']);
-        //             return array(
-        //                 'code'  => 1,
-        //                 'status'=> 'true',
-        //                 'data'  =>  $data['id']
-        //             );
-        //         }
-        //     }
-        //     if($check_email || $check_phone){
-        //         #update id
-        //     }
-        //}
+        public function auth_google(array $data){
+            $isIdAredly = $this->__check_id_gg($data['fb_id']);
+            if($isIdAredly){
+                $isIdAredly = json_decode(json_encode($isIdAredly),true);
+                return array(
+                    'code'  => 1,
+                    'status'=> 'true',
+                    'data'  =>  $isIdAredly['id']
+                );
+            }
+            $check_email = $this->__check_email($data['email']);
+            $check_phone = $this->__check_phone($data['phone']);
+            if(!$check_email && !$check_phone)
+                $insert = $this->__insert_member($data);
+                if($insert)
+                    return array(
+                    'code'  => 1,
+                    'status'=> 'Them thanh cong',
+                    'data'  =>  $insert
+                    );
+            if($check_email && $check_phone){
+                $update_id =$this->__update_gg_id($data);
+                if($update_id){
+                    $data= $this->__check_id_gg($data['fb_id']);
+                    return array(
+                        'code'  => 1,
+                        'status'=> 'true',
+                        'data'  =>  $data['id']
+                    );
+                }
+
+            }
+            if($check_email || $check_phone){
+                if($check_email->gg_id || $check_phone->gg_id){
+                    return array(
+                        'code'  => 2,
+                        'status'=> 'false',
+                    );
+                }
+                return array(
+                    'code'  => 3,
+                    'status'=> 'lựa chọn có đồng bộ không',
+                );
+            }
+        }
         private function __check_email($email){
-            $this->db->select("email");
+            $this->db->select("*");
             $this->db->from($this->_table_name);
             $this->db->where("email", $email );
-            $data =$this->db->get()->result();
+            $data =$this->db->get()->row();
             return $data;
         }
         private function __check_phone($phone){
-            $this->db->select("phone");
+            $this->db->select("*");
             $this->db->from($this->_table_name);
             $this->db->where("phone", $phone );
-            $data =$this->db->get()->result();
+            $data =$this->db->get()->row();
             return $data;
         }
         public function update_key_email($email, $key){

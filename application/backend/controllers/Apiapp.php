@@ -386,12 +386,12 @@ class apiApp extends CI_Controller {
 					'profile'	=> $member,
 					'token' 	=> $jwt_encode
 				];
-					$this->__jsonResponse(200,$this->lang->line('success'),$data);
+					$this->__jsonResponse(200,"success",$data);
 			}else{
-				$this->__jsonResponse(500,$this->lang->line('trouble'),[]);
+				$this->__jsonResponse(404,"trouble",[]);
 			}
 		}else{
-			$this->__jsonResponse(400,$this->lang->line('request'),[]);
+			$this->__jsonResponse(400,"request",[]);
 		}
 	}
 	public function registrationForm(){			
@@ -406,7 +406,7 @@ class apiApp extends CI_Controller {
 				$do_registration= $this->member_model->do_registration($memberData);
 				if($do_registration){
 					if($do_registration == 1){
-						$this->__jsonResponse(401,$this->lang->line('request_already'),[]);
+						$this->__jsonResponse(401,"request_already",[]);
 					}else{
 						$member= $this->member_model->get_detail_member($do_registration);
 						$token = $this->jwttoken::createToken();
@@ -424,7 +424,7 @@ class apiApp extends CI_Controller {
 						$this->__jsonResponse(200,'OK',$data);
 					}
 				}else{
-					$this->__jsonResponse(500,'trouble',[]);
+					$this->__jsonResponse(404,'trouble',[]);
 				}
 			}else{
 				$this->__jsonResponse(404,'password_incorrect',[]);
@@ -449,8 +449,25 @@ class apiApp extends CI_Controller {
 				// print_r($userData);
 				// die;
 			$rs = $this->member_model->auth_facebook($userData);
-			var_dump($rs);
-			die;
+			if($rs['code']== 1){
+				$member = $this->member_model->get_detail_member($rs[$data]);
+				$token = $this->jwttoken::createToken();
+				$payload[] = [
+					'id'  				=> $member->id,
+					'url_fb' 			=> $member->url_fb,
+					'token'				=> $token
+				];
+
+				$jwt_encode = $this->jwttoken::encode($payload);
+				$data = [
+					'profile'	=> $member,
+					'token' 	=> $jwt_encode
+				];
+					$this->__jsonResponse(200,"success",$data);
+			}
+			if($rs['code']== 2){
+				$this->__jsonResponse(400,"request_already",$data);
+			}
 			/* Authenticate user with facebook */
 			if($this->facebook->is_authenticated()){ 
 			/* Get user info from facebook */
@@ -482,15 +499,35 @@ class apiApp extends CI_Controller {
 			   $gpInfo = $this->google->getUserInfo(); 
 				
 				/* Preparing data for database insertion */
-			   $userData['oauth_provider'] = 'google'; 
+			   //$userData['oauth_provider'] = 'google'; 
 			   $userData['gg_id']         = $gpInfo['id']; 
 			   $userData['first_name']     = $gpInfo['given_name']; 
 			   $userData['last_name']         = $gpInfo['family_name']; 
 			   $userData['email']             = $gpInfo['email']; 
 			   $userData['phone']             = $gpInfo['phone']; 
+			   $rs = $this->member_model->auth_facebook($userData);
+			   if($rs['code']== 1){
+				   $member = $this->member_model->get_detail_member($rs[$data]);
+				   $token = $this->jwttoken::createToken();
+				   $payload[] = [
+					   'id'  				=> $member->id,
+					   'url_fb' 			=> $member->url_fb,
+					   'token'				=> $token
+				   ];
+   
+				   $jwt_encode = $this->jwttoken::encode($payload);
+				   $data = [
+					   'profile'	=> $member,
+					   'token' 	=> $jwt_encode
+				   ];
+					   $this->__jsonResponse(200,"success",$data);
+			   }
+			   if($rs['code']== 2){
+				   $this->__jsonResponse(400,"request_already",$data);
+			   }
 			 }
 			//
-			$userData['oauth_provider'] = 'google';
+			//$userData['oauth_provider'] = 'google';
 			$userData['oauth_uid']      = '10739576423966946874545';
 			$userData['first_name']     = 'Nguyễn';
 			$userData['last_name']      = 'Thuận';
