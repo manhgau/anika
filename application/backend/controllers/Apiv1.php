@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once APPPATH . 'third_party/vendor/autoload.php';
+//require_once APPPATH . 'third_party/vendor/autoload.php';
 use Facebook\Facebook; 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;

@@ -29,11 +29,12 @@ class My_phpmailer
 
         $mail->SMTPAuth = true;
 
-        $mail->Username = config_item('system_mail_address');
+        $mail->Username = 'vntechalert@gmail.com' ;//config_item('system_mail_address');
 
-        $mail->Password = config_item('system_mail_password');
+        $mail->Password = '5jOAnKVtW4XE';//config_item('system_mail_password');
 
-        $mail->setFrom(config_item('system_mail_address'), config_item('system_mail_name'));
+        //$mail->setFrom(config_item('system_mail_address'), config_item('system_mail_name'));
+        $mail->setFrom('vntechalert@gmail.com', 'vntechalert@gmail.com');
 
         //$mail->addReplyTo('replyto@mynkcms.com', 'MynkCMS Reply');
         $mail->addAddress($email_to, $email_to_name);
