@@ -16,9 +16,9 @@ class apiApp extends CI_Controller {
 		$this->load->model('init_model');
 		$this->load->model('partner_model');
 		$this->load->model('fieldActivity_model');
-		$this->load->model('categoryproducts_model');
-		$this->load->library('jwttoken');	
-		$this->load->library('keyemail');	
+		$this->load->model('categoryProducts_model');
+		$this->load->library('jwtToken');	
+		$this->load->library('keyEmail');	
 		$this->load->library('my_phpmailer');
 		//$this->load->library('facebook'); 
 		//$this->load->library('google');
@@ -358,7 +358,7 @@ class apiApp extends CI_Controller {
 			$do_login= $this->member_model->do_login($memberData);
 			if($do_login){
 				$member = $this->member_model->get_detail_member($do_login);
-				$token = $this->jwttoken::createToken();
+				$token = $this->jwtToken::createToken();
                 if(is_array($member) && count($member) > 0){
                     foreach($member as $item){
                         $payload[] = [
@@ -512,7 +512,7 @@ class apiApp extends CI_Controller {
 		$rs = $this->member_model->send_verification_code($email_post);
 		
 		if ($rs['code'] == 1){
-			$key = $this->keyemail::instanceMethodOne();
+			$key = $this->keyEmail::instanceMethodOne();
 			if($key){
 				$data=$this->member_model->update_key_email($email_post,$key);
 				if($data == TRUE){
