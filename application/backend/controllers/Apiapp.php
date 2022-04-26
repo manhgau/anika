@@ -17,7 +17,7 @@ class apiApp extends CI_Controller {
 		$this->load->model('partner_model');
 		$this->load->model('fieldActivity_model');
 		$this->load->model('categoryProducts_model');
-		$this->load->library('jwtToken');	
+		$this->load->library('jwttoken');	
 		$this->load->library('keyEmail');	
 		$this->load->library('my_phpmailer');
 		//$this->load->library('facebook'); 
@@ -67,8 +67,9 @@ class apiApp extends CI_Controller {
 		$this->__jsonResponse(404, 'notfound', $data);	
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
-				//$item->type_name =lang($item->type);
+				
 				$item->image = getImageUrl($item->image);
+				unset($item->order);
 				$rs[$key] = $item;
 			}
 		}		
@@ -84,6 +85,7 @@ class apiApp extends CI_Controller {
 			foreach($sliders as $key => $item){
 				$item->image = getImageUrl($item->image);
 				$sliders[$key] = $item;
+				unset($item->order);
 			}
 		}
 		$data = $this->init_model->get_app_init();
@@ -314,13 +316,16 @@ class apiApp extends CI_Controller {
 	public function  getProfile()
 	{
 		$token = isset($_GET['token'])?$_GET['token']:"";
-		// if(!$token){
-		// 	$this->__jsonResponse(400, 'input_not_valid',[]);
-		// }
+		if(!$token){
+			$this->__jsonResponse(400, 'input_not_valid',[]);
+		}
 		$data_profile = $this->jwttoken::decode($token);
-		print_r($data_profile);
-		die;
-		$id = isset($_GET['id'])?$_GET['id']:null;
+		if(!$data_profile){
+			$this->__jsonResponse(404, 'not_found');
+		}
+		$id = $data_profile['data'][0]->id;
+		if(!$id)
+			$this->__jsonResponse(404, 'not_found');
 		$profile = $this->member_model->get_detail_member($id);
 		if(!$profile)
 			$this->__jsonResponse(404, 'not_found');
@@ -329,15 +334,21 @@ class apiApp extends CI_Controller {
 	}
 	public function updateProfile(){
 		$token = isset($_GET['token'])?$_GET['token']:"";
-		$id = isset($_GET['id'])?$_GET['id']:"";
+		if(!$token){
+			$this->__jsonResponse(400, 'input_not_valid',[]);
+		}
+		$data_profile = $this->jwttoken::decode($token);
+		if(!$data_profile){
+			$this->__jsonResponse(404, 'not_found');
+		}
+		$id = $data_profile['data'][0]->id;
+		if(!$id)
+			$this->__jsonResponse(404, 'not_found');
 		$profile = array();
         $profile['fullname'] = $this->request['fullname'];
         $profile['email'] 	= $this->request['email'];
         $profile['phone'] 	= $this->request['phone'];
-        $profile['addres'] 	= $this->request['addres'];;
-		if(!$token){
-			$this->__jsonResponse(400, $this->lang->line('input_not_valid'));
-		}
+        $profile['addres'] 	= $this->request['addres'];
 		if(!empty( $profile['email']) && !empty( $profile['phone']) && !empty( $profile['fullname']) && !empty( $profile['addres'])){
 			$my_profile= $this->member_model->update_profile($profile,$id);
 			if($my_profile){
@@ -363,31 +374,18 @@ class apiApp extends CI_Controller {
 			$do_login= $this->member_model->do_login($memberData);
 			if($do_login){
 				$member = $this->member_model->get_detail_member($do_login);
-				$token = $this->jwtToken::createToken();
-                if(is_array($member) && count($member) > 0){
-                    foreach($member as $item){
-                        $payload[] = [
-							'id'  				=> $item->id,
-							'fullname' 			=> $item->fullname,
-							'email' 			=> $item->email,
-							'phone' 			=> $item->phone,
-							'url_fb' 			=> $item->url_fb,
-							'office_name' 		=> $item->office_name,
-							'department_name' 	=> $item->department_name,
-							'token'				=> $token
-						];
-                    }
+				$token = $this->jwttoken::createToken();
+				$payload[] = [
+					'id'  				=> $member->id,
+					'url_fb' 			=> $member->url_fb,
+					'token'				=> $token
+				];
 
-                } 
 				$jwt_encode = $this->jwttoken::encode($payload);
-				$data = $this->jwttoken::decode($jwt_encode);
-				var_dump($jwt_encode);
-				var_dump($data);
-				die;
-					$data = [
-						'profile'	=> $member,
-						'token' 	=> $jwt_encode
-					];
+				$data = [
+					'profile'	=> $member,
+					'token' 	=> $jwt_encode
+				];
 					$this->__jsonResponse(200,$this->lang->line('success'),$data);
 			}else{
 				$this->__jsonResponse(500,$this->lang->line('trouble'),[]);
@@ -412,25 +410,16 @@ class apiApp extends CI_Controller {
 					}else{
 						$member= $this->member_model->get_detail_member($do_registration);
 						$token = $this->jwttoken::createToken();
-						if(is_array($member) && count($member) > 0){
-							foreach($member as $item){
-								$payload[] = [
-									'id'  				=> $item->id,
-									'fullname' 			=> $item->fullname,
-									'email' 			=> $item->email,
-									'phone' 			=> $item->phone,
-									'url_fb' 			=> $item->url_fb,
-									'office_name' 		=> $item->office_name,
-									'department_name' 	=> $item->department_name,
-									'token'				=> $token
-								];
-							}
+						$payload[] = [
+							'id'  				=> $member->id,
+							'url_fb' 			=> $member->url_fb,
+							'token'				=> $token
+						];
 		
-						} 
 						$jwt_encode = $this->jwttoken::encode($payload);
 						$data = [
-							'profile' => $member,
-							'token' => $jwt_encode
+							'profile'	=> $member,
+							'token' 	=> $jwt_encode
 						];
 						$this->__jsonResponse(200,'OK',$data);
 					}

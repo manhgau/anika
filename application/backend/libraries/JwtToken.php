@@ -7,10 +7,10 @@ class JwtToken
 
 
     public static function decode($jwt, $key = self::_KEY, $verify = true){
-        try {
-            $rs = self::__decode($jwt, $key, $verify);
+		try {
+			$rs = self::__decode($jwt, $key, $verify);
             return [
-                'status'    =>  1,
+				'status'    =>  1,
                 'message'   =>  'Success',
                 'data'      =>  $rs,
             ];
