@@ -21,7 +21,7 @@
                                 <td><?=$cat['id'];?></td>
                                 <td><?=$cat['title']; ?></td>
                                 <td><?php echo link_preview_category_product($cat['id'], $cat['slugname']); ?></td>
-                                <td class="text-center"><?=$cat['status'];?></td>
+                                <td class="text-center"><i class="fa <?= ($cat['status'] == 1) ? 'fa-check-square-o text-success' : 'fa-square-o text-muted' ?>"></td>
                                 <td><img src="<?php echo getImageUrl($cat['image']);?>" width="15" height="20" /></td>
                                 <td class="text-right">
                                     <?php echo btn_edit('category_product/edit/'.$cat['id']); ?>

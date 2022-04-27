@@ -7,19 +7,23 @@
                         <thead>
                             <tr>
                                 <th style="width: 15%"><input name="select_all" value="1" id="example-select-all" type="checkbox" class="simple"/></th>
-                                <th>Tên danh mục</th>   
+                                <th>Tên</th>    
+                                <th>Ảnh</th> 
+                                <th>Trạng thái</th>
                                 <th style="width: 15%">Thao tác</th>                             
                             </tr>
                         </thead>
                         <tbody>
                            
-                            <?php if(!empty($category_post)) : foreach($category_post as $cat) : ?>
+                            <?php if(!empty($setting_bussiness)) : foreach($setting_bussiness as $cat) : ?>
                             <tr>
                                 <td><?= $cat['id'];?></td>
                                 <td><?=$cat['name']; ?></td>
-                                <td class="text-right" >
-                                    <?php echo btn_edit('category_post/edit/'.$cat['id']); ?>
-                                    <?php echo btn_delete('category_post/delete/' . $cat['id']); ?>
+                                <td class="text-center"><img src="<?php echo getImageUrl($cat['image']);?>" width="15" height="20" /></td>
+                                <td class="text-center"><i class="fa <?= ($cat['status'] == 1) ? 'fa-check-square-o text-success' : 'fa-square-o text-muted' ?>"></i></td>
+                                <td class="text-right text-center" >
+                                    <?php echo btn_edit('setting_bussiness/edit/'.$cat['id']); ?>
+                                    <?php echo btn_delete('setting_bussiness/delete/' . $cat['id']); ?>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

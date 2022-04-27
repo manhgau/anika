@@ -18,6 +18,8 @@
             else
                 $this->data['relationships'] = $this->relation_model->get_list_relation($status);
 
+                // print_r($this->data['relationships']);
+                // exit();
             //fetch breadcrumbs
             $this->data['breadcrumbs'] = array( 'Liên kết trang' => base_url('relationship'));
 
@@ -28,8 +30,7 @@
         }
 
         public function edit($id = NULL) {
-            $this->data['meta_title'] = 'Quỹ đầu tư';
-
+         
             //Fetch a relationship or set a new one
             if($id) {
                 if ( ! $this->has_permission('edit')) $this->not_permission();
@@ -55,15 +56,14 @@
 
                 $data['name'] = cleanInputString($data['name']);
                 $data['description'] = cleanInputString($data['description']);
-                $data['invest_location'] = cleanInputString($data['invest_location']);
-                $data['deposit_text'] = $data['deposit_text'];
+                // $data['invest_location'] = cleanInputString($data['invest_location']);
+                // $data['deposit_text'] = $data['deposit_text'];
                 // $data['deposit_amount'] = intval($data['deposit_amount']);
                 $data['is_hot'] = intval($data['is_hot']);
 
                 $this->relation_model->save($data,$id);
                 redirect('relationship');
             }
-            
             //Load view
             $this->data['sub_view'] = 'admin/relationship/edit';
             $this->data['sub_js'] = $this->data['sub_view'] . '-js';

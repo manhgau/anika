@@ -6,12 +6,7 @@
             $this->db->from($this->_table_name );
             $this->db->where('status', 1);
             $this->db->limit($limit, $offset);
-            $query = $this->db->get();
-            $data = $query->result();  
-            if (is_array($data) && count($data) > 0){
-                return $data;
-            }else{
-                return NULL;
-            }
+            $data = $this->db->get()->result();
+            return $data;
         }
     }

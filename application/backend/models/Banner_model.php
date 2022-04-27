@@ -69,16 +69,14 @@
         //     return false;
         // }
         public function get_list_banners($offset=0, $limit=10 ,$type=0)
-        {            
+        {                       
             $this->db->select('*');
             $this->db->from($this->_table_name );
-            if($type > 0){
+            if($type>0){
                 $this->db->where('type',$type);
             }
-            $this->db->where('status', 1);
             $this->db->limit($limit, $offset);
-            $query = $this->db->get();
-            $data = $query->result();  
+            $data = $this->db->get()->result();
             return $data;
         }
   
