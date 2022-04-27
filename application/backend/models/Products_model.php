@@ -28,4 +28,20 @@ class Products_model extends MY_Model {
         $data = $this->db->get()->row();
         return $data;
     }
+
+    public function get_category($id){
+        $this->db->select();
+        $this->db->from('category_products');
+        $this->db->where('id',$id);
+        $data = $this->db->get()->row();
+        return $data;
+    }
+    public function get_list_category_products($offset=0, $limit=10){
+        $this->db->select('*');
+        $this->db->from('category_products');
+        $this->db->where('status', 1);
+        $this->db->limit($limit, $offset);
+        $data = $this->db->get()->result();
+        return $data;
+    }
 }
