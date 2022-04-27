@@ -31,3 +31,6 @@
     function print_common() {
         echo 'common_helper';
     }
+    function get_profile_by_token(){
+        
+    }
