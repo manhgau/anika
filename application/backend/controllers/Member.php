@@ -1,9 +1,14 @@
 <?php
+require_once APPPATH . 'third_party/vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
     class Member extends MY_Controller {        
         public function __construct() 
         {
             parent::__construct();
             $this->load->model('member_model');
+            $this->load->model('setting_department_model');
             $this->load->model('postrequest_model');
 
             //Breadcrumbs
@@ -12,14 +17,15 @@
 
         public function index() 
         {
+            $this->data['department'] = $this->setting_department_model->get();
             //load view template
-            $this->data['meta_title'] = lang('member');
+            $this->data['meta_title'] = 'Khách hàng';
             $this->data['sub_view'] = 'admin/member/index';
             $this->data['sub_js'] = 'admin/member/index-js';
             $this->load->view('admin/_layout_main',$this->data);
         }
 
-        public function post() 
+        public function post()
         {
             $this->data['filter'] = $this->input->get();
             //load view template
@@ -37,8 +43,8 @@
             $rules = $this->member_model->rules;
             $this->form_validation->set_rules($rules);
             if($this->form_validation->run() == TRUE) {
-                $data = $this->member_model->array_from_post(array('username', 'fullname', 'email', 'phone', 'status'));
-
+                $data = $this->member_model->array_from_post(array('username', 'fullname', 'email', 'phone', 'status', 'department_id'));
+                if (!$data['department_id']) $data['department_id'] = $data['department_id'];
                 if($id = $this->member_model->save($data,$id)) {
                     $this->session->set_flashdata('session_msg', 'Cập nhật thành công.');
                 }
@@ -53,6 +59,48 @@
             $this->data['sub_view'] = 'admin/member/edit';
             $this->data['sub_js'] = 'admin/member/edit-js';
             $this->load->view('admin/_layout_main',$this->data);
+        }
+        public function apis($action)
+        {
+            $fnc = $action;
+            $this->$fnc();
+        }
+
+        public function delete($id = NULL)
+        {
+            $id = intval($this->input->post('id'));
+            if ( ! $this->has_permission('delete')) $this->not_permission();
+            if ($this->userdata['level'] = 1) {
+                if($id) {
+                    $data = array('status' => 'deleted');
+                    $member = $this->member_model->get($id);
+                    if($member) $this->member_model->save($data, $id);
+
+//                    $this->session->set_flashdata('session_msg','Xóa thành công');
+                    $this->jsonResponse(200, 'success', []);
+//                    redirect(base_url('member'));
+                }
+            }
+//            $this->session->set_flashdata('session_error','Xóa không thành công');
+            $this->jsonResponse(400, lang('not_permission'), []);
+//            redirect(base_url('member'));
+        }
+        private function togglePublic()
+        {
+            $id = intval($this->input->post('id'));
+            $member = $this->member_model->get($id);
+            if($member->status == 'public') {
+                $data = [
+                    'status' => 'block'
+                ];
+            }
+            else {
+                $data = [
+                    'status' => 'public'
+                ];
+            };
+            $this->member_model->save($data, $id);
+            $this->jsonResponse(200, 'success');
         }
 
         public function postEdit($id = NULL) 
@@ -107,11 +155,7 @@
             echo json_encode($result);
         }
 
-        public function apis($action)
-        {
-            $fnc = "__{$action}";
-            $this->$fnc();
-        }
+
 
         private function __checkPhone()
         {
