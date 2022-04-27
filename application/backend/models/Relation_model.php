@@ -61,4 +61,9 @@
             if( ! $id) return FALSE;
             return $this->get($id, TRUE);
         }
+        // public function getList(){
+        //     $request = $this->db->get($this->_table_name);
+        //         return ($request->num_rows() > 0) ? $request->result_array() : null;
+        // }
+
 }
