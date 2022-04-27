@@ -59,14 +59,14 @@
                             <?php
                             $postDepartment = $this->setting_department_model->getList();
                             $allType = $this->setting_department_model->getList();
-                            $options = ['' => 'Chọn nhóm'] + array_combine(array_column($allType, 'id'), array_column($allType, 'name'));
+                            $options = ['' => 'Chọn phòng ban'] + array_combine(array_column($allType, 'id'), array_column($allType, 'name'));
                             echo form_element([
                                 'name' => 'department_id',
                                 'value' => $postDepartment->department_id,
                                 'label' => 'Danh mục phòng ban',
-                                'required' => true,
                                 'type' => 'select',
                                 'options' => $options,
+                                'required' => true,
                             ]);
                             ?>
                         </div>
