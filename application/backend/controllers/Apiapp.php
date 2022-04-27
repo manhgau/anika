@@ -20,7 +20,7 @@ class apiApp extends CI_Controller {
 		$this->load->library('jwttoken');	
 		$this->load->library('keyEmail');	
 		$this->load->library('my_phpmailer');
-		//$this->load->library('facebook'); 
+		$this->load->library('facebook'); 
 		//$this->load->library('google');
 
 		$reqType = strtolower($this->input->server('REQUEST_METHOD'));
@@ -378,7 +378,8 @@ class apiApp extends CI_Controller {
 				$payload[] = [
 					'id'  				=> $member->id,
 					'url_fb' 			=> $member->url_fb,
-					'token'				=> $token
+					'token'				=> $token,
+					"exp" 				=> time() +(60*60)
 				];
 
 				$jwt_encode = $this->jwttoken::encode($payload);
@@ -393,6 +394,16 @@ class apiApp extends CI_Controller {
 		}else{
 			$this->__jsonResponse(400,"request",[]);
 		}
+	}
+	public function getToken(){
+		$token = isset($_GET['token'])?$_GET['token']:"";
+		if(!$token){
+			$this->__jsonResponse(400, 'input_not_valid',[]);
+		}
+		$data_profile = $this->jwttoken::decode($token);
+		print_r($data_profile);
+		var_dump(time());
+		die;
 	}
 	public function registrationForm(){			
 		$memberData = array();
@@ -466,7 +477,10 @@ class apiApp extends CI_Controller {
 					$this->__jsonResponse(200,"success",$data);
 			}
 			if($rs['code']== 2){
-				$this->__jsonResponse(400,"request_already",$data);
+				$this->__jsonResponse(400,"request_already");
+			}
+			if($rs['code'] == 3){
+				$this->__jsonResponse(500,"request_already",$userData['fb_id']);
 			}
 			/* Authenticate user with facebook */
 			if($this->facebook->is_authenticated()){ 
@@ -478,65 +492,95 @@ class apiApp extends CI_Controller {
 				$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';; 
 				$userData['first_name']    = !empty($fbUser['first_name'])?$fbUser['first_name']:''; 
 				$userData['last_name']    = !empty($fbUser['last_name'])?$fbUser['last_name']:''; 
-				$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:''; 
-			}
+				$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:'';
+
+				$rs = $this->member_model->auth_facebook($userData);
+				if($rs['code']== 1){
+					$member = $this->member_model->get_detail_member($rs[$data]);
+					$token = $this->jwttoken::createToken();
+					$payload[] = [
+						'id'  				=> $member->id,
+						'url_fb' 			=> $member->url_fb,
+						'token'				=> $token
+					];
+
+					$jwt_encode = $this->jwttoken::encode($payload);
+					$data = [
+						'profile'	=> $member,
+						'token' 	=> $jwt_encode
+					];
+						$this->__jsonResponse(200,"success",$data);
+				}
+				if($rs['code']== 2){
+					$this->__jsonResponse(400,"request_already",$data);
+				} 
+				}
 		}
 		$this->__jsonResponse(400, 'input_not_valid');
 	}  
-	public function authGoogle(){
-		$token = trim($_GET['token']);
-		$type = $_GET['type'];
-		$token ='EAAAAAYsX7TsBAIfpLu5DzPlD9W3OFjri3EOVOmoZCOtwZA4atyty';
-		//$type = 'facebook';
-		// var_dump($token);
-		// var_dump($type);
-		// die;
-		if($token && $type == 'google'){
-             /* Authenticate user with google */
-			 if($this->google->getAuthenticate()){ 
-             
-				/* Get user info from google */
-			   $gpInfo = $this->google->getUserInfo(); 
-				
-				/* Preparing data for database insertion */
-			   //$userData['oauth_provider'] = 'google'; 
-			   $userData['gg_id']         = $gpInfo['id']; 
-			   $userData['first_name']     = $gpInfo['given_name']; 
-			   $userData['last_name']         = $gpInfo['family_name']; 
-			   $userData['email']             = $gpInfo['email']; 
-			   $userData['phone']             = $gpInfo['phone']; 
-			   $rs = $this->member_model->auth_facebook($userData);
-			   if($rs['code']== 1){
-				   $member = $this->member_model->get_detail_member($rs[$data]);
-				   $token = $this->jwttoken::createToken();
-				   $payload[] = [
-					   'id'  				=> $member->id,
-					   'url_fb' 			=> $member->url_fb,
-					   'token'				=> $token
-				   ];
-   
-				   $jwt_encode = $this->jwttoken::encode($payload);
-				   $data = [
-					   'profile'	=> $member,
-					   'token' 	=> $jwt_encode
-				   ];
-					   $this->__jsonResponse(200,"success",$data);
-			   }
-			   if($rs['code']== 2){
-				   $this->__jsonResponse(400,"request_already",$data);
-			   }
-			 }
-			//
-			//$userData['oauth_provider'] = 'google';
-			$userData['oauth_uid']      = '10739576423966946874545';
-			$userData['first_name']     = 'Nguyễn';
-			$userData['last_name']      = 'Thuận';
-			$userData['email']          = 'thuan123@gmail.com';
-			$userData['phone']          = '0947483736';
+	public function sendFacebook(){
+		$key = $this->request['key'];
+		if($key == 1){
+			$updat_fb_id=
 		}
-		$this->__jsonResponse(400, 'input_not_valid');
+		if($key == 2){
 
+		}
 	}
+	// public function authGoogle(){
+	// 	$token = trim($_GET['token']);
+	// 	$type = $_GET['type'];
+	// 	//$token ='EAAAAAYsX7TsBAIfpLu5DzPlD9W3OFjri3EOVOmoZCOtwZA4atyty';
+	// 	//$type = 'facebook';
+	// 	// var_dump($token);
+	// 	// var_dump($type);
+	// 	// die;
+	// 	if($token && $type == 'google'){
+    //          /* Authenticate user with google */
+	// 		 if($this->google->getAuthenticate()){ 
+             
+	// 			/* Get user info from google */
+	// 		   $gpInfo = $this->google->getUserInfo(); 
+				
+	// 			/* Preparing data for database insertion */
+	// 		   //$userData['oauth_provider'] = 'google'; 
+	// 		   $userData['gg_id']         = $gpInfo['id']; 
+	// 		   $userData['first_name']     = $gpInfo['given_name']; 
+	// 		   $userData['last_name']         = $gpInfo['family_name']; 
+	// 		   $userData['email']             = $gpInfo['email']; 
+	// 		   $userData['phone']             = $gpInfo['phone']; 
+	// 		   $rs = $this->member_model->auth_facebook($userData);
+	// 		   if($rs['code']== 1){
+	// 			   $member = $this->member_model->get_detail_member($rs[$data]);
+	// 			   $token = $this->jwttoken::createToken();
+	// 			   $payload[] = [
+	// 				   'id'  				=> $member->id,
+	// 				   'url_fb' 			=> $member->url_fb,
+	// 				   'token'				=> $token
+	// 			   ];
+   
+	// 			   $jwt_encode = $this->jwttoken::encode($payload);
+	// 			   $data = [
+	// 				   'profile'	=> $member,
+	// 				   'token' 	=> $jwt_encode
+	// 			   ];
+	// 				   $this->__jsonResponse(200,"success",$data);
+	// 		   }
+	// 		   if($rs['code']== 2){
+	// 			   $this->__jsonResponse(400,"request_already",$data);
+	// 		   }
+	// 		 }
+	// 		//
+	// 		//$userData['oauth_provider'] = 'google';
+	// 		$userData['oauth_uid']      = '10739576423966946874545';
+	// 		$userData['first_name']     = 'Nguyễn';
+	// 		$userData['last_name']      = 'Thuận';
+	// 		$userData['email']          = 'thuan123@gmail.com';
+	// 		$userData['phone']          = '0947483736';
+	// 	}
+	// 	$this->__jsonResponse(400, 'input_not_valid');
+
+	// }
 
 	public function verificationCodes(){
 		$email_post = $this->request['email'];
