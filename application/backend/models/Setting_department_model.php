@@ -8,6 +8,9 @@ class Setting_department_model extends MY_Model{
         'name'            => array(
             'field'   => 'name',
             'rules'   => 'trim|max_length[50]|required' ),
+        'parent_id'        => array(
+            'field'   => 'parent_id',
+            'rules'   => 'trim|intval' )
     );
 
 
