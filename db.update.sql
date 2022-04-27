@@ -128,3 +128,45 @@ CREATE TABLE `relation` (
   `deposit_text` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `notification` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `content` text,
+  `type` varchar(100) DEFAULT NULL,
+  `sender_id` int(11) NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_time` datetime DEFAULT NULL,
+  `push_time` datetime DEFAULT NULL,
+  `sender_type` varchar(50) DEFAULT NULL,
+  `region_id` int(11) DEFAULT NULL,
+  `province_id` int(11) DEFAULT NULL,
+  `district_id` int(11) DEFAULT NULL,
+  `device_type` char(20) DEFAULT NULL,
+  `user_level` int(11) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `sent_number` int(10) DEFAULT NULL,
+  `sent_success` int(10) DEFAULT NULL,
+  `sent_failed` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_time` (`created_time`),
+  KEY `created_by` (`created_by`),
+  KEY `status` (`status`),
+  KEY `push_time` (`push_time`),
+  KEY `region_id` (`region_id`),
+  KEY `province_id` (`province_id`),
+  KEY `sender_id` (`sender_id`),
+  KEY `device_type` (`device_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `notifycation_user` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `notify_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `is_read` tinyint(1) DEFAULT '0',
+  `status` tinyint(1) DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `notify_id` (`notify_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
