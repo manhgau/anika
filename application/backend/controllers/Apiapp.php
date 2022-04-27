@@ -307,8 +307,6 @@ class apiApp extends CI_Controller {
 			foreach($rs as $key => $item){
 				$item->image = getImageUrl($item->image);
 				unset($item->status);
-				unset($item->count);
-				unset($item->level);
 				$rs[$key] = $item;
 			}
 		}
