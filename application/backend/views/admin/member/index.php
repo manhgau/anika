@@ -1,7 +1,6 @@
 <?php 
     $statusFilter = $this->member_model->getStatus();
     $member = $this->member_model->getList();
-
 ?>
 <section class="content">
     <div class="row">
