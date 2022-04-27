@@ -451,39 +451,39 @@ class apiApp extends CI_Controller {
 		$token = $_GET['token'];
 		$type = $_GET['type'];
 		if($token && $type == 'facebook'){
-				$userData = array(); 
-				// $userData['oauth_provider'] = 'facebook'; 
-				$userData['fb_id']    		= '12344';
-				$userData['email']        	= 'manhlil9090@gmail.com';
-				$userData['phone']        	= '094839678893';
-				$first_name    	= 'Nguyễn';
-				$last_name    	= 'Mạnh';
-				$userData['fullname']       =  $first_name ." ".$last_name;
-				// print_r($userData);
-				// die;
-			$rs = $this->member_model->auth_facebook($userData);
-			if($rs['code']== 1){
-				$member = $this->member_model->get_detail_member($rs[$data]);
-				$token = $this->jwtToken::createToken();
-				$payload[] = [
-					'id'  				=> $member->id,
-					'url_fb' 			=> $member->url_fb,
-					'token'				=> $token
-				];
+			// 	$userData = array(); 
+			// 	// $userData['oauth_provider'] = 'facebook'; 
+			// 	$userData['fb_id']    		= '12344';
+			// 	$userData['email']        	= 'manhlil9090@gmail.com';
+			// 	$userData['phone']        	= '094839678893';
+			// 	$first_name    	= 'Nguyễn';
+			// 	$last_name    	= 'Mạnh';
+			// 	$userData['fullname']       =  $first_name ." ".$last_name;
+			// 	// print_r($userData);
+			// 	// die;
+			// $rs = $this->member_model->auth_facebook($userData);
+			// if($rs['code']== 1){
+			// 	$member = $this->member_model->get_detail_member($rs[$data]);
+			// 	$token = $this->jwtToken::createToken();
+			// 	$payload[] = [
+			// 		'id'  				=> $member->id,
+			// 		'url_fb' 			=> $member->url_fb,
+			// 		'token'				=> $token
+			// 	];
 
-				$jwt_encode = $this->jwtToken::encode($payload);
-				$data = [
-					'profile'	=> $member,
-					'token' 	=> $jwt_encode
-				];
-					$this->__jsonResponse(200,"success",$data);
-			}
-			if($rs['code']== 2){
-				$this->__jsonResponse(400,"request_already");
-			}
-			if($rs['code'] == 3){
-				$this->__jsonResponse(500,"request_already",$userData['fb_id']);
-			}
+			// 	$jwt_encode = $this->jwtToken::encode($payload);
+			// 	$data = [
+			// 		'profile'	=> $member,
+			// 		'token' 	=> $jwt_encode
+			// 	];
+			// 		$this->__jsonResponse(200,"success",$data);
+			// }
+			// if($rs['code']== 2){
+			// 	$this->__jsonResponse(400,"request_already");
+			// }
+			// if($rs['code'] == 3){
+			// 	$this->__jsonResponse(500,"request_already",$userData['fb_id']);
+			// }
 			/* Authenticate user with facebook */
 			if($this->facebook->is_authenticated()){ 
 			/* Get user info from facebook */
@@ -516,6 +516,11 @@ class apiApp extends CI_Controller {
 				if($rs['code']== 2){
 					$this->__jsonResponse(400,"request_already",$data);
 				} 
+
+				if($rs['code'] == 3){
+					$this->__jsonResponse(500,"request_already",$userData['fb_id']);
+				}
+
 				}
 		}
 		$this->__jsonResponse(400, 'input_not_valid');
