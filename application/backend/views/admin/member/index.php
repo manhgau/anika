@@ -95,16 +95,16 @@
             }
         },
     ];
-    //
-    // const tableButtons = [
-    //     {
-    //         text: '<i class="fa fa-plus"></i> Thêm mới',
-    //         className: 'btn btn-sm btn-success',
-    //         action: function ( e, dt, node, config ) {
-    //             location.href = '/member/edit'
-    //         }
-    //     }
-    // ];
+
+    const tableButtons = [
+        {
+            text: '<i class="fa fa-plus"></i> Thêm mới',
+            className: 'btn btn-sm btn-success',
+            action: function ( e, dt, node, config ) {
+                location.href = '/member/edit'
+            }
+        }
+    ];
     // function bunk_delete(e, dt, node, config) {
     //     var confirm_msg = 'Bạn muốn xóa dữ liệu?';
     //     var buttons = {
