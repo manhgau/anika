@@ -13,10 +13,11 @@ class apiApp extends CI_Controller {
 		$this->load->model('products_model');
 		$this->load->model('banner_model');
 		$this->load->model('post_model');
+		$this->load->model('notification_model');
 		$this->load->model('init_model');
 		$this->load->model('partner_model');
 		$this->load->model('fieldActivity_model');
-		$this->load->model('categoryProducts_model');
+		//$this->load->model('categoryProducts_model');
 		$this->load->library('jwttoken');	
 		$this->load->library('keyEmail');	
 		$this->load->library('my_phpmailer');
@@ -218,7 +219,8 @@ class apiApp extends CI_Controller {
 		if (!$category_id)
 			$this->__jsonResponse(400, 'input_not_valid');
 
-		$category = $this->categoryproducts_model->get($category_id, true);
+		$category = $this->products_model->get_category($category_id, true);
+		$category->image = getImageUrl($category->image);
 		if (!$category)
 			$this->__jsonResponse(400, 'bad_request', $data);
 
@@ -231,7 +233,7 @@ class apiApp extends CI_Controller {
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item) {
 				$item->status_name = lang($item->status);
-				$item->image = getImageUrl($item->thumbnail);
+				$item->thumbnail = getImageUrl($item->thumbnail);
 				$item->category_name = $category->title;
 				unset($item->content);
 				$rs[$key] = $item;
@@ -253,7 +255,7 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(404, 'not_found');	
 
 		$product->status_name = lang($product->status);
-		$product->image = getImageUrl($product->thumbnail);
+		$product->thumbnail = getImageUrl($product->thumbnail);
 		$this->__jsonResponse(200, 'success', $product);		
 	}
 
@@ -298,13 +300,15 @@ class apiApp extends CI_Controller {
         		'next' => false 
         	]
         ];
-		$rs = $this->categoryproducts_model->get_list_category_products($offset, $limit);
+		$rs = $this->products_model->get_list_category_products($offset, $limit);
 		if (!$rs) 
 		$this->__jsonResponse(404, 'notfound', $data);	
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
 				$item->image = getImageUrl($item->image);
 				unset($item->status);
+				unset($item->count);
+				unset($item->level);
 				$rs[$key] = $item;
 			}
 		}
@@ -521,7 +525,7 @@ class apiApp extends CI_Controller {
 	public function sendFacebook(){
 		$key = $this->request['key'];
 		if($key == 1){
-			$updat_fb_id=
+			//$updat_fb_id=
 		}
 		if($key == 2){
 
@@ -629,6 +633,56 @@ class apiApp extends CI_Controller {
 		}
 		$this->__jsonResponse(400, 'input_not_valid');
 	}
+
+	public function listNotification(){
+		$member_id = '1';
+		$type = isset($_GET['type'])?$_GET['type']:null;
+		$is_read = isset($_GET['is_read'])?$_GET['is_read']:null;
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		if ($page < 1) $page = 1;
+        $offset = ($page - 1) * $limit;
+		$data = [
+        	'pagination' => [
+        		'page' => $page,
+        		'limit' => $limit,
+        		'prev' => ($page>1) ? $page-1 : 1,
+        		'next' => false 
+        	]
+        ];
+		$rs = $this->notification_model->list_notification($offset, $limit , $member_id, $is_read, $type);
+		if(!$rs)
+			$this->__jsonResponse(404, 'notfound');
+		if(is_array($rs) && count($rs) > 0){
+			foreach($rs as $key => $item){
+				$item->type_name = lang($item->type);
+				//$item->is_read_name = lang($item->is_read);
+				$rs[$key] = $item;
+			}
+		}
+		$count= $this->notification_model->count_unread_notifications($member_id);
+		$data['count'] = $count;
+		$data['list'] = $rs;
+		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
+		$this->__jsonResponse(200, 'success',$data);
+	}
+	public function detailNotification(){
+		$id = isset($_GET['id'])?intval($_GET['id']):null;
+		if (! $id) 
+			$this->__jsonResponse(400, 'input_not_valid',[]);
+		$member_id = '1';
+		$notify = $this->notification_model->detail_notification( $id, $member_id);
+
+		if(!$notify)
+			$this->__jsonResponse(404, 'notfound');
+			$notify->type_name = lang($notify->type);
+			$data = [];
+			$data['detail_notification'] = $notify;
+			$count= $this->notification_model->count_unread_notifications($member_id);
+			$data['count'] = $count;
+		$this->__jsonResponse(200, 'success', $data);		
+	}
+
  
  
 }
