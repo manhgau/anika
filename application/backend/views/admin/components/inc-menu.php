@@ -17,8 +17,8 @@
         </ul>
     </li>
     <!--  -->
-    <li><a href="/realnews/index"><i class="fa fa-file-text"></i> Sản phẩm </a></li>
-    <li><a href="/member"><i class="fa fa-users"></i> <?php echo lang('member') ?> </a></li>
+    <!-- <li><a href="/realnews/index"><i class="fa fa-file-text"></i> Sản phẩm </a></li>
+    <li><a href="/member"><i class="fa fa-users"></i> <?php echo lang('member') ?> </a></li> -->
     <?php /*
     <li><a href="/pointload"><i class="fa fa-usd"></i> <?php echo lang('point') ?> </a></li>
     <li><a href="/pointload/refund?status=pending"><i class="fa fa-retweet"></i> <?php echo lang('refund_request') ?> <span class="badge bg-orange" id="refund_pending_number"></span></a></li>
