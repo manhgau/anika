@@ -18,7 +18,7 @@ class apiApp extends CI_Controller {
 		$this->load->model('partner_model');
 		$this->load->model('fieldActivity_model');
 		//$this->load->model('categoryProducts_model');
-		$this->load->library('jwttoken');	
+		$this->load->library('jwtToken');	
 		$this->load->library('keyEmail');	
 		$this->load->library('my_phpmailer');
 		$this->load->library('facebook'); 
@@ -307,8 +307,6 @@ class apiApp extends CI_Controller {
 			foreach($rs as $key => $item){
 				$item->image = getImageUrl($item->image);
 				unset($item->status);
-				unset($item->count);
-				unset($item->level);
 				$rs[$key] = $item;
 			}
 		}
@@ -323,7 +321,7 @@ class apiApp extends CI_Controller {
 		if(!$token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
-		$data_profile = $this->jwttoken::decode($token);
+		$data_profile = $this->jwtToken::decode($token);
 		if(!$data_profile){
 			$this->__jsonResponse(404, 'not_found');
 		}
@@ -341,7 +339,7 @@ class apiApp extends CI_Controller {
 		if(!$token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
-		$data_profile = $this->jwttoken::decode($token);
+		$data_profile = $this->jwtToken::decode($token);
 		if(!$data_profile){
 			$this->__jsonResponse(404, 'not_found');
 		}
@@ -378,7 +376,7 @@ class apiApp extends CI_Controller {
 			$do_login= $this->member_model->do_login($memberData);
 			if($do_login){
 				$member = $this->member_model->get_detail_member($do_login);
-				$token = $this->jwttoken::createToken();
+				$token = $this->jwtToken::createToken();
 				$payload[] = [
 					'id'  				=> $member->id,
 					'url_fb' 			=> $member->url_fb,
@@ -386,7 +384,7 @@ class apiApp extends CI_Controller {
 					"exp" 				=> time() +(60*60)
 				];
 
-				$jwt_encode = $this->jwttoken::encode($payload);
+				$jwt_encode = $this->jwtToken::encode($payload);
 				$data = [
 					'profile'	=> $member,
 					'token' 	=> $jwt_encode
@@ -404,7 +402,7 @@ class apiApp extends CI_Controller {
 		if(!$token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
-		$data_profile = $this->jwttoken::decode($token);
+		$data_profile = $this->jwtToken::decode($token);
 		print_r($data_profile);
 		var_dump(time());
 		die;
@@ -424,14 +422,14 @@ class apiApp extends CI_Controller {
 						$this->__jsonResponse(401,"request_already",[]);
 					}else{
 						$member= $this->member_model->get_detail_member($do_registration);
-						$token = $this->jwttoken::createToken();
+						$token = $this->jwtToken::createToken();
 						$payload[] = [
 							'id'  				=> $member->id,
 							'url_fb' 			=> $member->url_fb,
 							'token'				=> $token
 						];
 		
-						$jwt_encode = $this->jwttoken::encode($payload);
+						$jwt_encode = $this->jwtToken::encode($payload);
 						$data = [
 							'profile'	=> $member,
 							'token' 	=> $jwt_encode
@@ -466,14 +464,14 @@ class apiApp extends CI_Controller {
 			$rs = $this->member_model->auth_facebook($userData);
 			if($rs['code']== 1){
 				$member = $this->member_model->get_detail_member($rs[$data]);
-				$token = $this->jwttoken::createToken();
+				$token = $this->jwtToken::createToken();
 				$payload[] = [
 					'id'  				=> $member->id,
 					'url_fb' 			=> $member->url_fb,
 					'token'				=> $token
 				];
 
-				$jwt_encode = $this->jwttoken::encode($payload);
+				$jwt_encode = $this->jwtToken::encode($payload);
 				$data = [
 					'profile'	=> $member,
 					'token' 	=> $jwt_encode
@@ -501,14 +499,14 @@ class apiApp extends CI_Controller {
 				$rs = $this->member_model->auth_facebook($userData);
 				if($rs['code']== 1){
 					$member = $this->member_model->get_detail_member($rs[$data]);
-					$token = $this->jwttoken::createToken();
+					$token = $this->jwtToken::createToken();
 					$payload[] = [
 						'id'  				=> $member->id,
 						'url_fb' 			=> $member->url_fb,
 						'token'				=> $token
 					];
 
-					$jwt_encode = $this->jwttoken::encode($payload);
+					$jwt_encode = $this->jwtToken::encode($payload);
 					$data = [
 						'profile'	=> $member,
 						'token' 	=> $jwt_encode
@@ -556,14 +554,14 @@ class apiApp extends CI_Controller {
 	// 		   $rs = $this->member_model->auth_facebook($userData);
 	// 		   if($rs['code']== 1){
 	// 			   $member = $this->member_model->get_detail_member($rs[$data]);
-	// 			   $token = $this->jwttoken::createToken();
+	// 			   $token = $this->jwtToken::createToken();
 	// 			   $payload[] = [
 	// 				   'id'  				=> $member->id,
 	// 				   'url_fb' 			=> $member->url_fb,
 	// 				   'token'				=> $token
 	// 			   ];
    
-	// 			   $jwt_encode = $this->jwttoken::encode($payload);
+	// 			   $jwt_encode = $this->jwtToken::encode($payload);
 	// 			   $data = [
 	// 				   'profile'	=> $member,
 	// 				   'token' 	=> $jwt_encode
