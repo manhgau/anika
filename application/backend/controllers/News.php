@@ -375,6 +375,9 @@
                         $_event_ids = explode(',',$_events_args['event']);
                         $this->event_news_model->saveEventByNews($id,$_event_ids);
                     }
+
+                    // print_r($data);
+                    // exit();
                     //Save golfer for news
                     // $this->golfer_news_model->removeGolferByNews($id);
                     // $_golfer_input = $this->golfer_news_model->array_from_post( array('golfer') );
