@@ -1,4 +1,8 @@
 <?php
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 class apiApp extends CI_Controller {
 
@@ -18,7 +22,7 @@ class apiApp extends CI_Controller {
 		$this->load->model('partner_model');
 		$this->load->model('fieldActivity_model');
 		$this->load->library('jwttoken');	
-		$this->load->library('keyEmail');	
+		$this->load->library('keyemail');	
 		$this->load->library('my_phpmailer');
 		$this->load->library('facebook'); 
 		//$this->load->library('google');
@@ -33,6 +37,19 @@ class apiApp extends CI_Controller {
 		else
 			$this->__jsonResponse(404, 'bad_request');
     }
+
+
+	private function __genToken($token)
+	{
+		$key = 'ManhGau@UET@2022%$#*)(++';
+		try {
+			$decoded = JWT::decode($token, new Key($key, 'HS256'));
+			return $decoded;
+		} catch (Exception $e) { // Also tried JwtException
+			echo 'error ', $e->getMessage();
+			exit();
+		}
+	}
 	
 	public function __jsonResponse($code=200, $msg='success', $data=[])
 	{
@@ -107,7 +124,7 @@ class apiApp extends CI_Controller {
 	
 	public function listPartner() {
 		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
-		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1; 
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
 		$data = [
@@ -119,7 +136,7 @@ class apiApp extends CI_Controller {
         	]
         ];
 
-		$rs = $this->partner_model->get_list_partner($offset, $limit );
+		$rs = $this->partner_model->get_list_partner($offset, $limit);
 		if (!$rs) 
 		$this->__jsonResponse(404, 'notfound', $data);	
 		if(is_array($rs) && count($rs) > 0){
@@ -322,11 +339,11 @@ class apiApp extends CI_Controller {
 		if(!$token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
-		$data_profile = $this->jwttoken::decode($token);
-		if(!$data_profile){
+		$data_profile = $this->__genToken($token);
+		if($data_profile == false){
 			$this->__jsonResponse(404, 'not_found');
 		}
-		$id = $data_profile['data'][0]->id;
+		$id = $data_profile->id;
 		if(!$id)
 			$this->__jsonResponse(404, 'not_found');
 		$profile = $this->member_model->get_detail_member($id);
@@ -335,16 +352,17 @@ class apiApp extends CI_Controller {
 		$this->__jsonResponse(200, 'success', $profile);
 
 	}
+
 	public function updateProfile(){
 		$token = isset($_GET['token'])?$_GET['token']:"";
 		if(!$token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
-		$data_profile = $this->jwttoken::decode($token);
-		if(!$data_profile){
+		$data_profile = $this->__genToken($token);
+		if($data_profile == false){
 			$this->__jsonResponse(404, 'not_found');
 		}
-		$id = $data_profile['data'][0]->id;
+		$id = $data_profile->id;
 		if(!$id)
 			$this->__jsonResponse(404, 'not_found');
 		$profile = array();
@@ -368,6 +386,7 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400,$this->lang->line('request'),[]);
 		}
 	}
+
 	public function loginForm(){
 		$memberData = array();
         $memberData['email'] = $this->request['email'];
@@ -376,21 +395,37 @@ class apiApp extends CI_Controller {
 		if(!empty($memberData['password']) && (!empty($memberData['email']) || !empty( $memberData['phone'])) ){			
 			$do_login= $this->member_model->do_login($memberData);
 			if($do_login){
-				$member = $this->member_model->get_detail_member($do_login);
-				$token = $this->jwttoken::createToken();
-				$payload[] = [
+				$member= $this->member_model->get_detail_member($do_login);
+				$time=time();
+				$key = 'ManhGau@UET@2022%$#*)(++';
+				$payload = [
 					'id'  				=> $member->id,
 					'url_fb' 			=> $member->url_fb,
-					'token'				=> $token,
-					"exp" 				=> time() +(60*60)
+					'iat' 				=> $time,
+					'nbf' 				=> $time-20,
+					'exp' 				=> $time + 60*60
 				];
-
-				$jwt_encode = $this->jwttoken::encode($payload);
+				$jwt_encode = JWT::encode($payload, $key, 'HS256');				
 				$data = [
 					'profile'	=> $member,
 					'token' 	=> $jwt_encode
 				];
-					$this->__jsonResponse(200,"success",$data);
+					$this->__jsonResponse(200,'OK',$data);
+				// $member = $this->member_model->get_detail_member($do_login);
+				// $token = $this->jwttoken::createToken();
+				// $payload[] = [
+				// 	'id'  				=> $member->id,
+				// 	'url_fb' 			=> $member->url_fb,
+				// 	'token'				=> $token,
+				// 	"exp" 				=> time() +(60*60)
+				// ];
+
+				// $jwt_encode = $this->jwttoken::encode($payload);
+				// $data = [
+				// 	'profile'	=> $member,
+				// 	'token' 	=> $jwt_encode
+				// ];
+				// 	$this->__jsonResponse(200,"success",$data);
 			}else{
 				$this->__jsonResponse(404,"trouble",[]);
 			}
@@ -398,16 +433,7 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400,"request",[]);
 		}
 	}
-	public function getToken(){
-		$token = isset($_GET['token'])?$_GET['token']:"";
-		if(!$token){
-			$this->__jsonResponse(400, 'input_not_valid',[]);
-		}
-		$data_profile = $this->jwttoken::decode($token);
-		print_r($data_profile);
-		var_dump(time());
-		die;
-	}
+
 	public function registrationForm(){			
 		$memberData = array();
         $memberData['email'] 			= $this->request['email'];
@@ -423,18 +449,20 @@ class apiApp extends CI_Controller {
 						$this->__jsonResponse(401,"request_already",[]);
 					}else{
 						$member= $this->member_model->get_detail_member($do_registration);
-						$token = $this->jwttoken::createToken();
-						$payload[] = [
+						$time=time();
+						$key = 'ManhGau@UET@2022%$#*)(++';
+						$payload = [
 							'id'  				=> $member->id,
 							'url_fb' 			=> $member->url_fb,
-							'token'				=> $token
+							'token'				=> $token,
+							'exp' 				=> $time + 1*60
 						];
-		
-						$jwt_encode = $this->jwttoken::encode($payload);
-						$data = [
-							'profile'	=> $member,
-							'token' 	=> $jwt_encode
-						];
+				
+					$jwt_encode = JWT::encode($payload, $key, 'HS256');				
+					$data = [
+						'profile'	=> $member,
+						'token' 	=> $jwt_encode
+					];
 						$this->__jsonResponse(200,'OK',$data);
 					}
 				}else{
@@ -447,10 +475,13 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400,'request',[]);
 		}
 	}
+
 	public function authFacebook(){
 		$token = $_GET['token'];
 		$type = $_GET['type'];
 		$key  = isset($_Get['key'])?$_Get['key']:0;
+		if($key >2)
+			$this->__jsonResponse(400,"input_not_valid");
 		if($token && $type == 'facebook'){
 				$userData = array(); 
 				// $userData['oauth_provider'] = 'facebook'; 
@@ -460,8 +491,6 @@ class apiApp extends CI_Controller {
 				$first_name    	= 'Nguyễn';
 				$last_name    	= 'Mạnh';
 				$userData['fullname']       =  $first_name ." ".$last_name;
-				// print_r($userData);
-				// die;
 			$rs = $this->member_model->auth_facebook($userData,$key );
 			if($rs['code']== 1){
 				$member = $this->member_model->get_detail_member($rs['data']);
@@ -469,7 +498,8 @@ class apiApp extends CI_Controller {
 				$payload[] = [
 					'id'  				=> $member->id,
 					'url_fb' 			=> $member->url_fb,
-					'token'				=> $token
+					'token'				=> $token,
+					"exp" 				=> time() + (60 * 60)
 				];
 
 				$jwt_encode = $this->jwttoken::encode($payload);
@@ -479,12 +509,41 @@ class apiApp extends CI_Controller {
 				];
 					$this->__jsonResponse(200,"success",$data);
 			}
+
 			if($rs['code']== 2){
 				$this->__jsonResponse(400,"request_already");
 			}
-			if($rs['code'] == 3){
-				$this->__jsonResponse(400,"an_error_has_occurred");
-			}
+
+			if($rs['code'] == 3 && in_array($key, ['1','2'])){
+				if($key == 1){
+					$rs = $this->member_model->update_id_fb_gg($userData);
+					if($rs['code'] == 1)
+					$member = $this->member_model->get_detail_member($rs['data']);
+					$token = $this->jwttoken::createToken();
+					$payload[] = [
+						'id'  				=> $member->id,
+						'url_fb' 			=> $member->url_fb,
+						'token'				=> $token,
+						"exp" 				=> time() + (60 * 60)
+					];
+	
+					$jwt_encode = $this->jwttoken::encode($payload);
+					$data = [
+						'profile'	=> $member,
+						'token' 	=> $jwt_encode
+					];
+						$this->__jsonResponse(200,"success",$data);
+				$this->__jsonResponse(404, 'notfound');
+
+				}
+				if($key == 2){
+					$this->__jsonResponse(400,"an_error_has_occurred");
+				}
+		   }
+
+		   if($rs['code'] == 3){
+				$this->__jsonResponse(500,"synchronizing_documents");
+		   }
 			/* Authenticate user with facebook */
 			// if($this->facebook->is_authenticated()){ 
 			// /* Get user info from facebook */
@@ -518,23 +577,41 @@ class apiApp extends CI_Controller {
 			// 		$this->__jsonResponse(400,"request_already");
 			// 	} 
 
-			// 	if($rs['code'] == 3){
-					
-			// 	}
+		// 	if($rs['code'] == 3 && in_array($key, ['1','2'])){
+		// 		if($key == 1){
+		// 			$rs = $this->member_model->update_id_fb_gg($userData);
+		// 			if($rs['code'] == 1)
+		// 			$member = $this->member_model->get_detail_member($rs['data']);
+		// 			$token = $this->jwttoken::createToken();
+		// 			$payload[] = [
+		// 				'id'  				=> $member->id,
+		// 				'url_fb' 			=> $member->url_fb,
+		// 				'token'				=> $token,
+		// 				"exp" 				=> time() + (60 * 60)
+		// 			];
+	
+		// 			$jwt_encode = $this->jwttoken::encode($payload);
+		// 			$data = [
+		// 				'profile'	=> $member,
+		// 				'token' 	=> $jwt_encode
+		// 			];
+		// 				$this->__jsonResponse(200,"success",$data);
+		// 		$this->__jsonResponse(404, 'notfound');
 
-			// 	}
+		// 		}
+		// 		if($key == 2){
+		// 			$this->__jsonResponse(400,"an_error_has_occurred");
+		// 		}
+		//    }
+
+		//    if($rs['code'] == 3){
+		// 		$this->__jsonResponse(500,"synchronizing_documents");
+		//    }
 		}
+		// }
 		//$this->__jsonResponse(400, 'input_not_valid');
 	}  
-	// public function sendFacebook(){
-	// 	$key = $this->request['key'];
-	// 	if($key == 1){
-	// 		//$updat_fb_id=
-	// 	}
-	// 	if($key == 2){
 
-	// 	}
-	// }
 	public function authGoogle(){
 		$token = trim($_GET['token']);
 		$type = $_GET['type'];
@@ -586,14 +663,12 @@ class apiApp extends CI_Controller {
 }
 	public function verificationCodes(){
 		$email_post = $this->request['email'];
-		// var_dump($email_post);
-		// die;
 		if(!$email_post)
 			$this->__jsonResponse(400,'request',[]);
 		$rs = $this->member_model->send_verification_code($email_post);
 		
 		if ($rs['code'] == 1){
-			$key = $this->keyEmail::instanceMethodOne();
+			$key = $this->keyemail::instanceMethodOne();
 			if($key){
 				$data=$this->member_model->update_key_email($email_post,$key);
 				if($data == TRUE){
@@ -633,7 +708,15 @@ class apiApp extends CI_Controller {
 	}
 
 	public function listNotification(){
-		$member_id = '1';
+		$token = isset($_GET['token'])?$_GET['token']:"";
+		if(!$token){
+			$this->__jsonResponse(400, 'input_not_valid',[]);
+		}
+		$data_profile = $this->__getProfileByToken($token);
+		if($data_profile == false){
+			$this->__jsonResponse(404, 'not_found');
+		}
+		$member_id = $data_profile['data'][0]->id;
 		$type = isset($_GET['type'])?$_GET['type']:null;
 		$is_read = isset($_GET['is_read'])?$_GET['is_read']:null;
 		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
@@ -664,22 +747,31 @@ class apiApp extends CI_Controller {
 		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
 		$this->__jsonResponse(200, 'success',$data);
 	}
+
 	public function detailNotification(){
 		$id = isset($_GET['id'])?intval($_GET['id']):null;
 		if (! $id) 
 			$this->__jsonResponse(400, 'input_not_valid',[]);
-		$member_id = '1';
+		$token = isset($_GET['token'])?$_GET['token']:"";
+		if(!$token){
+			$this->__jsonResponse(400, 'input_not_valid',[]);
+		}
+		$data_profile = $this->__getProfileByToken($token);
+		if($data_profile == false){
+			$this->__jsonResponse(404, 'not_found');
+		}
+		$member_id = $data_profile['data'][0]->id;
 		$notify = $this->notification_model->detail_notification( $id, $member_id);
 
 		if(!$notify)
 			$this->__jsonResponse(404, 'notfound');
-			$notify->type_name = lang($notify->type);
-			$data = [];
-			$data['detail_notification'] = $notify;
-			$count= $this->notification_model->count_unread_notifications($member_id);
-			$data['count'] = $count;
-		$this->__jsonResponse(200, 'success', $data);		
-	}
+		$notify->type_name = lang($notify->type);
+		$data = [];
+		$data['detail_notification'] = $notify;
+		$count= $this->notification_model->count_unread_notifications($member_id);
+		$data['count'] = $count;
+	$this->__jsonResponse(200, 'success', $data);		
+}
 
  
  

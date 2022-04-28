@@ -31,6 +31,7 @@
 	"type":"Loại nhà",
 	"price":"Giá bán",
 	"an_error_has_occurred":"Đã có lỗi xảy ra",
+	"synchronizing_documents":"Lựa chọn có muốn đồng bộ tài khoản hay không ?",
 	"rent_price_hour":"Giá thuê giờ",
 	"rent_price_day":"Giá thuê ngày",
 	"rent_price_month":"Giá thuê tháng",

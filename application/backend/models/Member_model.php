@@ -204,18 +204,17 @@
     
         }
 
-        public function do_login(array $data){                        
+        public function do_login(array $data){                      
             $this->db->select('id, email, phone, password');
             $this->db->from($this->_table_name);
             if($data['phone'] == NULL){
                 $this->db->where('email',$data['email']);
             }
             if($data['email'] == NULL){
-                echo ("122222");
                 $this->db->where('phone',$data['phone']);
             }
             $this->db->limit(1,0);
-            $user = $this->db->get()->result();                            
+            $user = $this->db->get()->result();                          
             if($user){
                 if(is_array($user) && count($user) > 0){
                     foreach($user as $item){
@@ -251,7 +250,8 @@
             }
         }
         public function update_profile(array $data, $id){
-            $check = $this->__check_phone_email($data['email'],$data['phone']);
+            $check_ = $this->__check_phone_email($data['email'],$data['phone']);
+
             if($check > 0){
                 return 1;
             }else{
@@ -280,7 +280,6 @@
             return  $insert_id;
         }
         private function __update_fb_id(array $data){
-            die("133131");
             $this->db->set('fb_id', $data['fb_id']);
             $this->db->where('email',$data['email']);
             $this->db->where('phone',$data['phone']);
@@ -389,7 +388,28 @@
 
             }
         }
-
+        public function update_id_fb_gg(array $data){
+            if($data['fb_id'])
+                $update_id =$this->__update_fb_id($data);
+                if($update_id){
+                    $data= $this->__check_fb_gg($data['fb_id']);
+                    return array(
+                        'code'  => 1,
+                        'status'=> 'true',
+                        'data'  =>  $data['id']
+                    );
+                }
+            if($data['gg_id'])
+                $update_id =$this->__update_gg_id($data);
+                if($update_id){
+                    $data= $this->__check_id_gg($data['gg_id']);
+                    return array(
+                        'code'  => 1,
+                        'status'=> 'true',
+                        'data'  =>  $data['id']
+                    );
+                }
+        }
         private function __check_email($email){
             $this->db->select("fb_id,gg_id,email");
             $this->db->from($this->_table_name);
