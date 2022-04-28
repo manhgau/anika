@@ -48,7 +48,11 @@ class apiApp extends CI_Controller {
 		} catch (Exception $e) { // Also tried JwtException
 			// echo 'error ', $e->getMessage();
 			// exit();
-			$this->__jsonResponse(400, 'token_expires');
+			$this->__jsonResponse(405, 'token_expires');
+			// return array (
+			// 	'code' => 405,
+			// 	'satus'=> 'token_expires'
+			// );
 		}
 	}
 	
@@ -404,12 +408,11 @@ class apiApp extends CI_Controller {
 					'url_fb' 			=> $member->url_fb,
 					// 'iat' 				=> $time,
 					// 'nbf' 				=> $time-20,
-					'exp' 				=> $time + 60*60
+					'exp' 				=> $time + 60*5
 				];
 				$payload_refresh = [
 					'id'  				=> $member->id,
 					'url_fb' 			=> $member->url_fb,
-					'token'				=> $token,
 					'exp' 				=> $time + 30*60*60*24
 				];
 		
@@ -449,13 +452,11 @@ class apiApp extends CI_Controller {
 						$payload = [
 							'id'  				=> $member->id,
 							'url_fb' 			=> $member->url_fb,
-							'token'				=> $token,
-							'exp' 				=> $time + 60*60*24
+							'exp' 				=> $time + 60*5
 						];
 						$payload_refresh = [
 							'id'  				=> $member->id,
 							'url_fb' 			=> $member->url_fb,
-							'token'				=> $token,
 							'exp' 				=> $time + 30*60*60*24
 						];
 				
@@ -724,11 +725,11 @@ class apiApp extends CI_Controller {
 		if(!$token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
-		$data_profile = $this->__getProfileByToken($token);
+		$data_profile = $this->__genToken($token);
 		if($data_profile == false){
 			$this->__jsonResponse(404, 'not_found');
 		}
-		$member_id = $data_profile['data'][0]->id;
+		$member_id = $data_profile->id;
 		$type = isset($_GET['type'])?$_GET['type']:null;
 		$is_read = isset($_GET['is_read'])?$_GET['is_read']:null;
 		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
@@ -768,11 +769,11 @@ class apiApp extends CI_Controller {
 		if(!$token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
-		$data_profile = $this->__getProfileByToken($token);
+		$data_profile = $this->__genToken($token);
 		if($data_profile == false){
 			$this->__jsonResponse(404, 'not_found');
 		}
-		$member_id = $data_profile['data'][0]->id;
+		$member_id = $data_profile->id;
 		$notify = $this->notification_model->detail_notification( $id, $member_id);
 
 		if(!$notify)
@@ -784,6 +785,32 @@ class apiApp extends CI_Controller {
 		$data['count'] = $count;
 	$this->__jsonResponse(200, 'success', $data);		
 }
+	public function refreshToken(){
+		$refresh_token= "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU0IiwidXJsX2ZiIjoiIiwiZXhwIjoxNjUzNzQ5MzcxfQ.xvRURJPbidn7Np_lwod1dyoyMe2cZigvuUxRn9cX5NI";
+		$data = $this->__genToken($refresh_token);
+		if(!$data)
+			$this->__jsonResponse(405,'token_expires');
+		$time=time();
+						$key = 'ManhGau@UET@2022%$#*)(++';
+						$payload = [
+							'id'  				=> $data->id,
+							'url_fb' 			=> $data->url_fb,
+							'exp' 				=> $time + 60*5
+						];
+						$payload_refresh = [
+							'id'  				=> $data->id,
+							'url_fb' 			=> $data->url_fb,
+							'exp' 				=> $time + 30*60*60*24
+						];
+				
+					$jwt_encode = JWT::encode($payload, $key, 'HS256');
+					$refresh_token = JWT::encode($payload_refresh, $key, 'HS256');				
+					$data = [
+						'token' 	=> $jwt_encode,
+						'refresh_token' => $refresh_token
+					];
+						$this->__jsonResponse(200,'OK',$data);
+	}
 
  
  
