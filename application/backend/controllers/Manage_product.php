@@ -67,17 +67,20 @@ class Manage_product extends MY_Controller
             if (!$id) {
                 $data['created_by'] = $this->data['userdata']['id'];
             }
-
+           
             if ($id = $this->manage_product_model->save($data, $id)) {
                
                 $this->session->set_flashdata('session_msg', 'Cập nhật thành công.');
             } else {
                 $this->session->set_flashdata('session_error', 'Không thể cập nhật dữ liệu.');
             }
+            print_r($data['title']);
+        
             redirect(base_url('manage_product'));
             ;
           
         }
+        
         //Load View
         $this->data['meta_title'] = ($id) ? 'Sửa bài viết' : 'Viết bài mới';
         $this->data['sub_view'] = 'admin/manage_product/edit';
