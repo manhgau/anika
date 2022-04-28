@@ -10,7 +10,7 @@ class Setting_bussiness_model extends MY_Model{
             'rules'   => 'trim|max_length[100]|required' ),
         'status'           => array(
             'field'   => 'status',
-            'rules'   => 'trim|intval' ),     
+            'rules'   => 'intval' ),     
         'parent_id'        => array(
             'field'   => 'parent_id',
             'rules'   => 'trim|intval' )

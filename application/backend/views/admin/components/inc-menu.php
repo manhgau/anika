@@ -37,19 +37,24 @@
         </ul>
     </li>
 
-    <li class="treeview <?php echo ($this->router->class=='relationship') ? 'active' : '';?>">
+    <li class="treeview <?php echo ($this->router->class=='partner') ? 'active' : '';?>">
         <a href="#">
             <i class="fa fa-share-alt"></i>
             <span>Đối tác kinh doanh</span>
             <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
-            <li><a href="<?php echo base_url('relationship/edit'); ?>"><i class="fa fa-plus"></i> Thêm mới</a></li>
-            <li><a href="<?php echo base_url('relationship'); ?>"><i class="fa fa-list"></i> Danh sách</a></li>
+            <li><a href="<?php echo base_url('partner/edit'); ?>"><i class="fa fa-plus"></i> Thêm mới</a></li>
+            <li><a href="<?php echo base_url('partner'); ?>"><i class="fa fa-list"></i> Danh sách</a></li>
         </ul>
     </li>
 
-    <?php /*   
+    
+    
+    
+    <?php /*
+    
+    
     <li class="treeview <?php echo ($this->router->class=='memtor') ? 'active' : '';?>">
         <a href="#">
             <i class="fa fa-user"></i>
