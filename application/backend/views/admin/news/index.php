@@ -21,6 +21,10 @@
                                 <?php endif;?>
                             </div>
                             <div class="col-xs-3">
+                                <label>Tác giả</label>
+                                <input id="autoComplete" class="form-control" name="authorName" value="<?php echo $filters['authorName']; ?>">
+                            </div>
+                            <div class="col-xs-3">
                                 <label>Trạng thái</label>
                                 <select id="status-filter" class="form-control filter" name="status">
                                     <option value="0" <?php if($filters['status']==0) echo 'selected="selected"'; ?>> -- Trạng thái -- </option>
@@ -91,7 +95,20 @@
                                                 if($article->status != 1 || ($article->status==1 && $userdata['level']==1))
                                                     echo btn_delete('news/delete/'.$article->id);
                                             ?>
-   
+                                            <?php if($userdata['level']<=3) : ?>
+                                                <?php if($article->status != 1 || ($article->status==1 && $userdata['level']==1)) : ?>
+                                                <a href="javascript:;" class="btn btn-default btn-xs btn-return-news" data-id="<?php echo $article->id;?>" title="Trả bài"> <i class="fa fa-retweet" style="color:#f00;"></i> </a>
+                                                <?php endif; ?>
+
+                                                <?php if($article->update_by) : ?>
+                                                    <a href="<?php echo base_url('news/compareVersion/'.$article->id); ?>" class="btn btn-default btn-xs" title="Lịch sử thay đổi"> <i class="fa fa-history"></i> </a>
+                                                <?php endif;?>
+                                            <?php endif; ?>
+                                            <?php if($article->status==1) : ?>
+                                                <a href="<?php echo link_preview_detail_news($article->slugname, $article->id);?>" class="btn btn-info btn-xs" title="Xem chi tiết" target="_blank"> <i class="fa fa-eye"></i> </a>
+                                                <?php else : ?>
+                                                <button type="button" class="btn btn-xs btn-info" data-id="<?php echo $article->id;?>" data-toggle="modal" data-target="#modal-preview-content">xem trước</button>
+                                                <?php endif; ?>
                                         </p> 
                                     </td>
                                     <td><?php echo (isset($authors[$article->create_by])) ? $authors[$article->create_by]->name : '';?></td>
