@@ -46,8 +46,9 @@ class apiApp extends CI_Controller {
 			$decoded = JWT::decode($token, new Key($key, 'HS256'));
 			return $decoded;
 		} catch (Exception $e) { // Also tried JwtException
-			echo 'error ', $e->getMessage();
-			exit();
+			// echo 'error ', $e->getMessage();
+			// exit();
+			$this->__jsonResponse(400, 'token_expires');
 		}
 	}
 	
@@ -401,31 +402,25 @@ class apiApp extends CI_Controller {
 				$payload = [
 					'id'  				=> $member->id,
 					'url_fb' 			=> $member->url_fb,
-					'iat' 				=> $time,
-					'nbf' 				=> $time-20,
+					// 'iat' 				=> $time,
+					// 'nbf' 				=> $time-20,
 					'exp' 				=> $time + 60*60
 				];
-				$jwt_encode = JWT::encode($payload, $key, 'HS256');				
-				$data = [
-					'profile'	=> $member,
-					'token' 	=> $jwt_encode
+				$payload_refresh = [
+					'id'  				=> $member->id,
+					'url_fb' 			=> $member->url_fb,
+					'token'				=> $token,
+					'exp' 				=> $time + 30*60*60*24
 				];
-					$this->__jsonResponse(200,'OK',$data);
-				// $member = $this->member_model->get_detail_member($do_login);
-				// $token = $this->jwttoken::createToken();
-				// $payload[] = [
-				// 	'id'  				=> $member->id,
-				// 	'url_fb' 			=> $member->url_fb,
-				// 	'token'				=> $token,
-				// 	"exp" 				=> time() +(60*60)
-				// ];
-
-				// $jwt_encode = $this->jwttoken::encode($payload);
-				// $data = [
-				// 	'profile'	=> $member,
-				// 	'token' 	=> $jwt_encode
-				// ];
-				// 	$this->__jsonResponse(200,"success",$data);
+		
+			$jwt_encode = JWT::encode($payload, $key, 'HS256');
+			$refresh_token = JWT::encode($payload_refresh, $key, 'HS256');				
+			$data = [
+				'profile'	=> $member,
+				'token' 	=> $jwt_encode,
+				'refresh_token' => $refresh_token
+			];
+			$this->__jsonResponse(200,'OK',$data);
 			}else{
 				$this->__jsonResponse(404,"trouble",[]);
 			}
@@ -455,13 +450,21 @@ class apiApp extends CI_Controller {
 							'id'  				=> $member->id,
 							'url_fb' 			=> $member->url_fb,
 							'token'				=> $token,
-							'exp' 				=> $time + 1*60
+							'exp' 				=> $time + 60*60*24
+						];
+						$payload_refresh = [
+							'id'  				=> $member->id,
+							'url_fb' 			=> $member->url_fb,
+							'token'				=> $token,
+							'exp' 				=> $time + 30*60*60*24
 						];
 				
-					$jwt_encode = JWT::encode($payload, $key, 'HS256');				
+					$jwt_encode = JWT::encode($payload, $key, 'HS256');
+					$refresh_token = JWT::encode($payload_refresh, $key, 'HS256');				
 					$data = [
 						'profile'	=> $member,
-						'token' 	=> $jwt_encode
+						'token' 	=> $jwt_encode,
+						'refresh_token' => $refresh_token
 					];
 						$this->__jsonResponse(200,'OK',$data);
 					}
@@ -502,11 +505,20 @@ class apiApp extends CI_Controller {
 					"exp" 				=> time() + (60 * 60)
 				];
 
-				$jwt_encode = $this->jwttoken::encode($payload);
-				$data = [
-					'profile'	=> $member,
-					'token' 	=> $jwt_encode
-				];
+				// $payload_refresh = [
+				// 	'id'  				=> $member->id,
+				// 	'url_fb' 			=> $member->url_fb,
+				// 	'token'				=> $token,
+				// 	'exp' 				=> $time + 30*60*60*24
+				// ];
+		
+			$jwt_encode = JWT::encode($payload, $key, 'HS256');
+			//$refresh_token = JWT::encode($payload_refresh, $key, 'HS256');				
+			$data = [
+				'profile'	=> $member,
+				'token' 	=> $jwt_encode,
+				//'refresh_token' => $refresh_token
+			];
 					$this->__jsonResponse(200,"success",$data);
 			}
 

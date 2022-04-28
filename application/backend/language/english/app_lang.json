@@ -21,6 +21,7 @@
 	"bedroom_number":"Số phòng ngủ",
 	"floor_number":"Số tầng",
 	"acreage":"Diện tích",
+	"token_expires":"Token đã hết hạn",
 	"fb_page_url":"Link Facebook",
 	"system_busy":"Hệ thống bận, thử lại sau.",
 	"success":"Thành công.",
