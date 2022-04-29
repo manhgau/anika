@@ -14,10 +14,6 @@
                 'field' => 'fullname',
                 'rules' => 'required|trim',
             ],
-            'username' => [
-                'field' => 'username',
-                'rules' => 'required|trim',
-            ],
             'department_id' => array(
                 'field'   => 'department_id',
                 'rules'   => 'trim|max_length[50]' ),
@@ -256,10 +252,6 @@
             return true;
         }
 
-        public function logout($fbId)
-        {
-            return true;
-        }
         // Dùng trong CI APIapp
         public function get_detail_member($id){
             $this->db->select('a.id,a.fullname,a.email,a.phone,a.addres,a.avatar,a.url_fb, b.name AS office_name,c.name AS department_name');
@@ -269,7 +261,7 @@
             if($id>0){
                 $this->db->where('a.id',$id);
             }
-            $data = $this->db->get()->result();
+            $data = $this->db->get()->row();
             return $data;
             
     
@@ -279,7 +271,6 @@
             $this->db->select('id, email, phone, password');
             $this->db->from($this->_table_name);
             if($data['phone'] == NULL){
-                echo ("1111");
                 $this->db->where('email',$data['email']);
             }
             if($data['email'] == NULL){
@@ -368,13 +359,7 @@
                 );
             }
         }
-        private function __check_id_web($id){
-            $this->db->select("id, fb_id");
-            $this->db->from($this->_table_name);
-            $this->db->where("fb_id", $id );
-            $data =$this->db->get()->result();
-            return $data;
-        } 
+
         private function __insert_member(array $data){
             $this->db->insert($this->_table_name, $data);
             $insert_id = $this->db->insert_id();
@@ -629,35 +614,5 @@
 
 
         }
-        public function login(array $data){
-            $isIdAredly = $this->__check_id_web($data['fb_id']);
-            if($isIdAredly){
-                $isIdAredly = json_decode(json_encode($isIdAredly),true);
-                return array(
-                    'code'  => 1,
-                    'status'=> 'true',
-                    'data'  =>  $isIdAredly[0]['id']
-                );
-            }
-            $check = $this->__check_phone_email($data['email'],$data['phone']);
-            if($check > 0){
-                return array(
-                    'code'  => 2,
-                    'status'=> 'false',
-                );
-            }else{
-                $insert = $this->__insert_member($data);
-                if($insert){
-                    return array(
-                        'code'  => 1,
-                        'status'=> 'Them thanh cong',
-                        'data'  =>  $insert
-                    );
-                }
-            }
-        }
-
-
-
 
 }

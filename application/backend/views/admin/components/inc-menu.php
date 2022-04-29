@@ -31,9 +31,9 @@
             <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
-            <li><a href="<?php echo base_url('news/index'); ?>"><i class="fa fa-list"></i> Danh sách bài viết</a></li>
+            <li><a href="<?php echo base_url('news/index'); ?>"><i class="fa fa-list"></i> Danh sách </a></li>
             <li><a href="<?php echo base_url('news/edit'); ?>"><i class="fa fa-list"></i> Thêm mới </a></li>
-            <li><a href="<?php echo base_url('category'); ?>"><i class="fa fa-list"></i> Chuyên mục bài viết</a></li>
+            <li><a href="<?php echo base_url('category'); ?>"><i class="fa fa-list"></i> Chuyên mục </a></li>
         </ul>
     </li>
 
