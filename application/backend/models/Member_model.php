@@ -264,7 +264,7 @@
             if($id>0){
                 $this->db->where('a.id',$id);
             }
-            $data = $this->db->get()->result();
+            $data = $this->db->get()->row();
             return $data;
             
     
@@ -274,11 +274,9 @@
             $this->db->select('id, email, phone, password');
             $this->db->from($this->_table_name);
             if($data['phone'] == NULL){
-                echo ("1111");
                 $this->db->where('email',$data['email']);
             }
             if($data['email'] == NULL){
-                echo ("122222");
                 $this->db->where('phone',$data['phone']);
             }
             $this->db->limit(1,0);

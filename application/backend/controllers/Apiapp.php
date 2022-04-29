@@ -40,8 +40,8 @@ class apiApp extends CI_Controller {
 
 	private function __getProfilebyToken($token)
 	{
+		$key = 'ManhGau@UET@2022%$#*)(++';
 		try {
-			$key = 'ManhGau@UET@2022%$#*)(++';
 			$decoded = JWT::decode($token, new Key($key, 'HS256'));
 			return $decoded;
 		} catch (Exception $e) { // Also tried JwtException
@@ -789,7 +789,7 @@ class apiApp extends CI_Controller {
 		if(!$member_id)
 		$this->__jsonResponse(404, 'not_found');
 		$data = array();
-		$data['id']                   =$member_id;
+		$data['id']                   			=$member_id;
 		$data['password_old']	 				= $this->request['password_old'];
 		$data['password'] 						= password_hash($this->request['password'], PASSWORD_DEFAULT);
 		$data['password_confirm'] 				= $this->request['password_confirm'];
