@@ -120,13 +120,11 @@
             if (@$post['department_id']) $where['department_id'] = $post['department_id'];
             if ($post['keyword']) {
                 if (filter_var($post['keyword'], FILTER_VALIDATE_EMAIL)) 
-                    $where['email'] = strtolower($post['keyword']);
-                elseif ($id = intval($post['keyword'])) 
-                    $where['id'] = $id;
+                    $where['email'] = $post['keyword'];
                 elseif (preg_match('/^0[1-9][0-9]{8,9}/',$post['keyword'])) 
                     $where['phone'] = $post['keyword'];
                 else
-                    $where["fullname LIKE '".$post['keyword']."'"] = NULL;
+                    $where["fullname LIKE '%".$post['keyword']."%'"] = NULL;
             }
 
             $result = [
