@@ -1,4 +1,8 @@
 <?php
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 class apiApp extends CI_Controller {
 
@@ -17,9 +21,8 @@ class apiApp extends CI_Controller {
 		$this->load->model('init_model');
 		$this->load->model('partner_model');
 		$this->load->model('fieldActivity_model');
-		//$this->load->model('categoryProducts_model');
-		$this->load->library('jwtToken');	
-		$this->load->library('keyEmail');	
+		$this->load->library('jwttoken');	
+		$this->load->library('keyemail');	
 		$this->load->library('my_phpmailer');
 		$this->load->library('facebook'); 
 		//$this->load->library('google');
@@ -34,6 +37,42 @@ class apiApp extends CI_Controller {
 		else
 			$this->__jsonResponse(404, 'bad_request');
     }
+
+
+	private function __getProfilebyToken($token)
+	{
+		$key = 'ManhGau@UET@2022%$#*)(++';
+		try {
+			$decoded = JWT::decode($token, new Key($key, 'HS256'));
+			return $decoded;
+		} catch (Exception $e) { // Also tried JwtException
+			// echo 'error ', $e->getMessage();
+			// exit();
+			$this->__jsonResponse(405, 'token_expires');
+		}
+	}
+	private function __returnToken($member)
+	{
+		$time=time();
+				$key = 'ManhGau@UET@2022%$#*)(++';
+				$payload = [
+					'id'  				=> $member->id,
+					'url_fb' 			=> $member->url_fb,
+					'exp' 				=> $time + 60*5
+				];
+				$payload_refresh = [
+					'id'  				=> $member->id,
+					'url_fb' 			=> $member->url_fb,
+					'exp' 				=> $time + 30*60*60*24
+				];
+		
+			$access_token = JWT::encode($payload, $key, 'HS256');
+			$refresh_token = JWT::encode($payload_refresh, $key, 'HS256');
+			return 	array(
+				'access_token'   => $access_token,
+				'refresh_token'   => $refresh_token,
+			);	
+	}
 	
 	public function __jsonResponse($code=200, $msg='success', $data=[])
 	{
@@ -108,7 +147,7 @@ class apiApp extends CI_Controller {
 	
 	public function listPartner() {
 		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
-		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1; 
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
 		$data = [
@@ -120,7 +159,7 @@ class apiApp extends CI_Controller {
         	]
         ];
 
-		$rs = $this->partner_model->get_list_partner($offset, $limit );
+		$rs = $this->partner_model->get_list_partner($offset, $limit);
 		if (!$rs) 
 		$this->__jsonResponse(404, 'notfound', $data);	
 		if(is_array($rs) && count($rs) > 0){
@@ -317,15 +356,15 @@ class apiApp extends CI_Controller {
 
 	public function  getProfile()
 	{
-		$token = isset($_GET['token'])?$_GET['token']:"";
-		if(!$token){
+		$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
+		if(!$access_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
-		$data_profile = $this->jwtToken::decode($token);
-		if(!$data_profile){
+		$data_profile = $this->__getProfilebyToken($access_token);
+		if($data_profile == false){
 			$this->__jsonResponse(404, 'not_found');
 		}
-		$id = $data_profile['data'][0]->id;
+		$id = $data_profile->id;
 		if(!$id)
 			$this->__jsonResponse(404, 'not_found');
 		$profile = $this->member_model->get_detail_member($id);
@@ -334,16 +373,17 @@ class apiApp extends CI_Controller {
 		$this->__jsonResponse(200, 'success', $profile);
 
 	}
+
 	public function updateProfile(){
-		$token = isset($_GET['token'])?$_GET['token']:"";
-		if(!$token){
+		$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
+		if(!$access_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
-		$data_profile = $this->jwtToken::decode($token);
-		if(!$data_profile){
+		$data_profile = $this->__getProfilebyToken($access_token);
+		if($data_profile == false){
 			$this->__jsonResponse(404, 'not_found');
 		}
-		$id = $data_profile['data'][0]->id;
+		$id = $data_profile->id;
 		if(!$id)
 			$this->__jsonResponse(404, 'not_found');
 		$profile = array();
@@ -367,6 +407,7 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400,$this->lang->line('request'),[]);
 		}
 	}
+
 	public function loginForm(){
 		$memberData = array();
         $memberData['email'] = $this->request['email'];
@@ -375,21 +416,13 @@ class apiApp extends CI_Controller {
 		if(!empty($memberData['password']) && (!empty($memberData['email']) || !empty( $memberData['phone'])) ){			
 			$do_login= $this->member_model->do_login($memberData);
 			if($do_login){
-				$member = $this->member_model->get_detail_member($do_login);
-				$token = $this->jwtToken::createToken();
-				$payload[] = [
-					'id'  				=> $member->id,
-					'url_fb' 			=> $member->url_fb,
-					'token'				=> $token,
-					"exp" 				=> time() +(60*60)
-				];
-
-				$jwt_encode = $this->jwtToken::encode($payload);
-				$data = [
-					'profile'	=> $member,
-					'token' 	=> $jwt_encode
-				];
-					$this->__jsonResponse(200,"success",$data);
+				$member= $this->member_model->get_detail_member($do_login);
+				$token = $this->__returnToken($member);		
+			$data = [
+				'profile'	=> $member,
+				'token' 	=> $token,
+			];
+			$this->__jsonResponse(200,'OK',$data);
 			}else{
 				$this->__jsonResponse(404,"trouble",[]);
 			}
@@ -397,16 +430,7 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400,"request",[]);
 		}
 	}
-	public function getToken(){
-		$token = isset($_GET['token'])?$_GET['token']:"";
-		if(!$token){
-			$this->__jsonResponse(400, 'input_not_valid',[]);
-		}
-		$data_profile = $this->jwtToken::decode($token);
-		print_r($data_profile);
-		var_dump(time());
-		die;
-	}
+
 	public function registrationForm(){			
 		$memberData = array();
         $memberData['email'] 			= $this->request['email'];
@@ -422,17 +446,10 @@ class apiApp extends CI_Controller {
 						$this->__jsonResponse(401,"request_already",[]);
 					}else{
 						$member= $this->member_model->get_detail_member($do_registration);
-						$token = $this->jwtToken::createToken();
-						$payload[] = [
-							'id'  				=> $member->id,
-							'url_fb' 			=> $member->url_fb,
-							'token'				=> $token
-						];
-		
-						$jwt_encode = $this->jwtToken::encode($payload);
+						$token = $this->__returnToken($member);		
 						$data = [
 							'profile'	=> $member,
-							'token' 	=> $jwt_encode
+							'token' 	=> $token,
 						];
 						$this->__jsonResponse(200,'OK',$data);
 					}
@@ -446,159 +463,177 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400,'request',[]);
 		}
 	}
-	
+
 	public function authFacebook(){
 		$token = $_GET['token'];
 		$type = $_GET['type'];
+		$key  = isset($_Get['key'])?$_Get['key']:0;
+		if($key >2)
+			$this->__jsonResponse(400,"input_not_valid");
 		if($token && $type == 'facebook'){
-			// 	$userData = array(); 
-			// 	// $userData['oauth_provider'] = 'facebook'; 
-			// 	$userData['fb_id']    		= '12344';
-			// 	$userData['email']        	= 'manhlil9090@gmail.com';
-			// 	$userData['phone']        	= '094839678893';
-			// 	$first_name    	= 'Nguyễn';
-			// 	$last_name    	= 'Mạnh';
-			// 	$userData['fullname']       =  $first_name ." ".$last_name;
-			// 	// print_r($userData);
-			// 	// die;
-			// $rs = $this->member_model->auth_facebook($userData);
-			// if($rs['code']== 1){
-			// 	$member = $this->member_model->get_detail_member($rs[$data]);
-			// 	$token = $this->jwtToken::createToken();
-			// 	$payload[] = [
-			// 		'id'  				=> $member->id,
-			// 		'url_fb' 			=> $member->url_fb,
-			// 		'token'				=> $token
-			// 	];
-
-			// 	$jwt_encode = $this->jwtToken::encode($payload);
-			// 	$data = [
-			// 		'profile'	=> $member,
-			// 		'token' 	=> $jwt_encode
-			// 	];
-			// 		$this->__jsonResponse(200,"success",$data);
-			// }
-			// if($rs['code']== 2){
-			// 	$this->__jsonResponse(400,"request_already");
-			// }
-			// if($rs['code'] == 3){
-			// 	$this->__jsonResponse(500,"request_already",$userData['fb_id']);
-			// }
-			/* Authenticate user with facebook */
-			if($this->facebook->is_authenticated()){ 
-			/* Get user info from facebook */
-				$fbUser = $this->facebook->request('get', '/me?fields=id,first_name,last_name,email,link,gender,picture'); 
-	
-				/* Preparing data for database insertion */
+				$userData = array(); 
 				// $userData['oauth_provider'] = 'facebook'; 
-				$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';; 
-				$userData['first_name']    = !empty($fbUser['first_name'])?$fbUser['first_name']:''; 
-				$userData['last_name']    = !empty($fbUser['last_name'])?$fbUser['last_name']:''; 
-				$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:'';
+				$userData['fb_id']    		= '123494866';
+				$userData['email']        	= 'lilsnake96@gmail.com';
+				$userData['phone']        	= '0948472886626';
+				$first_name    	= 'Nguyễn';
+				$last_name    	= 'Mạnh';
+				$userData['fullname']       =  $first_name ." ".$last_name;
+			$rs = $this->member_model->auth_facebook($userData,$key );
+			if($rs['code']== 1){
+				$member = $this->member_model->get_detail_member($rs['data']);
+				$token = $this->__returnToken($member);		
+				$data = [
+					'profile'	=> $member,
+					'token' 	=> $token,
+				];
+					$this->__jsonResponse(200,"success",$data);
+			}
 
-				$rs = $this->member_model->auth_facebook($userData);
-				if($rs['code']== 1){
-					$member = $this->member_model->get_detail_member($rs[$data]);
-					$token = $this->jwtToken::createToken();
-					$payload[] = [
-						'id'  				=> $member->id,
-						'url_fb' 			=> $member->url_fb,
-						'token'				=> $token
-					];
+			if($rs['code']== 2){
+				$this->__jsonResponse(400,"request_already");
+			}
 
-					$jwt_encode = $this->jwtToken::encode($payload);
+			if($rs['code'] == 3 && in_array($key, ['1','2'])){
+				if($key == 1){
+					$rs = $this->member_model->update_id_fb_gg($userData);
+					if($rs['code'] == 1)
+					$member = $this->member_model->get_detail_member($rs['data']);
+					$token = $this->__returnToken($member);		
 					$data = [
 						'profile'	=> $member,
-						'token' 	=> $jwt_encode
+						'token' 	=> $token,
 					];
 						$this->__jsonResponse(200,"success",$data);
-				}
-				if($rs['code']== 2){
-					$this->__jsonResponse(400,"request_already",$data);
-				} 
-
-				if($rs['code'] == 3){
-					$this->__jsonResponse(500,"request_already",$userData['fb_id']);
-				}
+				$this->__jsonResponse(404, 'notfound');
 
 				}
+				if($key == 2){
+					$this->__jsonResponse(400,"an_error_has_occurred");
+				}
+		   }
+
+		   if($rs['code'] == 3){
+				$this->__jsonResponse(500,"synchronizing_documents");
+		   }
+			/* Authenticate user with facebook */
+			// if($this->facebook->is_authenticated()){ 
+			// /* Get user info from facebook */
+			// 	$fbUser = $this->facebook->request('get', '/me?fields=id,first_name,last_name,email,link,gender,picture'); 
+	
+			// 	/* Preparing data for database insertion */
+			// 	// $userData['oauth_provider'] = 'facebook'; 
+			// 	$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';; 
+			// 	$userData['first_name']    = !empty($fbUser['first_name'])?$fbUser['first_name']:''; 
+			// 	$userData['last_name']    = !empty($fbUser['last_name'])?$fbUser['last_name']:''; 
+			// 	$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:'';
+
+			// 	$rs = $this->member_model->auth_facebook($userData);
+			// 	if($rs['code']== 1){
+			// 		$member = $this->member_model->get_detail_member($rs['data']);
+			// 		$token = $this->jwttoken::createToken();
+			// 		$payload[] = [
+			// 			'id'  				=> $member->id,
+			// 			'url_fb' 			=> $member->url_fb,
+			// 			'token'				=> $token
+			// 		];
+
+			// 		$jwt_encode = $this->jwttoken::encode($payload);
+			// 		$data = [
+			// 			'profile'	=> $member,
+			// 			'token' 	=> $jwt_encode
+			// 		];
+			// 			$this->__jsonResponse(200,"success",$data);
+			// 	}
+			// 	if($rs['code']== 2){
+			// 		$this->__jsonResponse(400,"request_already");
+			// 	} 
+
+		// 	if($rs['code'] == 3 && in_array($key, ['1','2'])){
+		// 		if($key == 1){
+		// 			$rs = $this->member_model->update_id_fb_gg($userData);
+		// 			if($rs['code'] == 1)
+		// 			$member = $this->member_model->get_detail_member($rs['data']);
+		// 			$token = $this->jwttoken::createToken();
+		// 			$payload[] = [
+		// 				'id'  				=> $member->id,
+		// 				'url_fb' 			=> $member->url_fb,
+		// 				'token'				=> $token,
+		// 				"exp" 				=> time() + (60 * 60)
+		// 			];
+	
+		// 			$jwt_encode = $this->jwttoken::encode($payload);
+		// 			$data = [
+		// 				'profile'	=> $member,
+		// 				'token' 	=> $jwt_encode
+		// 			];
+		// 				$this->__jsonResponse(200,"success",$data);
+		// 		$this->__jsonResponse(404, 'notfound');
+
+		// 		}
+		// 		if($key == 2){
+		// 			$this->__jsonResponse(400,"an_error_has_occurred");
+		// 		}
+		//    }
+
+		//    if($rs['code'] == 3){
+		// 		$this->__jsonResponse(500,"synchronizing_documents");
+		//    }
+		}
+		// }
+		//$this->__jsonResponse(400, 'input_not_valid');
+	}  
+
+	public function authGoogle(){
+		$token = trim($_GET['token']);
+		$type = $_GET['type'];
+		$key  = isset($_Get['key'])?$_Get['key']:0;
+		if($token && $type == 'google'){
+             /* Authenticate user with google */
+			 if($this->google->getAuthenticate()){ 
+             
+				/* Get user info from google */
+			   $gpInfo = $this->google->getUserInfo(); 
+				
+				/* Preparing data for database insertion */
+			   //$userData['oauth_provider'] = 'google'; 
+			   $userData['gg_id']         = $gpInfo['id']; 
+			   $userData['first_name']     = $gpInfo['given_name']; 
+			   $userData['last_name']         = $gpInfo['family_name']; 
+			   $userData['email']             = $gpInfo['email']; 
+			   $userData['phone']             = $gpInfo['phone']; 
+			   $rs = $this->member_model->auth_google($userData );
+			   if($rs['code']== 1){
+				   $member = $this->member_model->get_detail_member($rs['data']);
+				   $token = $this->__returnToken($member);		
+				   $data = [
+					   'profile'	=> $member,
+					   'token' 	=> $token,
+				   ];
+					   $this->__jsonResponse(200,"success",$data);
+			   }
+			   if($rs['code']== 2){
+				   $this->__jsonResponse(400,"request_already");
+			   }
+			   if($rs['code'] == 3 && in_array($key, ['1','2'])){
+					//if($key == )
+			   }
+			   if($rs['code'] == 3){
+					$this->__jsonResponse(575,"request_already");
+				   //if($key == )
+			   }			   
 		}
 		$this->__jsonResponse(400, 'input_not_valid');
-	}  
-	public function sendFacebook(){
-		$key = $this->request['key'];
-		if($key == 1){
-			//$updat_fb_id=
-		}
-		if($key == 2){
-
-		}
 	}
-	// public function authGoogle(){
-	// 	$token = trim($_GET['token']);
-	// 	$type = $_GET['type'];
-	// 	//$token ='EAAAAAYsX7TsBAIfpLu5DzPlD9W3OFjri3EOVOmoZCOtwZA4atyty';
-	// 	//$type = 'facebook';
-	// 	// var_dump($token);
-	// 	// var_dump($type);
-	// 	// die;
-	// 	if($token && $type == 'google'){
-    //          /* Authenticate user with google */
-	// 		 if($this->google->getAuthenticate()){ 
-             
-	// 			/* Get user info from google */
-	// 		   $gpInfo = $this->google->getUserInfo(); 
-				
-	// 			/* Preparing data for database insertion */
-	// 		   //$userData['oauth_provider'] = 'google'; 
-	// 		   $userData['gg_id']         = $gpInfo['id']; 
-	// 		   $userData['first_name']     = $gpInfo['given_name']; 
-	// 		   $userData['last_name']         = $gpInfo['family_name']; 
-	// 		   $userData['email']             = $gpInfo['email']; 
-	// 		   $userData['phone']             = $gpInfo['phone']; 
-	// 		   $rs = $this->member_model->auth_facebook($userData);
-	// 		   if($rs['code']== 1){
-	// 			   $member = $this->member_model->get_detail_member($rs[$data]);
-	// 			   $token = $this->jwtToken::createToken();
-	// 			   $payload[] = [
-	// 				   'id'  				=> $member->id,
-	// 				   'url_fb' 			=> $member->url_fb,
-	// 				   'token'				=> $token
-	// 			   ];
-   
-	// 			   $jwt_encode = $this->jwtToken::encode($payload);
-	// 			   $data = [
-	// 				   'profile'	=> $member,
-	// 				   'token' 	=> $jwt_encode
-	// 			   ];
-	// 				   $this->__jsonResponse(200,"success",$data);
-	// 		   }
-	// 		   if($rs['code']== 2){
-	// 			   $this->__jsonResponse(400,"request_already",$data);
-	// 		   }
-	// 		 }
-	// 		//
-	// 		//$userData['oauth_provider'] = 'google';
-	// 		$userData['oauth_uid']      = '10739576423966946874545';
-	// 		$userData['first_name']     = 'Nguyễn';
-	// 		$userData['last_name']      = 'Thuận';
-	// 		$userData['email']          = 'thuan123@gmail.com';
-	// 		$userData['phone']          = '0947483736';
-	// 	}
-	// 	$this->__jsonResponse(400, 'input_not_valid');
-
-	// }
-
+}
 	public function verificationCodes(){
 		$email_post = $this->request['email'];
-		// var_dump($email_post);
-		// die;
 		if(!$email_post)
 			$this->__jsonResponse(400,'request',[]);
 		$rs = $this->member_model->send_verification_code($email_post);
 		
 		if ($rs['code'] == 1){
-			$key = $this->keyEmail::instanceMethodOne();
+			$key = $this->keyemail::instanceMethodOne();
 			if($key){
 				$data=$this->member_model->update_key_email($email_post,$key);
 				if($data == TRUE){
@@ -638,7 +673,15 @@ class apiApp extends CI_Controller {
 	}
 
 	public function listNotification(){
-		$member_id = '1';
+		$token = isset($_GET['token'])?$_GET['token']:"";
+		if(!$token){
+			$this->__jsonResponse(400, 'input_not_valid',[]);
+		}
+		$data_profile = $this->__gen__getProfilebyTokenToken($token);
+		if($data_profile == false){
+			$this->__jsonResponse(404, 'not_found');
+		}
+		$member_id = $data_profile->id;
 		$type = isset($_GET['type'])?$_GET['type']:null;
 		$is_read = isset($_GET['is_read'])?$_GET['is_read']:null;
 		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
@@ -669,21 +712,38 @@ class apiApp extends CI_Controller {
 		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
 		$this->__jsonResponse(200, 'success',$data);
 	}
+
 	public function detailNotification(){
 		$id = isset($_GET['id'])?intval($_GET['id']):null;
 		if (! $id) 
 			$this->__jsonResponse(400, 'input_not_valid',[]);
-		$member_id = '1';
+		$token = isset($_GET['token'])?$_GET['token']:"";
+		if(!$token){
+			$this->__jsonResponse(400, 'input_not_valid',[]);
+		}
+		$data_profile = $this->__getProfilebyToken($token);
+		if($data_profile == false){
+			$this->__jsonResponse(404, 'not_found');
+		}
+		$member_id = $data_profile->id;
 		$notify = $this->notification_model->detail_notification( $id, $member_id);
 
 		if(!$notify)
 			$this->__jsonResponse(404, 'notfound');
-			$notify->type_name = lang($notify->type);
-			$data = [];
-			$data['detail_notification'] = $notify;
-			$count= $this->notification_model->count_unread_notifications($member_id);
-			$data['count'] = $count;
-		$this->__jsonResponse(200, 'success', $data);		
+		$notify->type_name = lang($notify->type);
+		$data = [];
+		$data['detail_notification'] = $notify;
+		$count= $this->notification_model->count_unread_notifications($member_id);
+		$data['count'] = $count;
+	$this->__jsonResponse(200, 'success', $data);		
+}
+	public function refreshToken(){
+		$refresh_token= "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU0IiwidXJsX2ZiIjoiIiwiZXhwIjoxNjUzNzQ5MzcxfQ.xvRURJPbidn7Np_lwod1dyoyMe2cZigvuUxRn9cX5NI";
+		$data = $this->__genToken($refresh_token);
+		if(!$data)
+			$this->__jsonResponse(405,'token_expires');
+		$token = $this->__returnToken($data);		
+		$this->__jsonResponse(200,'OK',$token);
 	}
 
  

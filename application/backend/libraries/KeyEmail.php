@@ -1,5 +1,5 @@
 <?php
-class KeyEmail {
+class keyemail {
     private static $rand = NULL;
     
     public static function getRand() {
