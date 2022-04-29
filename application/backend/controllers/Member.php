@@ -41,10 +41,19 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
             //validate form
             $rules = $this->member_model->rules;
+            if(!$id) {
+                $rules['password']['rules'] .= '|required';
+                $rules['password_confirm']['rules'] .= '|required';
+                $id = NULL;
+            }
             $this->form_validation->set_rules($rules);
             if($this->form_validation->run() == TRUE) {
-                $data = $this->member_model->array_from_post(array('username', 'fullname', 'email', 'phone', 'status', 'department_id'));
+                $data = $this->member_model->array_from_post(array('username', 'fullname', 'email', 'password', 'phone', 'status', 'department_id'));
                 if (!$data['department_id']) $data['department_id'] = $data['department_id'];
+                if($data['password']=='')
+                    unset($data['password']);
+                else
+                    $data['password'] = $this->member_model->hash_str($data['password']);
                 if($id = $this->member_model->save($data,$id)) {
                     $this->session->set_flashdata('session_msg', 'Cập nhật thành công.');
                 }
