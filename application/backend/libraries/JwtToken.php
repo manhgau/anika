@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class JwtToken
+class Jwttoken
 {
     const _KEY = 'ManhGau@UET@2022%$#*)(++';
     const _ALGO = 'HS256';

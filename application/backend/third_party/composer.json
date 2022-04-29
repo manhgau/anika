@@ -6,7 +6,8 @@
         "facebook/graph-sdk": "^5.7",
         "hybridauth/hybridauth": "^3.7",
         "phpoffice/phpspreadsheet": "^1.22",
-        "firebase/php-jwt": "^6.1"
+        "firebase/php-jwt": "^6.1",
+        "google/apiclient":"^2.12.1"
     },
     "authors": [
         {

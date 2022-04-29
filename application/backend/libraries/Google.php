@@ -1,24 +1,53 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php 
+require_once APPPATH .'/third_party/vendor/autoload.php';
 
-/*
-| -------------------------------------------------------------------
-|  Google API Configuration
-| -------------------------------------------------------------------
-| 
-| To get API details you have to create a Google Project
-| at Google API Console (https://console.developers.google.com)
-| 
-|  client_id         string   Your Google API Client ID.
-|  client_secret     string   Your Google API Client secret.
-|  redirect_uri      string   URL to redirect back to after login.
-|  application_name  string   Your Google application name.
-|  api_key           string   Developer key.
-|  scopes            string   Specify scopes
-*/
-$config['google']['client_id']        = 'Google_API_Client_ID';
-$config['google']['client_secret']    = 'Google_API_Client_Secret';
-$config['google']['redirect_uri']     = 'https://example.com/project_folder_name/user_authentication/';
-$config['google']['application_name'] = 'Login to CodexWorld.com';
-$config['google']['api_key']          = '';
-$config['google']['scopes']           = array();
+class Google {
+	protected $CI;
+
+	public function __construct(){
+		$this->CI =& get_instance();
+        $this->CI->load->library('session');
+        $this->CI->config->load('google_config');
+        $this->client = new Google_Client();
+		$this->client->setClientId($this->CI->config->item('google_client_id'));
+		$this->client->setClientSecret($this->CI->config->item('google_client_secret'));
+		$this->client->setRedirectUri($this->CI->config->item('google_redirect_url'));
+		$this->client->setScopes(array(
+			"https://www.googleapis.com/auth/plus.login",
+			"https://www.googleapis.com/auth/plus.me",
+			"https://www.googleapis.com/auth/userinfo.email",
+			"https://www.googleapis.com/auth/userinfo.profile"
+			)
+		);
+  
+
+	}
+
+	public function get_login_url(){
+		return  $this->client->createAuthUrl();
+
+	}
+
+	public function validate(){		
+		if (isset($_GET['code'])) {
+		  $this->client->authenticate($_GET['code']);
+		  $_SESSION['access_token'] = $this->client->getAccessToken();
+
+		}
+		if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
+		  $this->client->setAccessToken($_SESSION['access_token']);
+		  $plus = new Google_Service_Plus($this->client);
+			$person = $plus->people->get('me');
+			$info['id']=$person['id'];
+			$info['email']=$person['emails'][0]['value'];
+			$info['name']=$person['displayName'];
+			$info['link']=$person['url'];
+			$info['profile_pic']=substr($person['image']['url'],0,strpos($person['image']['url'],"?sz=50")) . '?sz=800';
+
+		   return  $info;
+		}
+
+
+	}
+
+}
