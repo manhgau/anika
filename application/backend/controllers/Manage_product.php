@@ -95,8 +95,8 @@ class Manage_product extends MY_Controller
 
     {
         $api = $this->input->post('selectedId');
-        print_r($api);
-        exit();
+        // print_r($api);
+        // exit();
         // if (!$this->has_permission('delete')) $this->not_permission();
         // if ($this->userdata['level'] = 1) {
         //     if ($api) {
