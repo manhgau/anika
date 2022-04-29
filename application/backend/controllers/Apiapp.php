@@ -40,14 +40,16 @@ class apiApp extends CI_Controller {
 
 	private function __getProfilebyToken($token)
 	{
-		$key = 'ManhGau@UET@2022%$#*)(++';
 		try {
+			$key = 'ManhGau@UET@2022%$#*)(++';
 			$decoded = JWT::decode($token, new Key($key, 'HS256'));
 			return $decoded;
 		} catch (Exception $e) { // Also tried JwtException
-			// echo 'error ', $e->getMessage();
-			// exit();
-			$this->__jsonResponse(405, 'token_expires');
+				return  $e->getMessage();
+			//echo 'error ', $e->getCode();
+			//exit();
+			// $this->__jsonResponse(405, 'token_expires');
+			//return NULL;
 		}
 	}
 	private function __returnToken($member)
@@ -73,7 +75,7 @@ class apiApp extends CI_Controller {
 			);	
 	}
 	
-	public function __jsonResponse($code=200, $msg='success', $data=[])
+	private function __jsonResponse($code=200, $msg='success', $data=[])
 	{
         $result['code'] = $code;
         $result['msg'] = (lang($msg)) ? lang($msg) : $msg;
@@ -360,8 +362,11 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
 		$data_profile = $this->__getProfilebyToken($access_token);
-		if($data_profile == false){
-			$this->__jsonResponse(404, 'not_found');
+		if($data_profile =='Expired token' ){
+			$this->__jsonResponse(405, 'token_expires');
+		}
+		if($data_profile =='Signature verification failed' ){
+			$this->__jsonResponse(406, 'token_false');
 		}
 		$id = $data_profile->id;
 		if(!$id)
@@ -379,8 +384,11 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
 		$data_profile = $this->__getProfilebyToken($access_token);
-		if($data_profile == false){
-			$this->__jsonResponse(404, 'not_found');
+		if($data_profile =='Expired token' ){
+			$this->__jsonResponse(405, 'token_expires');
+		}
+		if($data_profile =='Signature verification failed' ){
+			$this->__jsonResponse(406, 'token_false');
 		}
 		$id = $data_profile->id;
 		if(!$id)
@@ -672,13 +680,16 @@ class apiApp extends CI_Controller {
 	}
 
 	public function listNotification(){
-		$token = isset($_GET['token'])?$_GET['token']:"";
-		if(!$token){
+		$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
+		if(!$access_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
-		$data_profile = $this->__getProfilebyToken($token);
-		if($data_profile == false){
-			$this->__jsonResponse(404, 'not_found');
+		$data_profile = $this->__getProfilebyToken($access_token);
+		if($data_profile =='Expired token' ){
+			$this->__jsonResponse(405, 'token_expires');
+		}
+		if($data_profile =='Signature verification failed' ){
+			$this->__jsonResponse(406, 'token_false');
 		}
 		$member_id = $data_profile->id;
 		$type = isset($_GET['type'])?$_GET['type']:null;
@@ -719,13 +730,16 @@ class apiApp extends CI_Controller {
 		$id = isset($_GET['id'])?intval($_GET['id']):null;
 		if (! $id) 
 			$this->__jsonResponse(400, 'input_not_valid',[]);
-		$token = isset($_GET['token'])?$_GET['token']:"";
-		if(!$token){
+		$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
+		if(!$access_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
-		$data_profile = $this->__getProfilebyToken($token);
-		if($data_profile == false){
-			$this->__jsonResponse(404, 'not_found');
+		$data_profile = $this->__getProfilebyToken($access_token);
+		if($data_profile =='Expired token' ){
+			$this->__jsonResponse(405, 'token_expires');
+		}
+		if($data_profile =='Signature verification failed' ){
+			$this->__jsonResponse(406, 'token_false');
 		}
 		$member_id = $data_profile->id;
 		$notify = $this->notification_model->detail_notification( $id, $member_id);
@@ -740,12 +754,54 @@ class apiApp extends CI_Controller {
 	$this->__jsonResponse(200, 'success', $data);		
 }
 	public function refreshToken(){
-		$refresh_token= "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjU0IiwidXJsX2ZiIjoiIiwiZXhwIjoxNjUzNzQ5MzcxfQ.xvRURJPbidn7Np_lwod1dyoyMe2cZigvuUxRn9cX5NI";
-		$data = $this->__genToken($refresh_token);
-		if(!$data)
-			$this->__jsonResponse(405,'token_expires');
+		$refresh_token = isset($_GET['refresh_token'])?$_GET['refresh_token']:"";
+		if(!$access_token){
+			$this->__jsonResponse(400, 'input_not_valid',[]);
+		}
+		$data = $this->__getProfilebyToken($refresh_token);
+		if($data_profile =='Expired token' ){
+			$this->__jsonResponse(401, 'token_expires_and_login');
+		}
+		if($data_profile =='Signature verification failed' ){
+			$this->__jsonResponse(406, 'token_false');
+		}
 		$token = $this->__returnToken($data);		
 		$this->__jsonResponse(200,'OK',$token);
+	}
+
+	public function changeAvatar(){
+
+	}
+
+	public function changePassword(){
+		$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
+		if(!$access_token){
+			$this->__jsonResponse(400, 'input_not_valid',[]);
+		}
+		$data_profile = $this->__getProfilebyToken($access_token);
+		if($data_profile =='Expired token' ){
+			$this->__jsonResponse(405, 'token_expires');
+		}
+		if($data_profile =='Signature verification failed' ){
+			$this->__jsonResponse(406, 'token_false');
+		}
+		$member_id = $data_profile->id;
+		if(!$member_id)
+		$this->__jsonResponse(404, 'not_found');
+		$data = array();
+		$data['id']                   =$member_id;
+		$data['password_old']	 				= $this->request['password_old'];
+		$data['password'] 						= password_hash($this->request['password'], PASSWORD_DEFAULT);
+		$data['password_confirm'] 				= $this->request['password_confirm'];
+
+		$change_password = $this->member_model->change_password($data);
+		if($change_password['code']==1)
+			$this->__jsonResponse(200,'OK');
+		if($change_password['code']==2)
+			$this->__jsonResponse(404,'password_incorrect');
+		if($change_password['code']==3)
+			$this->__jsonResponse(400,'an_error_has_occurred');
+
 	}
 
  

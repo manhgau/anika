@@ -302,9 +302,10 @@
 
         private function __check_phone_email ($email,$phone){
             $this->db->select("email, phone");
+            $this->db->from($this->_table_name);
             $this->db->where("email", $email );
             $this->db->or_where("phone", $phone );
-            $data =$this->db->count_all_results($this->_table_name);
+            $data = $this->db->get()->result();  
             return $data;
         }
         public function do_registration(array $data){
@@ -319,7 +320,7 @@
         }
         public function update_profile(array $data, $id){
             $check = $this->__check_phone_email($data['email'],$data['phone']);
-            if($check > 0){
+            if($check){
                 return 1;
             }else{
                 $this->db->where('id',$id);
@@ -367,7 +368,48 @@
             }
         }
 
-
-
+        public function update_password($password,$key){
+            if($this->__check_key_email($key)){
+                $update = [
+                    'key_email'     =>  NULL,
+                    'expire'        =>  NULL,
+                    'password'      =>  $password
+                ];
+                $this->db->where('key_email',$key);
+                $result =$this->db->update($this->_table_name, $update);
+                return $result;
+            }
+            return FALSE;
+        }
+        public function change_password(array $data){
+            $member= $this->get($data['id']);
+            $password_data =$member->password;
+            if(password_verify($data['password_old'], $password_data)){
+                if(password_verify($data['password_confirm'], $data['password'])){
+                    $this->db->set('password', $data['password']);
+                    $this->db->where('id',$id);
+                    $result = $this->db->update($this->_table_name);
+                    if( $result == true){
+                        return array(
+                            'code'  => 1,
+                            'status'=>"OK"
+                        );
+                    }
+                    return array(
+                        'code'  => 3,
+                        'status'=>"false"
+                    );
+                }
+                return array(
+                    'code'  => 2,
+                    'status'=>"false"
+                );
+            }
+            return array(
+                'code'  => 2,
+                'status'=>"false"
+            );
+            
+        }
 
 }

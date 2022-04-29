@@ -31,6 +31,8 @@
 	"service_type":"Dịch vụ",
 	"type":"Loại nhà",
 	"price":"Giá bán",
+	"token_expires_and_login":"Token hết hạn, vui lòng đăng nhập lại",
+	"token_false":"Token sai",
 	"an_error_has_occurred":"Đã có lỗi xảy ra",
 	"synchronizing_documents":"Lựa chọn có muốn đồng bộ tài khoản hay không ?",
 	"rent_price_hour":"Giá thuê giờ",
