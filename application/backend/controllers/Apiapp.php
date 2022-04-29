@@ -21,10 +21,9 @@ class apiApp extends CI_Controller {
 		$this->load->model('init_model');
 		$this->load->model('partner_model');
 		$this->load->model('fieldActivity_model');
-		$this->load->library('jwttoken');	
-		$this->load->library('keyemail');	
+		//$this->load->library('keyemail');	
 		$this->load->library('my_phpmailer');
-		$this->load->library('facebook'); 
+		$this->load->library('facebook');
 		//$this->load->library('google');
 
 		$reqType = strtolower($this->input->server('REQUEST_METHOD'));
@@ -677,7 +676,7 @@ class apiApp extends CI_Controller {
 		if(!$token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
-		$data_profile = $this->__gen__getProfilebyTokenToken($token);
+		$data_profile = $this->__getProfilebyToken($token);
 		if($data_profile == false){
 			$this->__jsonResponse(404, 'not_found');
 		}
@@ -702,7 +701,10 @@ class apiApp extends CI_Controller {
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
 				$item->type_name = lang($item->type);
-				//$item->is_read_name = lang($item->is_read);
+				if($item->type == 'thong_bao_khuyen_mai')
+					$item->image = getImageUrl('mdi_sale.png');
+				if($item->type == 'thong_bao_he_thong')
+					$item->image = getImageUrl('ant-design_notification-outlined.png');
 				$rs[$key] = $item;
 			}
 		}
