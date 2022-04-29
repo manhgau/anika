@@ -46,10 +46,6 @@ class apiApp extends CI_Controller {
 			return $decoded;
 		} catch (Exception $e) { // Also tried JwtException
 				return  $e->getMessage();
-			//echo 'error ', $e->getCode();
-			//exit();
-			// $this->__jsonResponse(405, 'token_expires');
-			//return NULL;
 		}
 	}
 	private function __returnToken($member)
@@ -202,17 +198,17 @@ class apiApp extends CI_Controller {
         		'next' => false 
         	]
         ];
-        $category = isset($_GET['category'])? intval($_GET['category']) : null;
+        $category_id = isset($_GET['category_id'])? intval($_GET['category_id']) : null;
 		$is_hot = isset($_GET['is_hot'])?intval($_GET['is_hot']):null;
 		
-		if (!$category)
+		if (!$category_id)
 			$this->__jsonResponse(400, 'input_not_valid');
-		$get_category = $this->post_model->get_category($category, true);
+		$get_category = $this->post_model->get_category($category_id, true);
 		if (!$get_category)
 			$this->__jsonResponse(400, 'bad_request', $data);
 
 		$data['category'] = $get_category;
-        $rs = $this->post_model->list_post($offset, $limit, $category, $is_hot);	
+        $rs = $this->post_model->list_post($offset, $limit, $category_id, $is_hot);	
 		if (!$rs) 
 		$this->__jsonResponse(404, 'notfound', $data);				
 		if(is_array($rs) && count($rs) > 0){
