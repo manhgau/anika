@@ -66,7 +66,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if(!empty($articles)) : foreach($articles as $key => $article) : ?>
+                            <?php if(!empty($articles)) : foreach($articles as $key => $article) ?>
+                                
+
                                 <tr id="row-<?php echo $article->id; ?>">
                                     <td><?php echo $article->id; ?></td>
                                     <td style="max-width:150px">
