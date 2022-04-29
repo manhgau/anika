@@ -3,7 +3,7 @@ $(document).ready(function () {
     var controller = $('#datatable').data('controller');
     var table = $('#datatable').DataTable({
 //        dom: "Bfrtip",
-        dom: "Brti",
+        dom: "fBlrtip",
         pageLength: 50,
         "oLanguage": {
             "sSearch": "Tìm kiếm:&nbsp;"
@@ -45,24 +45,12 @@ $(document).ready(function () {
                         return '';
                     }
                 }
-            },
-            {
-                targets:7,
-                render : function (data, type, full, meta) {
-                    if( data == 1) {
-                        return '<i class="fa fa-check" title="Tin đọc nhiều"></i>';
-                    }
-                    else {
-                        return '';
-                    }
-                }
             }
         ],
         buttons : [
             {text : '<i class="fa fa-plus"></i> Thêm mới', action : bunk_addnew, className:"btn btn-sm btn-success"},
             {text : '<i class="fa fa-trash"></i> Xóa', action : bunk_delete, className:"btn btn-sm btn-danger"},
-            {text : '<i class="fa fa-paper-plane-o"></i> Duyệt đăng', action : bunk_public, className:"btn btn-sm btn-info"},
-            {text : '<i class="fa fa-lock"></i> Khóa bài viết', action : bunk_lock, className:"btn btn-sm btn-warning"},
+            {text : '<i class="fa fa-paper-plane-o"></i> Duyệt đăng', action : bunk_public, className:"btn btn-sm btn-info"}
         ],
         order: [[0, 'desc']],
         rowCallback: function (row, data, dataIndex) {

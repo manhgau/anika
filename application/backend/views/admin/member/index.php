@@ -1,6 +1,7 @@
 <?php 
     $statusFilter = $this->member_model->getStatus();
     $member = $this->member_model->getList();
+
 ?>
 <section class="content">
     <div class="row">
@@ -40,6 +41,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <button type="submit" class="btn btn-sm btn-primary"> <i class="fa fa-search"></i> Tìm kiếm</button>
+                                <a class="btn btn-sm btn-default" href="<?php echo base_url('member');?>"> <i class="fa fa-refresh"></i> Reset</a>
                             </div>
 
                         </div>
@@ -47,7 +49,7 @@
                     </form>
                     <hr class="line">
                     <div class="box-body table-responsive" style="padding-bottom:350px">
-                        <?php 
+                        <?php
                         echo dataTable([
                             'id' => '<input type="checkbox" name="select_all" class="simple" />',
                             'fullname' => 'Họ và tên',
@@ -55,7 +57,7 @@
                             'email' => 'Email',
                             'status_name' => 'Trạng thái',
                             'department_id' => 'Phòng ban',
-                            ''=>'Thao tác',
+                            'status'=>'Thao tác',
                         ], true, true);
                         ?>
                     </div>
@@ -89,7 +91,7 @@
                     <a href="/member/edit/${full.id}" class="btn btn-xs btn-default"><i class="fa fa-pencil-square-o text-primary"></i></a>
                     <a href="#" onclick="confirmRemove(${full.id}); return false;" class="btn btn-xs btn-default"><i class="fa fa-trash-o text-danger"></i></a>
                     <br>
-                    <a href="#" onclick="confirmTogglePublic(${full.id}, ${data}); return false;" class="btn btn-xs btn-default" title="${(data=='public') ? 'Khóa' : 'Mở'}"><i class="fa fa-refresh"></i></a>
+                    <a href="#" onclick="confirmTogglePublic(${full.id}, '${data}'); return false;" class="btn btn-xs btn-default" title="${(data=='public') ? 'Khóa' : 'Mở'}"><i class="fa fa-refresh"></i></a>
                 </p>
                 `;
             }

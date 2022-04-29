@@ -38,9 +38,6 @@
                             <div class="col-xs-3">
                                 <label><input type="checkbox" name="is_hot" value="1" <?php if($filters['is_hot']==1) echo 'checked="checked"'; ?>> Bài HOT</label>
                             </div>
-                            <div class="col-xs-3">
-                                <label><input type="checkbox" name="is_popular" id="is-popular" value="1" <?php if($filters['is_popular']==1) echo 'checked="checked"'; ?>> Bài đọc nhiều</label>
-                            </div>
                         </div>
                         <hr class="line" style="margin:0 0 10px;border-color:#e4e4e4">
                         <div class="row">
@@ -57,13 +54,12 @@
                         <thead>
                             <tr>
                                 <th><input type="checkbox" class="simple" id="check-all" name="select_all"></th>
+                                <th>Ảnh</th>
                                 <th>Tiêu đề</th>
                                 <th>Chuyên mục</th>
-                                <th>Giờ viết</th>
-                                <th>Giờ hiển thị</th>
+                                <th>Ngày tạo</th>
                                 <th>Trạng thái</th>
                                 <th>HOT</th>
-                                <th>Đọc nhiều</th>
                                 <th>Lượt xem</th>
                                 <th>Action</th>
                                 <th>Tác giả</th>
@@ -73,6 +69,9 @@
                             <?php if(!empty($articles)) : foreach($articles as $key => $article) : ?>
                                 <tr id="row-<?php echo $article->id; ?>">
                                     <td><?php echo $article->id; ?></td>
+                                    <td style="max-width:150px">
+                                        <img src="<?php echo getImageUrl($article->highlight_image);?>" alt="Image" style="max-width:200px;height:60px">
+                                    </td>
                                     <td>
                                         <p><a href="<?php echo base_url('news/edit/'.$article->id);?>"><?php echo $article->title; ?></a></p>                               
                                     </td>
@@ -82,10 +81,9 @@
                                         <?php endforeach; endif; ?>
                                     </td>
                                     <td><?php echo date('H:i:s d/m/Y',strtotime($article->create_time));?></td>
-                                    <td><?php echo date('H:i:s d/m/Y',strtotime($article->public_time));?></td>
+
                                     <td><?php echo $article->status;?></td>
                                     <td><?php echo $article->is_hot;?></td>
-                                    <td><?php echo $article->is_popular;?></td>
                                     <td>
                                         <?php echo ($article->status != 3) ? $article->hit_view : '0'; ?>
                                     </td>

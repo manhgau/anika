@@ -1,3 +1,6 @@
+<?php
+var_dump($article);
+?>
 <section class="content">
     <div class="row">
         <form action="" method="post" enctype="multipart/form-data">
@@ -56,39 +59,38 @@
                         </div> 
 
                         <hr class="line" style="clear: both;" />
-                        <h3 class="box-title" onclick="toggle_seo();" id="seo-box-title">SEO Options</h3>
-                        <div class="seo-box">
-                            <div class="form-group">
-                                <label for="meta-title">Meta title</label> <?php echo my_form_error('meta_title');?>
-                                <input type="text" name="meta_title" id="meta-title" class="form-control" value="<?php echo $article->meta_title;?>">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="meta-keyword">Meta Keyword</label> <?php echo my_form_error('meta_keyword');?>
-                                <textarea name="meta_keyword" class="form-control" rows="4" id="meta-keyword"><?php echo $article->meta_keyword; ?></textarea>
-                            </div> 
-
-                            <div class="form-group">
-                                <label for="meta-desc">Meta Description</label> <?php echo my_form_error('meta_description');?>
-                                <textarea name="meta_description" id="meta-desc" class="form-control" rows="4"><?php echo $article->meta_description; ?></textarea>
-                            </div> 
-
-                            <div class="form-group">
-                                <label for="meta-slug text-danger">Meta Slug</label> <?php echo my_form_error('slugname');?>
-                                <p>
-                                    <small class="text-danger">* Tạo tự động nếu không nhập</small>
-                                    <small class="text-danger">* Bao gồm tiếng việt không dấu, và dấu "-"</small>
-                                </p>
-                                <input type="text" name="slugname" placeholder="vi-du-slugname-bai-viet" value="<?php echo $article->slugname; ?>" class="form-control">                                
-                            </div> 
-                        </div>          
+<!--                        <h3 class="box-title" onclick="toggle_seo();" id="seo-box-title">SEO Options</h3>-->
+<!--                        <div class="seo-box">-->
+<!--                            <div class="form-group">-->
+<!--                                <label for="meta-title">Meta title</label> --><?php //echo my_form_error('meta_title');?>
+<!--                                <input type="text" name="meta_title" id="meta-title" class="form-control" value="--><?php //echo $article->meta_title;?><!--">-->
+<!--                            </div>-->
+<!---->
+<!--                            <div class="form-group">-->
+<!--                                <label for="meta-keyword">Meta Keyword</label> --><?php //echo my_form_error('meta_keyword');?>
+<!--                                <textarea name="meta_keyword" class="form-control" rows="4" id="meta-keyword">--><?php //echo $article->meta_keyword; ?><!--</textarea>-->
+<!--                            </div> -->
+<!---->
+<!--                            <div class="form-group">-->
+<!--                                <label for="meta-desc">Meta Description</label> --><?php //echo my_form_error('meta_description');?>
+<!--                                <textarea name="meta_description" id="meta-desc" class="form-control" rows="4">--><?php //echo $article->meta_description; ?><!--</textarea>-->
+<!--                            </div> -->
+<!---->
+<!--                            <div class="form-group">-->
+<!--                                <label for="meta-slug text-danger">Meta Slug</label> --><?php //echo my_form_error('slugname');?>
+<!--                                <p>-->
+<!--                                    <small class="text-danger">* Tạo tự động nếu không nhập</small>-->
+<!--                                    <small class="text-danger">* Bao gồm tiếng việt không dấu, và dấu "-"</small>-->
+<!--                                </p>-->
+<!--                                <input type="text" name="slugname" placeholder="vi-du-slugname-bai-viet" value="--><?php //echo $article->slugname; ?><!--" class="form-control">                                -->
+<!--                            </div> -->
+<!--                        </div>          -->
                     </div>
                     <div class="box-footer">
                         <?php 
                         if($userdata['id'] == $article->create_by && !$article->id)
                         {
-                            echo form_submit('saving','Lưu tạm','class="btn btn-default"'),
-                                 form_submit('sentNews','Gửi bài đi duyệt','class="btn btn-primary"');
+                            echo form_submit('sentNews','Gửi bài đi duyệt','class="btn btn-primary"');
                         }
 
                         if ($article->id)
@@ -142,14 +144,18 @@
                             <label for="category">Chuyên mục <span class="red">*</span></label> <?php echo form_error('title');?>
                             <select name="category[]" class="form-control" multiple="multiple" required style="height:150px">
                                 <option value="0"> --- Chọn chuyên mục --- </option>
-                                <?php 
-                                if (isset($categoryNews)) 
+                                <?php
+
+                                if (isset($categoryNews)) {
+
                                     select_box_with_level_category_permission($category_for_user, $selectedCatIds);
+                                }
                                 else
                                     select_box_with_level_category_permission($category_for_user);
                                 //    select_box_with_level_category($tree_categories, 0, NULL);
+
                                 ?>
-                            </select>                
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="thumbnail">Thumbnail <small style="font-weight:400">(600x400)</small></label> <?php echo form_error('thumbnail');?>
