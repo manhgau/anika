@@ -1,6 +1,4 @@
-<?php
-var_dump($article);
-?>
+
 <section class="content">
     <div class="row">
         <form action="" method="post" enctype="multipart/form-data">
