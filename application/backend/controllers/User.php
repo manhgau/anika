@@ -24,7 +24,7 @@
         public function index() 
         {
             if ( ! $this->has_permission('view')) $this->not_permission();
-            $this->data['users'] = $this->user_model->get_by("status <> 3");        
+            $this->data['users'] = $this->user_model->get_by("status <> 3");
             $this->data['sub_view'] = 'admin/user/index';
             $this->data['sub_js'] = 'admin/user/index-js';
             $this->data['meta_title'] = 'Danh sách thành viên';

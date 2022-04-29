@@ -43,7 +43,11 @@ class Category_model extends MY_Model{
         $data->level = 1;
         return $data;
     }
-    
+    public function getList()
+    {
+        $query = $this->db->get($this->_table_name);
+        return ($query->num_rows() > 0 ) ? $query->result_array() : null;
+    }
     public function get_tree_categories ($parent_id=0) {
         $data = array();
         $_list_lv1 = $this->get_child_cats($parent_id);
