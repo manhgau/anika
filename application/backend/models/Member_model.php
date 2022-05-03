@@ -255,9 +255,10 @@
         {
             return true;
         }
+
         // Dùng trong CI APIapp
         public function get_detail_member($id){
-            $this->db->select('a.id,a.fullname,a.email,a.phone,a.addres,a.url_fb, b.name AS office_name,c.name AS department_name');
+            $this->db->select('a.id,a.fullname,a.email,a.phone,a.addres,a.avatar,a.url_fb, b.name AS office_name,c.name AS department_name');
             $this->db->from($this->_table_name . ' as a');
             $this->db->join('office as b', 'a.office_id=b.id', 'left');
             $this->db->join('department as c', 'a.department_id=c.id', 'left');
@@ -333,9 +334,17 @@
             return  $insert_id;
         }
 
-
-        public function update_password($password,$key){
+        public function __check_key_email($key){
+            $this->db->select("key_email, expire");
+            $this->db->from($this->_table_name);
+            $this->db->where("key_email", $email );
+            $this->db->or_where("expire >", time() );
+            $data = $this->db->get()->result(); 
+            return $data;
+        }
+        public function update_password($password,$key,$password_confirm){
             if($this->__check_key_email($key)){
+                if(password_verify($password_confirm, $password)){
                 $update = [
                     'key_email'     =>  NULL,
                     'expire'        =>  NULL,
@@ -343,9 +352,15 @@
                 ];
                 $this->db->where('key_email',$key);
                 $result =$this->db->update($this->_table_name, $update);
-                return $result;
+                if($result == true){
+                    return 1;
+                }else{
+                    return 2;
+                }
+            } 
+            return 3;
             }
-            return FALSE;
+            return 4;
         }
         public function change_password(array $data){
             $member= $this->get($data['id']);
@@ -377,8 +392,117 @@
             );
             
         }
-        public function auth_facebook(){
+        public function check_email($email){
+            $this->db->select("fb_id,gg_id,email");
+            $this->db->from($this->_table_name);
+            $this->db->where("email", $email );
+            $data = $this->db->get()->row();  
+            return $data;
+        }
+        public function check_phone($phone){
+            $this->db->select("fb_id,gg_id,phone");
+            $this->db->from($this->_table_name);
+            $this->db->where("phone", $phone );
+            $data = $this->db->get()->row();  
+            return $data;
+        }
+        public function check_id_fb($id_fb){
+            $this->db->select("id,fb_id");
+            $this->db->from($this->_table_name);
+            $this->db->where("fb_id", $id_fb );
+            $data = $this->db->get()->row();  
+            return $data;
+        }
+        public function check_id_gg($id_gg){
+            $this->db->select("id,fb_id");
+            $this->db->from($this->_table_name);
+            $this->db->where("fb_id", $id_gg );
+            $data = $this->db->get()->row();  
+            return $data;
+        }
+        public function update_key_email($email,$key){
+            $data =[
+                'key_email'   => $key,
+                'expire'      => time() + 60*60
+            ];
+            $this->db->where("email", $email );
+            $result =$this->db->update($this->_table_name, $data);
+            return $result;
+        }
+        public function update_id(array $data){
+            if($data['fb_id']){
+                $this->db->set('fb_id',$data['fb_id']);
+            }
+            if($data['gg_id']){
+                $this->db->set('gg_id',$data['gg_id']);
+            }
+            if($data['email']){
+                $this->db->where('email',$data['email']);
+            }
+            if($data['phone']){
+                $this->db->where('phone',$data['phone']);
+            }
+            $result = $this->db->update($this->_table_name);
+            if($result == true){
+                $data = $this->check_id_fb($data['fb_id']);
+                return array(
+                    'code'  => 1,
+                    'satus' => 'Update thành công',
+                    'data'  => $data->id
+                );
+            }
+
+        }
+        function save_image($data){		
+            $this->db->insert('uploaded_images',$data);
+        }
+        public function auth_facebook(array $data){
+            $check_id_fb = $this->check_id_fb($data['fb_id']);
+            if($check_id_fb){
+                return array(
+                    'code'  => 1,
+                    'satus' => 'Đăng nhập thành công',
+                    'data'  => $check_id_fb->id
+                );
+            }
+            $check_phone = $this->check_phone($data['phone']);
+            $check_email = $this->check_email($data['email']);
+            if(!$check_email && !$check_phone){
+                $inser_member = $this->__insert_member($data);
+                if($inser_member){
+                    return array(
+                        'code'  => 1,
+                        'satus' => 'Thêm, Đăng nhập thành công',
+                        'data'  => $inser_member
+                    );
+                }
+            }
+            // if($check_email && $check_phone){
+            //     $update_id = $this->update_id($data);
+            //     if($update_id['code'] == 1){
+            //         //$data = $this->check_id_fb($data['fb_id']);
+            //         return array(
+            //             'code'  => 1,
+            //             'satus' => 'Update,Đăng nhập thành công',
+            //             'data'  => $update_id['data']
+            //         );
+            //     }
+            // }
             
+            if($check_email || $check_phone){
+                if($check_email->fb_id || $check_phone->fb_id){
+                    return array(
+                        'code'  => 2,
+                        'satus' => 'Tài khoản tồn tại',
+                    );
+                }
+                return array(
+                    'code'  => 3,
+                    'satus' => 'Lựa chọn đồng bộ tài khoản',
+                );
+            }
+
+
         }
 
 }
