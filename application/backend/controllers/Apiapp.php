@@ -619,27 +619,24 @@ class apiApp extends CI_Controller {
 		if(!$email_post)
 			$this->__jsonResponse(400,'request',[]);
 		$rs = $this->member_model->check_email($email_post);
-		
-		if ($rs){
-			$key = $this->keyemail::instanceMethodOne();
-			if($key){
-				$data=$this->member_model->update_key_email($email_post,$key);
-				if($data == TRUE){
-					$email = 'manhgauuet123@gmail.com';
-					$name = 'Manh gau';
-					$title = 'MynkCMS Alert';
-					$body = $key;
-					$htmlContent = true;
-					if ($this->my_phpmailer->send_mail($email, $name, $title, $body, $htmlContent)) {
-						echo 'Email sent';
-					}
-					else
-						echo 'failed';				
-				}
-			}
-		}else{
+		if (!$rs){
+			$this->__jsonResponse(404,'Do_not_exist',[]);
+		}
+		$key = $this->keyemail::instanceMethodOne();
+		if(!$key){
 			$this->__jsonResponse(500,'Do_not_exist',[]);
-			}
+		}
+		$data=$this->member_model->update_key_email($email_post,$key);
+		if($data == TRUE){
+			$email =$email_post;
+			$name = $rs->fullname;
+			$title = 'Mã xác nhận';
+			$body = $key;
+			$htmlContent = true;
+			if ($this->my_phpmailer->send_mail($email, $name, $title, $body, $htmlContent)) {
+				$this->__jsonResponse(200,'success');
+			}			
+		}
 	}
 
 	public function updatePassword(){

@@ -430,7 +430,7 @@
             
         }
         public function check_email($email){
-            $this->db->select("fb_id,gg_id,email");
+            $this->db->select("fb_id,gg_id,email,fullname");
             $this->db->from($this->_table_name);
             $this->db->where("email", $email );
             $data = $this->db->get()->row();  
