@@ -159,7 +159,6 @@
 
         public function getStatus($status='')
         {
-
             return ($status) ? $this->allStatus[$status] : $this->allStatus;
         }
     public function changeMemberStatus($memberId, $status)

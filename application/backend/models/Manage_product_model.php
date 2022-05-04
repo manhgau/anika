@@ -257,7 +257,7 @@ class Manage_product_model extends MY_Model {
 	}
 
 	public function getPublicNewsByCode($code)
-	{ 
+	{
 		$news = $this->get_by(['code' => $code, 'is_public' => 1], true);
 		if (! $news) 
 			return false;
