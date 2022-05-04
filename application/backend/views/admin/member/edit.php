@@ -17,14 +17,6 @@
                         </div>
                         <div class="form-group">
                             <?php echo form_element([
-                                'label' => 'Tên đăng nhập',
-                                'name' => 'username',
-                                'value' => $member->username,
-                                'required' => true,
-                            ]) ?>
-                        </div>
-                        <div class="form-group">
-                            <?php echo form_element([
                                 'label' => 'Email',
                                 'name' => 'email',
                                 'value' => $member->email,

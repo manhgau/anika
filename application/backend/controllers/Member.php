@@ -48,7 +48,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             }
             $this->form_validation->set_rules($rules);
             if($this->form_validation->run() == TRUE) {
-                $data = $this->member_model->array_from_post(array('username', 'fullname', 'email', 'password', 'phone', 'status', 'department_id'));
+                $data = $this->member_model->array_from_post(array('fullname', 'email', 'password', 'phone', 'status', 'department_id'));
                 if (!$data['department_id']) $data['department_id'] = $data['department_id'];
 //                if(password_verify($data['password_confirm'], $data['password'])) {
 
@@ -63,7 +63,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
                     }
                     redirect(base_url('member'));
             }
-
             //Load View
             $this->data['meta_title'] = lang('member_infomation');            
             $this->data['sub_view'] = 'admin/member/edit';
