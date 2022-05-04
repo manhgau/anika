@@ -1,5 +1,6 @@
 <?php 
-require_once APPPATH .'/third_party/vendor/autoload.php';
+//require_once APPPATH .'/third_party/vendor/autoload.php';
+require_once('Google/autoload.php');
 
 class Google {
 	protected $CI;
