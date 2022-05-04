@@ -14,10 +14,6 @@
                 'field' => 'fullname',
                 'rules' => 'required|trim',
             ],
-            'username' => [
-                'field' => 'username',
-                'rules' => 'required|trim',
-            ],
             'department_id' => array(
                 'field'   => 'department_id',
                 'rules'   => 'trim|max_length[50]' ),
