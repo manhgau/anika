@@ -389,6 +389,7 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(406, 'token_false');
 		}
 		$id = $data_profile->id;
+		//var_dump($id);die;
 		if(!$id){
 			$this->__jsonResponse(404, 'not_found');
 		}
@@ -396,23 +397,23 @@ class apiApp extends CI_Controller {
         $profile['fullname'] = $this->request['fullname'];
         $profile['email'] 	= $this->request['email'];
         $profile['phone'] 	= $this->request['phone'];
-        $profile['avatar'] 	= $this->request['avatar'];
+        //$profile['avatar'] 	= $this->request['avatar'];
         $profile['addres'] 	= $this->request['addres'];
-		if(!empty( $profile['email']) && !empty( $profile['phone']) && !empty( $profile['avatar']) && !empty( $profile['fullname']) && !empty( $profile['addres'])){
-			$my_profile= $this->member_model->update_profile($profile,$id);
-			if($my_profile){
-				if($my_profile == 1){
-					$this->__jsonResponse(401,'request_already',[]);
-				}else{
-					$profile_new = $this->member_model->get_detail_member($id);
-					$this->__jsonResponse(200,$this->lang->line('success'),$profile_new);
-				}
-			}else{
-				$this->__jsonResponse(500,$this->lang->line('trouble'),[]);
+		if(!empty( $profile['email']) && !empty( $profile['phone'])  && !empty( $profile['fullname']) && !empty( $profile['addres'])){
+			$rs= $this->member_model->update_profile($profile,$id);
+			if($rs['code'] == 1){
+				$data = $this->member_model->get_detail_member($id);
+				$this->__jsonResponse(200, 'success', $data);
 			}
-		}else{
-			$this->__jsonResponse(400,$this->lang->line('request'),[]);
+			if($rs['code'] == 2){
+				$this->__jsonResponse(404,'trouble',[]);
+			}
+			if($rs['code'] == 3){
+				$this->__jsonResponse(500,'phone_and_email_already',[]);
+			}
 		}
+		$this->__jsonResponse(400,$this->lang->line('request'),[]);
+		
 	}
 
 	public function loginForm(){
@@ -421,21 +422,24 @@ class apiApp extends CI_Controller {
         $memberData['phone'] = $this->request['phone'];
         $memberData['password'] = $this->request['password'];	
 		if(!empty($memberData['password']) && (!empty($memberData['email']) || !empty( $memberData['phone'])) ){			
-			$do_login= $this->member_model->do_login($memberData);
-			if($do_login){
-				$member= $this->member_model->get_detail_member($do_login);
+			$rs= $this->member_model->do_login($memberData);
+			if($rs['code'] == 1){
+				$member= $this->member_model->get_detail_member($rs['data']);
 				$token = $this->__returnToken($member);		
 			$data = [
 				'profile'	=> $member,
 				'token' 	=> $token,
 			];
 			$this->__jsonResponse(200,'OK',$data);
-			}else{
-				$this->__jsonResponse(404,"trouble",[]);
 			}
-		}else{
-			$this->__jsonResponse(400,"request",[]);
+			if($rs['code'] == 2){
+				$this->__jsonResponse(404,"password_incorrect",[]);	
+			}
+			if($rs['code'] == 3){
+				$this->__jsonResponse(500,"not_found",[]);				
+			}
 		}
+		$this->__jsonResponse(400,"request",[]);
 	}
 
 	public function registrationForm(){			
@@ -479,7 +483,6 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400,"input_not_valid");
 		if($token && $type == 'facebook'){
 				$userData = array(); 
-				// $userData['oauth_provider'] = 'facebook'; 
 				$userData['fb_id']    		= '123145';
 				$userData['email']        	= 'lilmoi123@gmail.com';
 				$userData['phone']        	= '0947926937';
@@ -627,8 +630,7 @@ class apiApp extends CI_Controller {
 					$title = 'MynkCMS Alert';
 					$body = $key;
 					$htmlContent = true;
-					$attachFile = APPPATH . 'third_party/phpmailer/examples/images/phpmailer.png';
-					if ($this->my_phpmailer->send_mail($email, $name, $title, $body, $htmlContent, $attachFile)) {
+					if ($this->my_phpmailer->send_mail($email, $name, $title, $body, $htmlContent)) {
 						echo 'Email sent';
 					}
 					else
@@ -636,7 +638,7 @@ class apiApp extends CI_Controller {
 				}
 			}
 		}else{
-			$this->__jsonResponse(500,'do_not_exist',[]);
+			$this->__jsonResponse(500,'Do_not_exist',[]);
 			}
 	}
 
@@ -646,6 +648,7 @@ class apiApp extends CI_Controller {
 		$password_confirm	= $this->request['password_confirm'];
 		if(!empty($key) && !empty($password) && !empty($password_confirm)){
 			$rs = $this->member_model->update_password($password,$key,$password_confirm);
+			var_dump($rs);die;
 			if( $rs == 1){
 				$this->__jsonResponse(200, 'success');
 			}
@@ -744,7 +747,7 @@ class apiApp extends CI_Controller {
 }
 	public function refreshToken(){
 		$refresh_token = isset($_GET['refresh_token'])?$_GET['refresh_token']:"";
-		if(!$access_token){
+		if(!$refresh_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
 		$data = $this->__getProfilebyToken($refresh_token);

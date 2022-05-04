@@ -280,22 +280,26 @@
             if($data['email'] == NULL){
                 $this->db->where('phone',$data['phone']);
             }
-            $this->db->limit(1,0);
-            $user = $this->db->get()->result();                            
+            $user = $this->db->get()->row();                            
             if($user){
-                if(is_array($user) && count($user) > 0){
-                    foreach($user as $item){
-                        $password = $item->password;
-                    }
-                    if(password_verify($data['password'], $password)){
-                        return $item->id;
-                    }else{
-                        return false; 
-                    }
-                }                   
-            }else{
-                return false;
+                //var_dump($user);die;
+                if(password_verify($data['password'], $user->password)){
+                    return array(
+                        'code'  => 1,
+                        'status'=>"OK",
+                        'data'  => $user->id
+                    );
+                }                  
+                return array(
+                    'code'  => 2,
+                    'status'=>"Tài khoản, mật khẩu không chính xác"
+                );
             }
+            return array(
+                'code'  => 3,
+                'status'=>"Tài khoản không tồn tại"
+            );
+
                                  
         }
 
@@ -304,6 +308,22 @@
             $this->db->from($this->_table_name);
             $this->db->where("email", $email );
             $this->db->or_where("phone", $phone );
+            $data = $this->db->get()->result();  
+            return $data;
+        }
+        private function __check_profile_email ($email,$id){
+            $this->db->select("id,email, phone");
+            $this->db->from($this->_table_name);
+            $this->db->where_not_in("id", $id );
+            $this->db->where("email", $email );
+            $data = $this->db->get()->result();  
+            return $data;
+        }
+        private function __check_profile_phone ($phone,$id){
+            $this->db->select("id,email, phone");
+            $this->db->from($this->_table_name);
+            $this->db->where_not_in("id", $id );
+            $this->db->where("phone", $phone );
             $data = $this->db->get()->result();  
             return $data;
         }
@@ -318,13 +338,29 @@
             }
         }
         public function update_profile(array $data, $id){
-            $check = $this->__check_phone_email($data['email'],$data['phone']);
-            if($check){
-                return 1;
-            }else{
+            $check_email = $this->__check_profile_email($data['email'],$id);
+            $check_phone = $this->__check_profile_phone($data['phone'],$id);
+            // var_dump($check_email);
+            // var_dump($check_phone);
+            // die;
+            if(!$check_email && !$check_phone){
                 $this->db->where('id',$id);
-                $this->db->update($this->_table_name, $data);
-                return 2;
+                $result =$this->db->update($this->_table_name, $data);
+                if($result == true){
+                    return array(
+                        'code'  => 1,
+                        'status'=>"OK"
+                    );
+                }
+                return array(
+                    'code'  => 2,
+                    'status'=>"Đã có lỗi xảy ra"
+                );
+            }else{
+                return array(
+                    'code'  => 3,
+                    'status'=>"Email,sdt đã được sử dụng"
+                );
             }
         }
 
@@ -337,8 +373,8 @@
         public function __check_key_email($key){
             $this->db->select("key_email, expire");
             $this->db->from($this->_table_name);
-            $this->db->where("key_email", $email );
-            $this->db->or_where("expire >", time() );
+            $this->db->where("key_email", $key );
+            $this->db->where("expire >", time() );
             $data = $this->db->get()->result(); 
             return $data;
         }
@@ -367,9 +403,10 @@
             $password_data =$member->password;
             if(password_verify($data['password_old'], $password_data)){
                 if(password_verify($data['password_confirm'], $data['password'])){
+                    $id = (int) $data['id'];
                     $this->db->set('password', $data['password']);
                     $this->db->where('id',$id);
-                    $result = $this->db->update($this->_table_name);
+                    $result =$this->db->update($this->_table_name);
                     if( $result == true){
                         return array(
                             'code'  => 1,
