@@ -519,13 +519,11 @@
                 }
 
                 $this->session->set_flashdata('session_msg','Xóa dữ liệu thành công');
-                return true;
             }
             else {
                 $this->session->set_flashdata('session_error','Không xóa được dữ liệu');
-                return false;
             }
-            return false;
+            redirect(base_url('news'));
         }
 
         public function _unique_slug($str) 

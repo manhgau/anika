@@ -50,17 +50,18 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             if($this->form_validation->run() == TRUE) {
                 $data = $this->member_model->array_from_post(array('username', 'fullname', 'email', 'password', 'phone', 'status', 'department_id'));
                 if (!$data['department_id']) $data['department_id'] = $data['department_id'];
-                if($data['password']=='')
-                    unset($data['password']);
-                else
-                    $data['password'] = $this->member_model->hash_str($data['password']);
-                if($id = $this->member_model->save($data,$id)) {
-                    $this->session->set_flashdata('session_msg', 'Cập nhật thành công.');
-                }
-                else {
-                    $this->session->set_flashdata('session_error','Không thể cập nhật dữ liệu.');
-                }
-                redirect(base_url('member'));
+//                if(password_verify($data['password_confirm'], $data['password'])) {
+
+                    if ($data['password'] == '')
+                        unset($data['password']);
+                    else
+                        $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+                    if ($id = $this->member_model->save($data, $id)) {
+                        $this->session->set_flashdata('session_msg', 'Cập nhật thành công.');
+                    } else {
+                        $this->session->set_flashdata('session_error', 'Không thể cập nhật dữ liệu.');
+                    }
+                    redirect(base_url('member'));
             }
 
             //Load View

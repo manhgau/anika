@@ -101,10 +101,10 @@
 
 
     }
-    public function hash_str($string)
-    {
-        return 'hash432' . md5($string) . config_item('encryption_key');
-    }
+//    public function hash_str($string)
+//    {
+//        return 'hash432' . md5($string) . config_item('encryption_key');
+//    }
 
         public function dataGrid()
         {
