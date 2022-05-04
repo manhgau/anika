@@ -185,23 +185,23 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="form-group hidden">
-                            <label for="category">Bài viết gốc</label>
-                            <input type="text" name="source_url" value="<?php echo $article->source_url; ?>" class="form-control" placeholder="Nhập link bài viết gốc, nếu có.">
-                        </div>
+<!--                        <div class="form-group hidden">-->
+<!--                            <label for="category">Bài viết gốc</label>-->
+<!--                            <input type="text" name="source_url" value="--><?php //echo $article->source_url; ?><!--" class="form-control" placeholder="Nhập link bài viết gốc, nếu có.">-->
+<!--                        </div>-->
                         <hr class="line">
                         <div class="form-group">
                             <label for="relate-news">Bài liên quan</label>
-                            <input type="text" class="form-control" name="relate_news" id="relate-news">            
+                            <input type="text" class="form-control" name="relate_news" id="relate-news">
                         </div>
-                        <div class="form-group hidden">
-                            <label for="category">Sự kiện</label> - <a href="<?php echo base_url('event/edit');?>" class="btn btn-xs btn-default" target="_blank">thêm mới</a>
-                            <input type="text" class="form-control" name="event" id="news-event">            
-                        </div>
-                        <div class="form-group hidden">
-                            <label for="category">Nhân vật</label> - <a href="<?php echo base_url('golfer/edit');?>" class="btn btn-xs btn-default" target="_blank">thêm mới</a>
-                            <input type="text" class="form-control" name="golfer" id="news-golfer">            
-                        </div>
+<!--                        <div class="form-group hidden">-->
+<!--                            <label for="category">Sự kiện</label> - <a href="--><?php //echo base_url('event/edit');?><!--" class="btn btn-xs btn-default" target="_blank">thêm mới</a>-->
+<!--                            <input type="text" class="form-control" name="event" id="news-event">            -->
+<!--                        </div>-->
+<!--                        <div class="form-group hidden">-->
+<!--                            <label for="category">Nhân vật</label> - <a href="--><?php //echo base_url('golfer/edit');?><!--" class="btn btn-xs btn-default" target="_blank">thêm mới</a>-->
+<!--                            <input type="text" class="form-control" name="golfer" id="news-golfer">            -->
+<!--                        </div>-->
                     </div>
                 </div>
             </div>
