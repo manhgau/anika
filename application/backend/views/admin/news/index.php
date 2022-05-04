@@ -100,15 +100,16 @@
                                                 <a href="javascript:;" class="btn btn-default btn-xs btn-return-news" data-id="<?php echo $article->id;?>" title="Trả bài"> <i class="fa fa-retweet" style="color:#f00;"></i> </a>
                                                 <?php endif; ?>
 
-                                                <?php if($article->update_by) : ?>
-                                                    <a href="<?php echo base_url('news/compareVersion/'.$article->id); ?>" class="btn btn-default btn-xs" title="Lịch sử thay đổi"> <i class="fa fa-history"></i> </a>
-                                                <?php endif;?>
+<!--                                                --><?php //if($article->update_by) : ?>
+<!--                                                    <a href="--><?php //echo base_url('news/compareVersion/'.$article->id); ?><!--" class="btn btn-default btn-xs" title="Lịch sử thay đổi"> <i class="fa fa-history"></i> </a>-->
+<!--                                                --><?php //endif;?>
                                             <?php endif; ?>
-                                            <?php if($article->status==1) : ?>
-                                                <a href="<?php echo link_preview_detail_news($article->slugname, $article->id);?>" class="btn btn-info btn-xs" title="Xem chi tiết" target="_blank"> <i class="fa fa-eye"></i> </a>
-                                                <?php else : ?>
-                                                <button type="button" class="btn btn-xs btn-info" data-id="<?php echo $article->id;?>" data-toggle="modal" data-target="#modal-preview-content">xem trước</button>
-                                                <?php endif; ?>
+<!--                                            --><?php //if($article->status==1) : ?>
+<!--                                                <a href="--><?php //echo link_preview_detail_news($article->slugname, $article->id);?><!--" class="btn btn-info btn-xs" title="Xem chi tiết" target="_blank"> <i class="fa fa-eye"></i> </a>-->
+<!--                                                --><?php //else : ?>
+<!--                                                <button type="button" class="btn btn-xs btn-info" data-id="--><?php //echo $article->id;?><!--" data-toggle="modal" data-target="#modal-preview-content">xem trước</button>-->
+<!--                                                --><?php //endif; ?>
+                                            <button type="button" class="btn btn-xs btn-info" data-id="<?php echo $article->id;?>" data-toggle="modal" data-target="#modal-preview-content">xem</button>
                                         </p> 
                                     </td>
                                     <td><?php echo (isset($authors[$article->create_by])) ? $authors[$article->create_by]->name : '';?></td>
