@@ -478,19 +478,18 @@ class apiApp extends CI_Controller {
 	public function authFacebook(){
 		$token = $_GET['token'];
 		$type = $_GET['type'];
-		$key  = isset($_Get['key'])?$_Get['key']:0;
+		$key  = (int)isset($_GET['key'])? intval($_GET['key']):0;
 		if($key >2)
 			$this->__jsonResponse(400,"input_not_valid");
 		if($token && $type == 'facebook'){
 				$userData = array(); 
-				$userData['fb_id']    		= '123145';
-				$userData['email']        	= 'lilmoi123@gmail.com';
-				$userData['phone']        	= '0947926937';
+				$userData['fb_id']    		= '12345977';
+				$userData['email']        	= 'lilmoi090978@gmail.com';
+				$userData['phone']        	= '04937336';
 				$first_name    	= 'Nguyễn';
 				$last_name    	= 'Mạnh';
 				$userData['fullname']       =  $first_name ." ".$last_name;
 			$rs = $this->member_model->auth_facebook($userData,$key );
-			var_dump($rs);die;
 			if($rs['code']== 1){
 				$member = $this->member_model->get_detail_member($rs['data']);
 				$token = $this->__returnToken($member);		
@@ -507,7 +506,7 @@ class apiApp extends CI_Controller {
 
 			if($rs['code'] == 3 && in_array($key, ['1','2'])){
 				if($key == 1){
-					$rs = $this->member_model->update_id_fb_gg($userData);
+					$rs = $this->member_model->update_id($userData);
 					if($rs['code'] == 1)
 					$member = $this->member_model->get_detail_member($rs['data']);
 					$token = $this->__returnToken($member);		
@@ -516,7 +515,7 @@ class apiApp extends CI_Controller {
 						'token' 	=> $token,
 					];
 						$this->__jsonResponse(200,"success",$data);
-				$this->__jsonResponse(404, 'notfound');
+				//$this->__jsonResponse(404, 'notfound');
 
 				}
 				if($key == 2){
@@ -528,72 +527,73 @@ class apiApp extends CI_Controller {
 				$this->__jsonResponse(500,"synchronizing_documents");
 		   }
 			/* Authenticate user with facebook */
-			// if($this->facebook->is_authenticated()){ 
-			// /* Get user info from facebook */
-			// 	$fbUser = $this->facebook->request('get', '/me?fields=id,first_name,last_name,email,link,gender,picture'); 
+	// 		if($this->facebook->is_authenticated()){ 
+	// 		/* Get user info from facebook */
+	// 			$fbUser = $this->facebook->request('get', '/me?fields=id,first_name,last_name,email,link,gender,picture'); 
 	
-			// 	/* Preparing data for database insertion */
-			// 	// $userData['oauth_provider'] = 'facebook'; 
-			// 	$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';; 
-			// 	$userData['first_name']    = !empty($fbUser['first_name'])?$fbUser['first_name']:''; 
-			// 	$userData['last_name']    = !empty($fbUser['last_name'])?$fbUser['last_name']:''; 
-			// 	$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:'';
+	// 			/* Preparing data for database insertion */
+	// 			// $userData['oauth_provider'] = 'facebook'; 
+	// 			$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';; 
+	// 			$userData['first_name']    = !empty($fbUser['first_name'])?$fbUser['first_name']:''; 
+	// 			$userData['last_name']    = !empty($fbUser['last_name'])?$fbUser['last_name']:''; 
+	// 			$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:'';
 
-			// 	$rs = $this->member_model->auth_facebook($userData);
-			// 	if($rs['code']== 1){
-			// 		$member = $this->member_model->get_detail_member($rs['data']);
-			// 		$token = $this->jwttoken::createToken();
-			// 		$payload[] = [
-			// 			'id'  				=> $member->id,
-			// 			'url_fb' 			=> $member->url_fb,
-			// 			'token'				=> $token
-			// 		];
+	// 			$rs = $this->member_model->auth_facebook($userData);
+	// 			if($rs['code']== 1){
+	// 				$member = $this->member_model->get_detail_member($rs['data']);
+	// 				$token = $this->jwttoken::createToken();
+	// 				$payload[] = [
+	// 					'id'  				=> $member->id,
+	// 					'url_fb' 			=> $member->url_fb,
+	// 					'token'				=> $token
+	// 				];
 
-			// 		$jwt_encode = $this->jwttoken::encode($payload);
-			// 		$data = [
-			// 			'profile'	=> $member,
-			// 			'token' 	=> $jwt_encode
-			// 		];
-			// 			$this->__jsonResponse(200,"success",$data);
-			// 	}
-			// 	if($rs['code']== 2){
-			// 		$this->__jsonResponse(400,"request_already");
-			// 	} 
+	// 				$jwt_encode = $this->jwttoken::encode($payload);
+	// 				$data = [
+	// 					'profile'	=> $member,
+	// 					'token' 	=> $jwt_encode
+	// 				];
+	// 					$this->__jsonResponse(200,"success",$data);
+	// 			}
+	// 			if($rs['code']== 2){
+	// 				$this->__jsonResponse(400,"request_already");
+	// 			} 
 
-		// 	if($rs['code'] == 3 && in_array($key, ['1','2'])){
-		// 		if($key == 1){
-		// 			$rs = $this->member_model->update_id_fb_gg($userData);
-		// 			if($rs['code'] == 1)
-		// 			$member = $this->member_model->get_detail_member($rs['data']);
-		// 			$token = $this->jwttoken::createToken();
-		// 			$payload[] = [
-		// 				'id'  				=> $member->id,
-		// 				'url_fb' 			=> $member->url_fb,
-		// 				'token'				=> $token,
-		// 				"exp" 				=> time() + (60 * 60)
-		// 			];
+	// 		if($rs['code'] == 3 && in_array($key, ['1','2'])){
+	// 			if($key == 1){
+	// 				$rs = $this->member_model->update_id_fb_gg($userData);
+	// 				if($rs['code'] == 1)
+	// 				$member = $this->member_model->get_detail_member($rs['data']);
+	// 				$token = $this->jwttoken::createToken();
+	// 				$payload[] = [
+	// 					'id'  				=> $member->id,
+	// 					'url_fb' 			=> $member->url_fb,
+	// 					'token'				=> $token,
+	// 					"exp" 				=> time() + (60 * 60)
+	// 				];
 	
-		// 			$jwt_encode = $this->jwttoken::encode($payload);
-		// 			$data = [
-		// 				'profile'	=> $member,
-		// 				'token' 	=> $jwt_encode
-		// 			];
-		// 				$this->__jsonResponse(200,"success",$data);
-		// 		$this->__jsonResponse(404, 'notfound');
+	// 				$jwt_encode = $this->jwttoken::encode($payload);
+	// 				$data = [
+	// 					'profile'	=> $member,
+	// 					'token' 	=> $jwt_encode
+	// 				];
+	// 					$this->__jsonResponse(200,"success",$data);
+	// 			$this->__jsonResponse(404, 'notfound');
 
-		// 		}
-		// 		if($key == 2){
-		// 			$this->__jsonResponse(400,"an_error_has_occurred");
-		// 		}
-		//    }
+	// 			}
+	// 			if($key == 2){
+	// 				$this->__jsonResponse(400,"an_error_has_occurred");
+	// 			}
+	// 	   }
 
-		//    if($rs['code'] == 3){
-		// 		$this->__jsonResponse(500,"synchronizing_documents");
-		//    }
-		}
-		// }
-		//$this->__jsonResponse(400, 'input_not_valid');
+	// 	   if($rs['code'] == 3){
+	// 			$this->__jsonResponse(500,"synchronizing_documents");
+	// 	   }
+	// 	}
+	// 	$this->__jsonResponse(404, 'notfound');
 	}  
+	$this->__jsonResponse(400, 'input_not_valid');
+}
 
 	public function authGoogle(){
 		$token = $_GET['token'];
@@ -601,15 +601,17 @@ class apiApp extends CI_Controller {
 		$key  = isset($_Get['key'])?$_Get['key']:0;
 		if($token && $type == 'google'){
 			$google_data=$this->google->validate();
-			$session_data=array(
+			$data_gg=array(
+					'gg_id'=>$google_data['id'],
 					'name'=>$google_data['name'],
 					'email'=>$google_data['email'],
-					'source'=>'google',
-					'profile_pic'=>$google_data['profile_pic'],
-					'link'=>$google_data['link'],
-					'sess_logged_in'=>1
+					'phone'=>$google_data['phone'],
+					// 'source'=>'google',
+					// 'profile_pic'=>$google_data['profile_pic'],
+					// 'link'=>$google_data['link'],
+					// 'sess_logged_in'=>1
 					);	
-			var_dump($session_data);die;   
+			var_dump($data_gg);die;   
 		}
 		$this->__jsonResponse(400, 'input_not_valid');
 	}
@@ -645,7 +647,6 @@ class apiApp extends CI_Controller {
 		$password_confirm	= $this->request['password_confirm'];
 		if(!empty($key) && !empty($password) && !empty($password_confirm)){
 			$rs = $this->member_model->update_password($password,$key,$password_confirm);
-			var_dump($rs);die;
 			if( $rs == 1){
 				$this->__jsonResponse(200, 'success');
 			}
@@ -779,7 +780,9 @@ class apiApp extends CI_Controller {
 		$data['password_old']	 				= $this->request['password_old'];
 		$data['password'] 						= password_hash($this->request['password'], PASSWORD_DEFAULT);
 		$data['password_confirm'] 				= $this->request['password_confirm'];
-
+		if(password_verify($data['password_old'], $data['password'])){
+			$this->__jsonResponse(500,'used_password');
+		}
 		$change_password = $this->member_model->change_password($data);
 		if($change_password['code']==1)
 			$this->__jsonResponse(200,'OK');
@@ -792,6 +795,7 @@ class apiApp extends CI_Controller {
 
 	function upload(){
 		$filename = md5(uniqid(rand(), true));
+		//var_dump($filename);die;
 		$config = array(
 			'upload_path' => 'uploads',
 			'allowed_types' => "gif|jpg|png|jpeg",
