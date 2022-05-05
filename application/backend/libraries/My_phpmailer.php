@@ -28,7 +28,7 @@ class My_phpmailer
 
         // $mail -> Cổng = 25 ;
 
-        $mail->SMTPDebug = 0;
+        $mail->SMTPDebug = 2;
 
         $mail->Host = 'smtp.gmail.com';
 

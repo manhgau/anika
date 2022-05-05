@@ -560,4 +560,59 @@
 
         }
 
+        public function auth_google(array $data){
+            $check_id_gg = $this->check_id_gg($data['gg_id']);
+            if($check_id_gg){
+                return array(
+                    'code'  => 1,
+                    'satus' => 'Đăng nhập thành công',
+                    'data'  => $check_id_gg->id
+                );
+            }
+            $check_phone = $this->check_phone($data['phone']);
+            $check_email = $this->check_email($data['email']);
+            if(!$check_email && !$check_phone){
+                $inser_member = $this->__insert_member($data);
+                if($inser_member){
+                    return array(
+                        'code'  => 1,
+                        'satus' => 'Thêm, Đăng nhập thành công',
+                        'data'  => $inser_member
+                    );
+                }
+            }
+            if($check_email && $check_phone){
+                if($check_email->gg_id && $check_phone->gg_id){
+                    return array(
+                        'code'  => 2,
+                        'satus' => 'Tài khoản tồn tại',
+                    );
+                }
+                $update_id = $this->update_id($data);
+                if($update_id['code'] == 1){
+                    //$data = $this->check_id_fb($data['gg_id']);
+                    return array(
+                        'code'  => 1,
+                        'satus' => 'Update,Đăng nhập thành công',
+                        'data'  => $update_id['data']
+                    );
+                }
+            }
+            
+            if($check_email || $check_phone){
+                if($check_email->gg_id || $check_phone->gg_id){
+                    return array(
+                        'code'  => 2,
+                        'satus' => 'Tài khoản tồn tại',
+                    );
+                }
+                return array(
+                    'code'  => 3,
+                    'satus' => 'Lựa chọn đồng bộ tài khoản',
+                );
+            }
+
+
+        }
+
 }
