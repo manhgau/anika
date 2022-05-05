@@ -32,15 +32,17 @@ class Google {
 	public function validate(){		
 		if (isset($_GET['code'])) {
 		  $this->client->authenticate($_GET['code']);
-		  $_SESSION['access_token'] = $this->client->getAccessToken();
+		  //$_SESSION['access_token'] = $this->client->getAccessToken();
+		  $access_token = $this->client->getAccessToken();
 
 		}
-		if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
-		  $this->client->setAccessToken($_SESSION['access_token']);
+		if (isset($access_token) && $access_token) {
+		  $this->client->setAccessToken($access_token);
 		  $plus = new Google_Service_Plus($this->client);
 			$person = $plus->people->get('me');
 			$info['id']=$person['id'];
 			$info['email']=$person['emails'][0]['value'];
+			$info['email']=$person['phone'][0]['value'];
 			$info['name']=$person['displayName'];
 			$info['link']=$person['url'];
 			$info['profile_pic']=substr($person['image']['url'],0,strpos($person['image']['url'],"?sz=50")) . '?sz=800';

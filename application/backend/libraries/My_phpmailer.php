@@ -19,7 +19,7 @@ class My_phpmailer
 
         $mail->isSMTP();
 
-        $mail->SMTPDebug = 2;
+        $mail->SMTPDebug = 0;
 
         $mail->Host = 'smtp.gmail.com';
 

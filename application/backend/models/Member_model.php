@@ -486,8 +486,20 @@
             }
 
         }
-        function save_image($data){		
-            $this->db->insert('uploaded_images',$data);
+        public function save_image($avatar, $id){		
+            $this->db->set('avatar', $avatar);
+            $this->db->where('id',$id);
+            $result =$this->db->update($this->_table_name);
+            if( $result == true){
+                return array(
+                    'code'  => 1,
+                    'status'=>"OK"
+                );
+            }
+            return array(
+                'code'  => 2,
+                'status'=>"Đã có lỗi xảy ra."
+            );
         }
         public function auth_facebook(array $data){
             $check_id_fb = $this->check_id_fb($data['fb_id']);

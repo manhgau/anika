@@ -52,6 +52,7 @@
 	"district":"Huyện/quận",
 	"province":"Tỉnh/thành",
 	"intro":"Giới thiệu ngắn",
+	"used_password":"Mật khẩu đã dùng ,Vui lòng sử dụng mật khẩu khác",
 	"phone_not_valid":"Số điện thoại không hợp lệ",
 	"is_phone_of_sale":"Số điện thoại đã nhập là của Sale, vui lòng chọn SĐT khác.",
 	"address":"Địa chỉ",
