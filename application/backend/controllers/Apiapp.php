@@ -749,10 +749,10 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
 		$data = $this->__getProfilebyToken($refresh_token);
-		if($data_profile =='Expired token' ){
+		if($data =='Expired token' ){
 			$this->__jsonResponse(401, 'token_expires_and_login');
 		}
-		if($data_profile =='Signature verification failed' ){
+		if($data =='Signature verification failed' ){
 			$this->__jsonResponse(406, 'token_false');
 		}
 		$token = $this->__returnToken($data);		
