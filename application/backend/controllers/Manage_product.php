@@ -463,240 +463,240 @@ class Manage_product extends MY_Controller
 
 
 
-    public function importModal()
-    {
-        $this->load->view('admin/manage_product/modal-import');
-    }
+    // public function importModal()
+    // {
+    //     $this->load->view('admin/manage_product/modal-import');
+    // }
 
-    public function importExec()
-    {
-        $data = parent::upload_file('import_file');
-        if ($data['msg'] != 'success')
-            $this->jsonResponse(400, $data['msg']);
+    // public function importExec()
+    // {
+    //     $data = parent::upload_file('import_file');
+    //     if ($data['msg'] != 'success')
+    //         $this->jsonResponse(400, $data['msg']);
  
-        $imageFilePath = BASEPATH . '../' . config_item('upload_dir') . $data['image_url'];
-        $imageFilePaths = $imageFilePath;
+    //     $imageFilePath = BASEPATH . '../' . config_item('upload_dir') . $data['image_url'];
+    //     $imageFilePaths = $imageFilePath;
 
-        if (!empty($imageFilePath)) {
-            $keys = 0;
-            $keyr = 0;
-            $inputFileType = 'Xlsx';
-            $inputFileName = './sampleData/example1.xls';
+    //     if (!empty($imageFilePath)) {
+    //         $keys = 0;
+    //         $keyr = 0;
+    //         $inputFileType = 'Xlsx';
+    //         $inputFileName = './sampleData/example1.xls';
 
-            /**  Create a new Reader of the type defined in $inputFileType  **/
-            $reader = PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
-            /**  Load $inputFileName to a Spreadsheet Object  **/
-            $spreadsheet = $reader->load($imageFilePath);
-            $data = $spreadsheet->getActiveSheet()->toArray();
-            $i = 0;
-            $arr = [];
+    //         /**  Create a new Reader of the type defined in $inputFileType  **/
+    //         $reader = PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+    //         /**  Load $inputFileName to a Spreadsheet Object  **/
+    //         $spreadsheet = $reader->load($imageFilePath);
+    //         $data = $spreadsheet->getActiveSheet()->toArray();
+    //         $i = 0;
+    //         $arr = [];
 
-            foreach ($spreadsheet->getActiveSheet()->getDrawingCollection() as $drawing) {
-                list($startColumn, $startRow) = Coordinate::coordinateFromString($drawing->getCoordinates());
-                $imageFileName = $drawing->getCoordinates() . mt_rand(1000, 9999);
+    //         foreach ($spreadsheet->getActiveSheet()->getDrawingCollection() as $drawing) {
+    //             list($startColumn, $startRow) = Coordinate::coordinateFromString($drawing->getCoordinates());
+    //             $imageFileName = $drawing->getCoordinates() . mt_rand(1000, 9999);
 
-                // switch ($drawing->getExtension()) {
-                //     case 'jpg':
-                //         $imageFileName .= '.jpg';
-                //         $source = imagecreatefromjpeg($drawing->getPath());
-                //         imagejpeg($source, $imageFilePath . $imageFileName);
-                //         imagejpeg($source, $imageFilePathss . $imageFileName);
-                //         break;
-                //     case 'jpeg':
-                //         $imageFileName .= '.jpg';
-                //         $source = imagecreatefromjpeg($drawing->getPath());
-                //         imagejpeg($source, $imageFilePath . $imageFileName);
-                //         imagejpeg($source, $imageFilePathss . $imageFileName);
-                //         break;
-                //     case 'gif':
-                //         $imageFileName .= '.gif';
-                //         $source = imagecreatefromgif($drawing->getPath());
-                //         imagegif($source, $imageFilePath . $imageFileName);
-                //         break;
-                //     case 'png':
-                //         $imageFileName .= '.png';
-                //         $source = imagecreatefrompng($drawing->getPath());
-                //         imagepng($source, $imageFilePath . $imageFileName);
-                //         imagepng($source, $imageFilePathss . $imageFileName);
-                //         break;
-                // }
-                $startColumn = $this->ABC2decimal($startColumn);
-                $data[$startRow - 1][$startColumn] = $imageFileName;
-            }
+    //             switch ($drawing->getExtension()) {
+    //                 case 'jpg':
+    //                     $imageFileName .= '.jpg';
+    //                     $source = imagecreatefromjpeg($drawing->getPath());
+    //                     imagejpeg($source, $imageFilePath . $imageFileName);
+    //                     imagejpeg($source, $imageFilePathss . $imageFileName);
+    //                     break;
+    //                 case 'jpeg':
+    //                     $imageFileName .= '.jpg';
+    //                     $source = imagecreatefromjpeg($drawing->getPath());
+    //                     imagejpeg($source, $imageFilePath . $imageFileName);
+    //                     imagejpeg($source, $imageFilePathss . $imageFileName);
+    //                     break;
+    //                 case 'gif':
+    //                     $imageFileName .= '.gif';
+    //                     $source = imagecreatefromgif($drawing->getPath());
+    //                     imagegif($source, $imageFilePath . $imageFileName);
+    //                     break;
+    //                 case 'png':
+    //                     $imageFileName .= '.png';
+    //                     $source = imagecreatefrompng($drawing->getPath());
+    //                     imagepng($source, $imageFilePath . $imageFileName);
+    //                     imagepng($source, $imageFilePathss . $imageFileName);
+    //                     break;
+    //             }
+    //             $startColumn = $this->ABC2decimal($startColumn);
+    //             $data[$startRow - 1][$startColumn] = $imageFileName;
+    //         };
 
-            foreach ($data as $key => $row) {
-                $keyss = 0;
-                $arr = [];
+    //         foreach ($data as $key => $row) {
+    //             $keyss = 0;
+    //             $arr = [];
 
-                if ($key != 0 && $key != 1 && $key != 2) {
-                    if (!empty($row[0])) {
-                        $arr[] = $row[0];
-                    }
-                    if (!empty($row[1])) {
-                        $arr[] = $row[1];
-                    }
-                    if (!empty($row[2])) {
-                        $arr[] = $row[2];
-                    }
-                    if (!empty($row[3])) {
-                        $arr[] = $row[3];
-                    }
-                    if (!empty($row[4])) {
-                        $arr[] = $row[4];
-                    }
+    //             if ($key != 0 && $key != 1 && $key != 2) {
+    //                 if (!empty($row[0])) {
+    //                     $arr[] = $row[0];
+    //                 }
+    //                 if (!empty($row[1])) {
+    //                     $arr[] = $row[1];
+    //                 }
+    //                 if (!empty($row[2])) {
+    //                     $arr[] = $row[2];
+    //                 }
+    //                 if (!empty($row[3])) {
+    //                     $arr[] = $row[3];
+    //                 }
+    //                 if (!empty($row[4])) {
+    //                     $arr[] = $row[4];
+    //                 }
 
 
-                    $category = !empty($request->types) ? Category::where('name', $row[7])->where('type', 2)->first() :
-                        Category::where('name', $row[7])->where('type', 1)->first();
-                    if ((empty($category) || empty($row[0]) || empty($row[5])
-                        || empty($row[10])
-                        || empty($row[11])
-                        || empty($row[12]) || empty($row[13]) || empty($row[16]) || empty($row[17]) || empty($row[19]) || empty($row[20]) || empty($row[21]) || empty($row[22]) || empty($row[23])) && empty($request->types)) {
-                        $keys++;
-                        $keyss++;
-                    }
-                    if (!empty(preg_match('/[L,l][ẻ,Ẻ]/', $row[13])) && empty($row[14]) && empty($request->types)) {
-                        $keys++;
-                        $keyss++;
-                    }
-                    if ((empty($category) || empty($row[0]) || empty($row[5]) || empty($row[10]) || empty($row[11]) || empty($row[12]) || empty($row[15]) || empty($row[16]) || empty($row[17]) || empty($row[18]) || empty($row[19])) && !empty($request->types)) {
-                        $keys++;
-                        $keyss++;
-                    } else {
-                        if (empty($category->parent_id) && !empty($category)) {
-                            $check = Category::where('parent_id', $category->id)->count();
-                            if ($check > 0) {
-                                $keys++;
-                                $keyss++;
-                            }
-                        }
-                    }
-                    $trademark = Trademark::where('name', $row[8])->where('enable', 1)->first();
-                    $source = Source::where('name', $row[9])->where('enable', 1)->first();
-                    if (!empty($row[18]) && empty($request->types)) {
-                        $address = [];
-                        $latlong = [];
-                        $array = explode(',', $row[18]);
-                        foreach ($array as $key) {
-                            $key = $key - 1;
-                            if (!empty(auth()->user()->shop->extracontentAddress) && !empty(auth()->user()->shop->lat_long)) {
-                                $json_decode = json_decode(auth()->user()->shop->extracontentAddress);
-                                if (count($json_decode) > 0 && $key <= count($json_decode)) {
-                                    //$address[] = @$json_decode[$key]->address;
-                                    $address[] = @$json_decode[$key]->addressFull;
-                                    $latlong[] = @$json_decode[$key]->latLong;
-                                }
-                            }
-                        }
-                    } else {
-                        if (!empty($row[14])) {
-                            $address = [];
-                            $latlong = [];
-                            $array = explode(',', $row[14]);
-                            foreach ($array as $key) {
-                                $key = $key - 1;
-                                if (!empty(auth()->user()->shop->extracontentAddress) && !empty(auth()->user()->shop->lat_long)) {
-                                    $json_decode = json_decode(auth()->user()->shop->extracontentAddress);
-                                    if (count($json_decode) > 0 && $key <= count($json_decode)) {
-                                        //$address[] = @$json_decode[$key]->address;
-                                        $address[] = @$json_decode[$key]->addressFull;
-                                        $latlong[] = @$json_decode[$key]->latLong;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (!empty($request->types)) {
-                        if ($keyss == 0) {
-                            $data = \App\Models\Service::create([
-                                'name'           => $row[5],
-                                'shop_id'        => auth()->user()->shop->id,
-                                'category_id'    => !empty($category) ? $category->id : 1,
-                                'description'    => @$row[6],
-                                'trademark_id'   => !empty($trademark) ? $trademark->id : 1,
-                                'price'          => @$row[10],
-                                'original_price' => @$row[11],
-                                'enable'         => ($row[16] == "Hiện" || $row[16] == "hiện") ? 1 : 0,
-                                'realtime'       => trim($row[18]) == "Bật" ? 1 : 0,
-                                'unit'           => @$row[12],
-                                'source_id'      => !empty($source) ? $source->id : 1,
-                                'images'         => @\GuzzleHttp\json_encode($arr),
-                                'bargain'        => trim($row[17]) == "Có" ? 1 : 0,
-                                'order_status'   => trim($row[15]) == "Có" ? 1 : 0,
-                                'link'           => trim($row[19]) == "Có" ? 1 : 0,
-                                'property'       => !empty($row[13]) ? "{" . implode(',', preg_split("/\\r\\n|\\r|\\n/", $row[13])) . "}" : null,
-                                'shop_address'   => !empty($address) ? json_encode($address) : null,
-                                // 'lat_long'       => !empty($latlong) ? json_encode($latlong) : null,
-                                //    'weight'         => @$row[21],
-                                //    'length'         => @$row[22],
-                                //    'width'          => @$row[23],
-                                //    'height'         => @$row[24],
-                                //                                'quantity'       => @$row[12],
-                                //                                    'type_unit'      => ($row[9] == "Lẻ"||$row[9] == "lẻ"||$row[9] == "LẺ") ? 1 : 0,
-                                //                                    'sum_unit'       => $row[10],
-                                //                                    'quality'        => trim($row[13]) == "Mới" ? 1 : 0,
-                            ]);
-                            $keyr++;
-                            $this->uploadImageImport($data['images'], 'services');
-                        }
-                    } else {
-                        if ($keyss == 0) {
-                            $data = Product::create([
-                                'name'           => $row[5],
-                                'shop_id'        => auth()->user()->shop->id,
-                                'category_id'    => !empty($category) ? $category->id : 1,
-                                'description'    => @$row[6],
-                                'quantity'       => @$row[16],
-                                'trademark_id'   => !empty($trademark) ? $trademark->id : 1,
-                                'price'          => @$row[10],
-                                'original_price' => @$row[11],
-                                'enable'         => ($row[20] == "Hiện" || $row[20] == "hiện") ? 1 : 0,
-                                'realtime'       => trim($row[22]) == "Bật" ? 1 : 0,
-                                'unit'           => @$row[12],
-                                'type_unit'      => !empty(preg_match('/[L,l][ẻ,Ẻ]/', $row[13])) ? 1 : 0,
-                                'sum_unit'       => !empty(preg_match('/[L,l][ẻ,Ẻ]/', $row[13])) ? $row[14] : 1,
-                                'source_id'      => !empty($source) ? $source->id : 1,
-                                'images'         => @$arr,
-                                'quality'        => trim($row[17]) == "Mới" ? 1 : 0,
-                                'bargain'        => trim($row[21]) == "Có" ? 1 : 0,
-                                'order_status'   => trim($row[19]) == "Có" ? 1 : 0,
-                                'link'           => trim($row[23]) == "Có" ? 1 : 0,
-                                'property'       => !empty($row[15]) ? "{" . implode(',', preg_split("/\\r\\n|\\r|\\n/", $row[15])) . "}" : null,
-                                'shop_address'   => !empty($address) ? json_encode($address) : null,
-                                'lat_long'       => !empty($latlong) ? json_encode($latlong) : null,
-                                'weight'         => @$row[24],
-                                'length'         => @$row[25],
-                                'width'          => @$row[26],
-                                'height'         => @$row[27],
-                            ]);
+    //                 $category = !empty($request->types) ? Category::where('name', $row[7])->where('type', 2)->first() :
+    //                     Category::where('name', $row[7])->where('type', 1)->first();
+    //                 if ((empty($category) || empty($row[0]) || empty($row[5])
+    //                     || empty($row[10])
+    //                     || empty($row[11])
+    //                     || empty($row[12]) || empty($row[13]) || empty($row[16]) || empty($row[17]) || empty($row[19]) || empty($row[20]) || empty($row[21]) || empty($row[22]) || empty($row[23])) && empty($request->types)) {
+    //                     $keys++;
+    //                     $keyss++;
+    //                 }
+    //                 if (!empty(preg_match('/[L,l][ẻ,Ẻ]/', $row[13])) && empty($row[14]) && empty($request->types)) {
+    //                     $keys++;
+    //                     $keyss++;
+    //                 }
+    //                 if ((empty($category) || empty($row[0]) || empty($row[5]) || empty($row[10]) || empty($row[11]) || empty($row[12]) || empty($row[15]) || empty($row[16]) || empty($row[17]) || empty($row[18]) || empty($row[19])) && !empty($request->types)) {
+    //                     $keys++;
+    //                     $keyss++;
+    //                 } else {
+    //                     if (empty($category->parent_id) && !empty($category)) {
+    //                         $check = Category::where('parent_id', $category->id)->count();
+    //                         if ($check > 0) {
+    //                             $keys++;
+    //                             $keyss++;
+    //                         }
+    //                     }
+    //                 }
+    //                 $trademark = Trademark::where('name', $row[8])->where('enable', 1)->first();
+    //                 $source = Source::where('name', $row[9])->where('enable', 1)->first();
+    //                 if (!empty($row[18]) && empty($request->types)) {
+    //                     $address = [];
+    //                     $latlong = [];
+    //                     $array = explode(',', $row[18]);
+    //                     foreach ($array as $key) {
+    //                         $key = $key - 1;
+    //                         if (!empty(auth()->user()->shop->extracontentAddress) && !empty(auth()->user()->shop->lat_long)) {
+    //                             $json_decode = json_decode(auth()->user()->shop->extracontentAddress);
+    //                             if (count($json_decode) > 0 && $key <= count($json_decode)) {
+    //                                 //$address[] = @$json_decode[$key]->address;
+    //                                 $address[] = @$json_decode[$key]->addressFull;
+    //                                 $latlong[] = @$json_decode[$key]->latLong;
+    //                             }
+    //                         }
+    //                     }
+    //                 } else {
+    //                     if (!empty($row[14])) {
+    //                         $address = [];
+    //                         $latlong = [];
+    //                         $array = explode(',', $row[14]);
+    //                         foreach ($array as $key) {
+    //                             $key = $key - 1;
+    //                             if (!empty(auth()->user()->shop->extracontentAddress) && !empty(auth()->user()->shop->lat_long)) {
+    //                                 $json_decode = json_decode(auth()->user()->shop->extracontentAddress);
+    //                                 if (count($json_decode) > 0 && $key <= count($json_decode)) {
+    //                                     //$address[] = @$json_decode[$key]->address;
+    //                                     $address[] = @$json_decode[$key]->addressFull;
+    //                                     $latlong[] = @$json_decode[$key]->latLong;
+    //                                 }
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //                 if (!empty($request->types)) {
+    //                     if ($keyss == 0) {
+    //                         $data = \App\Models\Service::create([
+    //                             'name'           => $row[5],
+    //                             'shop_id'        => auth()->user()->shop->id,
+    //                             'category_id'    => !empty($category) ? $category->id : 1,
+    //                             'description'    => @$row[6],
+    //                             'trademark_id'   => !empty($trademark) ? $trademark->id : 1,
+    //                             'price'          => @$row[10],
+    //                             'original_price' => @$row[11],
+    //                             'enable'         => ($row[16] == "Hiện" || $row[16] == "hiện") ? 1 : 0,
+    //                             'realtime'       => trim($row[18]) == "Bật" ? 1 : 0,
+    //                             'unit'           => @$row[12],
+    //                             'source_id'      => !empty($source) ? $source->id : 1,
+    //                             'images'         => @\GuzzleHttp\json_encode($arr),
+    //                             'bargain'        => trim($row[17]) == "Có" ? 1 : 0,
+    //                             'order_status'   => trim($row[15]) == "Có" ? 1 : 0,
+    //                             'link'           => trim($row[19]) == "Có" ? 1 : 0,
+    //                             'property'       => !empty($row[13]) ? "{" . implode(',', preg_split("/\\r\\n|\\r|\\n/", $row[13])) . "}" : null,
+    //                             'shop_address'   => !empty($address) ? json_encode($address) : null,
+    //                             // 'lat_long'       => !empty($latlong) ? json_encode($latlong) : null,
+    //                             //    'weight'         => @$row[21],
+    //                             //    'length'         => @$row[22],
+    //                             //    'width'          => @$row[23],
+    //                             //    'height'         => @$row[24],
+    //                             //                                'quantity'       => @$row[12],
+    //                             //                                    'type_unit'      => ($row[9] == "Lẻ"||$row[9] == "lẻ"||$row[9] == "LẺ") ? 1 : 0,
+    //                             //                                    'sum_unit'       => $row[10],
+    //                             //                                    'quality'        => trim($row[13]) == "Mới" ? 1 : 0,
+    //                         ]);
+    //                         $keyr++;
+    //                         $this->uploadImageImport($data['images'], 'services');
+    //                     }
+    //                 } else {
+    //                     if ($keyss == 0) {
+    //                         $data = Product::create([
+    //                             'name'           => $row[5],
+    //                             'shop_id'        => auth()->user()->shop->id,
+    //                             'category_id'    => !empty($category) ? $category->id : 1,
+    //                             'description'    => @$row[6],
+    //                             'quantity'       => @$row[16],
+    //                             'trademark_id'   => !empty($trademark) ? $trademark->id : 1,
+    //                             'price'          => @$row[10],
+    //                             'original_price' => @$row[11],
+    //                             'enable'         => ($row[20] == "Hiện" || $row[20] == "hiện") ? 1 : 0,
+    //                             'realtime'       => trim($row[22]) == "Bật" ? 1 : 0,
+    //                             'unit'           => @$row[12],
+    //                             'type_unit'      => !empty(preg_match('/[L,l][ẻ,Ẻ]/', $row[13])) ? 1 : 0,
+    //                             'sum_unit'       => !empty(preg_match('/[L,l][ẻ,Ẻ]/', $row[13])) ? $row[14] : 1,
+    //                             'source_id'      => !empty($source) ? $source->id : 1,
+    //                             'images'         => @$arr,
+    //                             'quality'        => trim($row[17]) == "Mới" ? 1 : 0,
+    //                             'bargain'        => trim($row[21]) == "Có" ? 1 : 0,
+    //                             'order_status'   => trim($row[19]) == "Có" ? 1 : 0,
+    //                             'link'           => trim($row[23]) == "Có" ? 1 : 0,
+    //                             'property'       => !empty($row[15]) ? "{" . implode(',', preg_split("/\\r\\n|\\r|\\n/", $row[15])) . "}" : null,
+    //                             'shop_address'   => !empty($address) ? json_encode($address) : null,
+    //                             'lat_long'       => !empty($latlong) ? json_encode($latlong) : null,
+    //                             'weight'         => @$row[24],
+    //                             'length'         => @$row[25],
+    //                             'width'          => @$row[26],
+    //                             'height'         => @$row[27],
+    //                         ]);
 
-                            $numbers = [];
-                            $keyr++;
-                            if (!empty($data->property)) {
-                                $x2Numbers = array_map(function ($values) {
-                                    return explode(',', $values);
-                                }, json_decode($data->property, true));
-                                $a = $this->generate($x2Numbers);
-                                foreach ($a as $key => $value) {
-                                    $numbers[$key]['name'] = $value;
-                                    $numbers[$key]['quantity'] = $key == 0 ? @$row[16] : 0;
-                                }
-                                $data->update([
-                                    'number_feature' => json_encode(@$numbers),
-                                ]);
-                            }
-                            $this->uploadImageImport($data['images'], 'products');
-                        }
-                    }
-                    if ($keyss == 0) {
-                        $shop_id = $data->shop_id < 10 ? '0' . $data->shop_id : $data->shop_id;
-                        $product_id = $data->id < 10 ? '0' . $data->id : $data->id;
-                        $code = $shop_id . 'MA' . $product_id;
-                        $data->update(['code' => $code]);
-                    }
-                }
-            }
-        }
-        return $this->jsonResponse('status', 'Tải danh sách sản phẩm thành công');
-    }
+    //                         $numbers = [];
+    //                         $keyr++;
+    //                         if (!empty($data->property)) {
+    //                             $x2Numbers = array_map(function ($values) {
+    //                                 return explode(',', $values);
+    //                             }, json_decode($data->property, true));
+    //                             $a = $this->generate($x2Numbers);
+    //                             foreach ($a as $key => $value) {
+    //                                 $numbers[$key]['name'] = $value;
+    //                                 $numbers[$key]['quantity'] = $key == 0 ? @$row[16] : 0;
+    //                             }
+    //                             $data->update([
+    //                                 'number_feature' => json_encode(@$numbers),
+    //                             ]);
+    //                         }
+    //                         $this->uploadImageImport($data['images'], 'products');
+    //                     }
+    //                 }
+    //                 if ($keyss == 0) {
+    //                     $shop_id = $data->shop_id < 10 ? '0' . $data->shop_id : $data->shop_id;
+    //                     $product_id = $data->id < 10 ? '0' . $data->id : $data->id;
+    //                     $code = $shop_id . 'MA' . $product_id;
+    //                     $data->update(['code' => $code]);
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return $this->jsonResponse('status', 'Tải danh sách sản phẩm thành công');
+    // } }
 }
