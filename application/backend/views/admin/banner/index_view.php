@@ -4,8 +4,7 @@
             <div class="box">
                 <div class="box-header">
                     <a class="btn btn-success btn-sm" href="<?= base_url('banner/edit?type=' . $type); ?>" style="color:#fff;"><i class="fa fa-plus"></i> Add New </a>
-                </div><!-- /.box-header -->
-                
+                </div><!-- /.box-header -->    
                 <div class="box-header" style="margin: 10px 0 0 0;border-top: 1px solid #ccc;padding: 10px 0 0px 0;">
                     <strong style="margin:0 10px">Lọc </strong>&nbsp;
                     <select id="category-filter" name="type" class="form-control filter filter-fields" style="width:200px;display:inline-block">
@@ -40,15 +39,9 @@
                             <?php if( ! empty($banners)) : $bannerGroup = config_item('bannerGroup'); 
                                 foreach($banners as $key => $banner) : ?>
                                 <tr>
-                                    <td><?= ++$key;?></td>
-                                    <td style="max-width:350px">
-                                        <div style="max-height:400px;overflow: scroll;">
-                                        <?php if($banner->html) : echo html_entity_decode($banner->html); 
-                                        else :
-                                        ?>
+                                    <td style=" text-align: center;"><?= ++$key;?></td>
+                                    <td style="max-width:150px ; text-align:center;">                                        
                                         <img src="<?= get_image($banner->image);?>" width="100">
-                                        <?php endif; ?>
-                                        </div>
                                     </td>
                                     <td><a href="<?= base_url("banner/?type={$banner->type}");?>"><?= $bannerGroup[$banner->type];?></a></td>
                                     <td><?= $banner->name; ?></td>

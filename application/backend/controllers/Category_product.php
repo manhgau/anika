@@ -105,6 +105,7 @@
                     $this->session->set_flashdata('session_msg','Xóa dữ liệu thành công');
                     redirect(base_url('category_product'));
                 }
+              
         
                 public function _unique_slug($str) 
                 {

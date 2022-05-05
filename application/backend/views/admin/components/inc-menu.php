@@ -24,7 +24,6 @@
     <li><a href="/pointload/refund?status=pending"><i class="fa fa-retweet"></i> <?php echo lang('refund_request') ?> <span class="badge bg-orange" id="refund_pending_number"></span></a></li>
     <li><a href="/member/post?status=pending"><i class="fa fa-plane"></i> <?php echo lang('post_request') ?> <span class="badge bg-orange" id="post_pending_number"></span></a></li>
     */ ?>
-
     <li class="treeview <?php echo (in_array($this->router->class, array('news', 'category'))) ? 'active' : ''; ?>">
         <a href="#">
             <i class="fa fa-file-text"></i>
@@ -32,9 +31,9 @@
             <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
-            <li><a href="<?php echo base_url('news/index'); ?>"><i class="fa fa-list"></i> Danh sách tin tức</a></li>
+            <li><a href="<?php echo base_url('news/index'); ?>"><i class="fa fa-list"></i> Danh sách bài viết</a></li>
             <li><a href="<?php echo base_url('news/edit'); ?>"><i class="fa fa-list"></i> Thêm mới </a></li>
-            <li><a href="<?php echo base_url('category'); ?>"><i class="fa fa-list"></i> Chuyên mục </a></li>
+            <li><a href="<?php echo base_url('category'); ?>"><i class="fa fa-list"></i> Chuyên mục bài viết</a></li>
         </ul>
     </li>
 
@@ -50,7 +49,17 @@
         </ul>
     </li>
 
-    
+    <li class="treeview <?php echo ($this->router->class=='notification') ? 'active' : '';?>">
+        <a href="#">
+            <i class="fa fa-cc-discover"></i>
+            <span>Tin khuyến mãi</span>
+            <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="<?php echo base_url('notification/edit'); ?>"><i class="fa fa-plus"></i> Thêm mới</a></li>
+            <li><a href="<?php echo base_url('notification'); ?>"><i class="fa fa-list"></i> Danh sách thông báo</a></li>
+        </ul>
+    </li>
     
     
     <?php /*

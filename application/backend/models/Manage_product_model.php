@@ -49,23 +49,19 @@ class Manage_product_model extends MY_Model {
 		)
 	];
 
-	const STATUS_CON = 'con';
-	const STATUS_HET = 'het';
-	const STATUS_KHAC = 'khac';
-	const STATUS_SAPCON = 'sapcon';
+	const STATUS_HOATDONG = 'public';
+	const STATUS_TAMKHOA = 'block';
+	const STATUS_DAXOA = 'delete';
 	protected $allStatus = [
-		self::STATUS_CON => [
-			'name' => 'Còn hàng',
+		self::STATUS_HOATDONG => [
+			'name' => 'Hoạt động',
 		],
-		self::STATUS_HET => [
-			'name' => 'Hết hàng',
+		self::STATUS_TAMKHOA => [
+			'name' => 'Tạm khóa',
 		],
-		self::STATUS_SAPCON => [
-			'name' => 'Sắp có',
-		],
-		self::STATUS_KHAC => [
-			'name' => 'Khác',
-		],
+		self::STATUS_DAXOA => [
+			'name' => 'Đã xóa',
+		]
 	];
 
 
@@ -100,11 +96,11 @@ class Manage_product_model extends MY_Model {
 		return ($time) ? $this->rentTime[$time] : $this->rentTime;
 	}
 
-    public function getListProduct()
-    {
-        $query = $this->db->get($this->_table_name);
-        return ($query->num_rows() > 0 ) ? $query->result_array() : null;
-    }
+    // public function getListProduct()
+    // {
+    //     $query = $this->db->get($this->_table_name);
+    //     return ($query->num_rows() > 0 ) ? $query->result_array() : null;
+    // }
 
 	// public function getCategory()
     // {
@@ -112,20 +108,32 @@ class Manage_product_model extends MY_Model {
     //     return ($query->num_rows() > 0 ) ? $query->result_array() : null;
     // }
 	
-	public function getList($limit=10, $offset=0){
+	// public function getList($limit=10, $offset=0){
+	// 		$this->db->select('a.*, b.title AS category_name');
+	// 		$this->db->from($this->_table_name . ' as a');
+	// 		$this->db->join('category_products as b', 'a.category_id=b.id', 'left');
+	// 		// if($category_id>0){
+	// 		// 	$this->db->where('a.category_id',$category_id);
+	// 		// }
+	// 		$this->db->limit($limit, $offset);
+	// 		$data = $this->db->get()->result();
+
+	// 		return $data;
+
+
+	//  	}
+		 public function getList( $limit=10, $offset=0){
 			$this->db->select('a.*, b.title AS category_name');
 			$this->db->from($this->_table_name . ' as a');
 			$this->db->join('category_products as b', 'a.category_id=b.id', 'left');
-			// if($category_id>0){
-			// 	$this->db->where('a.category_id',$category_id);
-			// }
+			$this->db->where('status', 'public');
+			$this->db->or_where('status', 'block');
 			$this->db->limit($limit, $offset);
-			$data = $this->db->get()->result();
-
+			$data = $this->db->get();
 			return $data;
-
-
-	 	}
+	
+	
+		}
 	// public function get_detail_product($id){
 	// 	$this->db->select('a.*, b.title AS category_name');
 	// 	$this->db->from($this->_table_name . ' as a');
@@ -143,10 +151,13 @@ class Manage_product_model extends MY_Model {
 		$offset = intval($post['start']);
 		$limit = intval($post['length']);
 		$where = [];
-		if (@$post['type']) $where['type'] = $post['type'];
-		if (@$post['service_type']) $where['service_type'] = $post['service_type'];
+		if ($post['status'])
+			$where['status'] = $post['status'];
+		else
+			$where['status !='] = self::STATUS_DAXOA;
+		// if (@$post['service_type']) $where['service_type'] = $post['service_type'];
 		if ($post['status']) $where['status'] = $post['status'];
-		if (@$post['is_public']) $where['is_public'] = $post['is_public'];
+		// if (@$post['is_public']) $where['is_public'] = $post['is_public'];
 		if (@$post['category_id']) $where['category_id'] = $post['category_id'];
 		if ($post['keyword']) {
 			if (preg_match('/^0[1-9][0-9]{8,9}$/',$post['keyword'])) 
@@ -363,31 +374,31 @@ class Manage_product_model extends MY_Model {
 		return $data;
 	}
 
-	public function setData($news, $isObjec=true)
-	{
-		$news = parent::setData($news, true);
-		$news->price_sort = sortMoney(intval($news->price));
-		$news->rent_price_hour_sort = sortMoney(intval($news->rent_price_hour));
-		$news->rent_price_day_sort = sortMoney(intval($news->rent_price_day));
-		$news->rent_price_month_sort = sortMoney(intval($news->rent_price_month));
-		return $news;
-	}
+	// public function setData($news, $isObjec=true)
+	// {
+	// 	$news = parent::setData($news, true);
+	// 	$news->price_sort = sortMoney(intval($news->price));
+	// 	$news->rent_price_hour_sort = sortMoney(intval($news->rent_price_hour));
+	// 	$news->rent_price_day_sort = sortMoney(intval($news->rent_price_day));
+	// 	$news->rent_price_month_sort = sortMoney(intval($news->rent_price_month));
+	// 	return $news;
+	// }
 
 	public function updateRentStatus()
 	{
 		# trước ngày ngày hết hạn cho thuê 60 ngày: status=sapcon
-		$this->db->set('status', self::STATUS_SAPCON);
+		$this->db->set('status', self::STATUS_DAXOA);
 		// $this->db->like('service_type', '"'.self::SEVICE_CHOTHUE.'"');
-		$this->db->where('status', self::STATUS_HET);
+		$this->db->where('status', self::STATUS_TAMKHOA);
 		$this->db->where('rent_enddate IS NOT NULL', null);
 		$this->db->where('rent_price_month IS NOT NULL', null);
 		$this->db->where('rent_enddate <= DATE_ADD( DATE(NOW()), INTERVAL 60 DAY )', null);
 		$this->db->update($this->_table_name);
 
 		# quá ngày hết hạn cho thuê: status=con
-		$this->db->set('status', self::STATUS_CON);
+		$this->db->set('status', self::STATUS_HOATDONG);
 		// $this->db->like('service_type', '"'.self::SEVICE_CHOTHUE.'"');
-		$this->db->where('status', self::STATUS_SAPCON);
+		$this->db->where('status', self::STATUS_DAXOA);
 		$this->db->where('rent_enddate IS NOT NULL', null);
 		$this->db->where('rent_price_month IS NOT NULL', null);
 		$this->db->where('rent_enddate < DATE(NOW())', null);
