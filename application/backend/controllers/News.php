@@ -205,7 +205,7 @@
                 $action = 'insert';
             }
             $old_status = $article->status;
-           
+          
             //validate form
             $rules = $this->news_model->rules;
             $this->form_validation->set_rules($rules);
@@ -218,6 +218,7 @@
                 $__inputCategory = $data['category'];
                 unset($data['category']);
 
+             
                 if(!isset($data['status'])) $data['status'] = STATUS_PENDING;
                 if($this->input->post('sentNews'))
                 {
@@ -295,7 +296,8 @@
                 if($id) $_action = 'Updated';
                 else $_action = 'Added';
 
-
+                print_r($article);
+                exit();
                 if ($_action == 'Updated') {
                     # Luu ban backup tin sang table: news_version
                     $backupNews = array (

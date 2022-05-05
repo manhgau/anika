@@ -134,13 +134,6 @@
             action: function() {callApiSelectedRows('/manage_product/delete', 'Có xóa danh sách đã chọn không ?')},
                
         },
-        {
-            text: '<i class="fa fa-upload"></i> Tải lên danh sách',
-            className: 'btn btn-sm btn-primary',
-            action: function ( e, dt, node, config ) {
-                showModal('/manage_product/importModal')
-            }
-        }
     ];
 
     var confirmRemoveNews = (id) => {
