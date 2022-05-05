@@ -205,7 +205,7 @@
                 $action = 'insert';
             }
             $old_status = $article->status;
-
+           
             //validate form
             $rules = $this->news_model->rules;
             $this->form_validation->set_rules($rules);
@@ -376,9 +376,8 @@
                         $this->event_news_model->saveEventByNews($id,$_event_ids);
                     }
 
-                    // print_r($data);
-                    // exit();
-                    //Save golfer for news
+                   
+                    // Save golfer for news
                     // $this->golfer_news_model->removeGolferByNews($id);
                     // $_golfer_input = $this->golfer_news_model->array_from_post( array('golfer') );
                     // if($_golfer_input['golfer']) {

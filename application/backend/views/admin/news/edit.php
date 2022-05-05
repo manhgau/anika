@@ -23,7 +23,6 @@
                                 <div class="col-xs-6">
                                     <p>
                                         <button id="upload" type="button" name="bt_image"><span>Tải ảnh</span></button>
-                                     hoặc <button id="upload-copyright" type="button" name="bt_image"><span>Tải ảnh và chèn logo</span></button> <small>(640x***)</small>
                                     </p>
                                     <p><span id="status"></span><span id="status-copyright"></span></p>
                                 </div>
@@ -113,11 +112,6 @@
                     <div class="box-body">
                         <?php if($userdata['level'] <= 2) : ?>
                             <ul class="list-unstyled">
-                                <li>
-                                    <label >
-                                    <input type="checkbox" name="status" value="1" class="simple" id="status" <?php if($article->status==1) echo 'checked="checked"'; ?>> Xuất bản</label> 
-                                    <?php echo form_error('status');?>
-                                </li>
                                 <li>
                                     <label for="is-hot"><input type="checkbox" name="is_hot" value="1" class="simple" id="is-hot" <?php if($article->is_hot==1) echo 'checked="checked"'; ?>> Nổi bật chuyên mục</label> <?php echo form_error('is_hot');?>
                                 </li>
