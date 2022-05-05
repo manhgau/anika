@@ -234,6 +234,8 @@ class apiApp extends CI_Controller {
 		if(!$post)
 			$this->__jsonResponse(404, 'not_found');	
 		$post->thumbnail = getImageUrl($post->thumbnail);
+		unset($post->news_id);
+		unset($post->term_order);
 		$this->__jsonResponse(200, 'success', $post);
 	}
 	
@@ -632,7 +634,7 @@ class apiApp extends CI_Controller {
 		if($data == TRUE){
 			$email =$email_post;
 			$name = $rs->fullname;
-			$title = 'Password Verification';
+			$title = "Password Verification";
 			$body = $key;
 			$htmlContent = true;
 			if ($this->my_phpmailer->send_mail($email, $name, $title, $body, $htmlContent)) {
@@ -651,13 +653,13 @@ class apiApp extends CI_Controller {
 				$this->__jsonResponse(200, 'success');
 			}
 			if( $rs == 2){
-				$this->__jsonResponse(400, 'an_error_has_occurred');
+				$this->__jsonResponse(404, 'an_error_has_occurred');
 			}
 			if( $rs == 3){
-				$this->__jsonResponse(400, 'password_incorrect');
+				$this->__jsonResponse(404, 'password_incorrect');
 			}
 			if( $rs == 4){
-				$this->__jsonResponse(500, 'input_not_valid');
+				$this->__jsonResponse(500, 'confirm_expiration_code');
 			}
 		}
 		$this->__jsonResponse(400, 'input_not_valid');

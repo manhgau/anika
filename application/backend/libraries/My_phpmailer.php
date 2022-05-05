@@ -15,11 +15,20 @@ class My_phpmailer
 {
     public function send_mail($email_to, $email_to_name, $subject, $body, $is_html=false, $attachmentPath=NULL)
     {
+
         $mail = new PHPMailer;
 
         $mail->isSMTP();
 
-        $mail->SMTPDebug = 0;
+        // $mail -> Host = 'localhost' ;
+
+        // $mail -> SMTPAuth = false ;
+
+        // $mail -> SMTPAutoTLS = false ; 
+
+        // $mail -> Cổng = 25 ;
+
+        $mail->SMTPDebug = 2;
 
         $mail->Host = 'smtp.gmail.com';
 

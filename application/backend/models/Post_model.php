@@ -17,9 +17,10 @@
         //     return $data;
         // }
             public function list_post ($offset=0, $limit=10, $category_id=0, $is_hot=0){
-            $this->db->select('a.*, b.*');
+            $this->db->select('a.*, b.*, c.title as category_name');
             $this->db->from('category_news' . ' as a');
             $this->db->join('news as b', 'a.news_id=b.id', 'inner');
+            $this->db->join('category as c', 'a.category_id =  c.id', 'inner');
             if($category_id>0){
                 $this->db->where('a.category_id',$category_id);
             }
@@ -43,11 +44,15 @@
             if (!$id){
                 return NULL;
             }
-            $this->db->select('a.*, b.title AS category_name');
-            $this->db->from($this->_table_name . ' as a');
-            $this->db->join('category as b', 'a.category=b.id', 'left');
-            $this->db->where('a.id',$id);
-            $this->db->where('a.status',"1");
+            // $this->db->select('a.*, b.title AS category_name');
+            // $this->db->from($this->_table_name . ' as a');
+            // $this->db->join('category as b', 'a.category=b.id', 'left');
+            $this->db->select('a.*, b.*, c.title as category_name');
+            $this->db->from('category_news' . ' as a');
+            $this->db->join('news as b', 'a.news_id=b.id', 'inner');
+            $this->db->join('category as c', 'a.category_id =  c.id', 'inner');
+            $this->db->where('a.news_id',$id);
+            $this->db->where('b.status',"1");
             $data = $this->db->get()->row();
             return $data;
         }

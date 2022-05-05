@@ -376,18 +376,22 @@
         }
         public function update_password($password,$key,$password_confirm){
             if($this->__check_key_email($key)){
-                if(password_verify($password_confirm, $password)){
-                $update = [
-                    'key_email'     =>  NULL,
-                    'expire'        =>  NULL,
-                    'password'      =>  $password
-                ];
+                $this->db->set('expire', time() - 60 * 60);
                 $this->db->where('key_email',$key);
-                $result =$this->db->update($this->_table_name, $update);
-                if($result == true){
-                    return 1;
-                }else{
-                    return 2;
+                $result =$this->db->update($this->_table_name);
+                if( $result == true ){
+                    if(password_verify($password_confirm, $password)){
+                    $update = [
+                        'key_email'     =>  NULL,
+                        'password'      =>  $password
+                    ];
+                    $this->db->where('key_email',$key);
+                    $result =$this->db->update($this->_table_name, $update);
+                    if($result == true){
+                        return 1;
+                    }else{
+                        return 2;
+                    }
                 }
             } 
             return 3;
@@ -429,7 +433,7 @@
             $this->db->select("fb_id,gg_id,email,fullname");
             $this->db->from($this->_table_name);
             $this->db->where("email", $email );
-            $data = $this->db->get()->row();  
+            $data = $this->db->get()->row();
             return $data;
         }
         public function check_phone($phone){
@@ -522,20 +526,81 @@
                     );
                 }
             }
-            // if($check_email && $check_phone){
-            //     $update_id = $this->update_id($data);
-            //     if($update_id['code'] == 1){
-            //         //$data = $this->check_id_fb($data['fb_id']);
-            //         return array(
-            //             'code'  => 1,
-            //             'satus' => 'Update,Đăng nhập thành công',
-            //             'data'  => $update_id['data']
-            //         );
-            //     }
-            // }
+            if($check_email && $check_phone){
+                if($check_email->fb_id && $check_phone->fb_id){
+                    return array(
+                        'code'  => 2,
+                        'satus' => 'Tài khoản tồn tại',
+                    );
+                }
+                $update_id = $this->update_id($data);
+                if($update_id['code'] == 1){
+                    //$data = $this->check_id_fb($data['fb_id']);
+                    return array(
+                        'code'  => 1,
+                        'satus' => 'Update,Đăng nhập thành công',
+                        'data'  => $update_id['data']
+                    );
+                }
+            }
             
             if($check_email || $check_phone){
                 if($check_email->fb_id || $check_phone->fb_id){
+                    return array(
+                        'code'  => 2,
+                        'satus' => 'Tài khoản tồn tại',
+                    );
+                }
+                return array(
+                    'code'  => 3,
+                    'satus' => 'Lựa chọn đồng bộ tài khoản',
+                );
+            }
+
+
+        }
+
+        public function auth_google(array $data){
+            $check_id_gg = $this->check_id_gg($data['gg_id']);
+            if($check_id_gg){
+                return array(
+                    'code'  => 1,
+                    'satus' => 'Đăng nhập thành công',
+                    'data'  => $check_id_gg->id
+                );
+            }
+            $check_phone = $this->check_phone($data['phone']);
+            $check_email = $this->check_email($data['email']);
+            if(!$check_email && !$check_phone){
+                $inser_member = $this->__insert_member($data);
+                if($inser_member){
+                    return array(
+                        'code'  => 1,
+                        'satus' => 'Thêm, Đăng nhập thành công',
+                        'data'  => $inser_member
+                    );
+                }
+            }
+            if($check_email && $check_phone){
+                if($check_email->gg_id && $check_phone->gg_id){
+                    return array(
+                        'code'  => 2,
+                        'satus' => 'Tài khoản tồn tại',
+                    );
+                }
+                $update_id = $this->update_id($data);
+                if($update_id['code'] == 1){
+                    //$data = $this->check_id_fb($data['gg_id']);
+                    return array(
+                        'code'  => 1,
+                        'satus' => 'Update,Đăng nhập thành công',
+                        'data'  => $update_id['data']
+                    );
+                }
+            }
+            
+            if($check_email || $check_phone){
+                if($check_email->gg_id || $check_phone->gg_id){
                     return array(
                         'code'  => 2,
                         'satus' => 'Tài khoản tồn tại',
