@@ -632,7 +632,7 @@ class apiApp extends CI_Controller {
 		if($data == TRUE){
 			$email =$email_post;
 			$name = $rs->fullname;
-			$title = 'Mã xác nhận';
+			$title = 'Password Verification';
 			$body = $key;
 			$htmlContent = true;
 			if ($this->my_phpmailer->send_mail($email, $name, $title, $body, $htmlContent)) {
@@ -785,7 +785,7 @@ class apiApp extends CI_Controller {
 		}
 		$change_password = $this->member_model->change_password($data);
 		if($change_password['code']==1)
-			$this->__jsonResponse(200,'OK');
+			$this->__jsonResponse(200,'success');
 		if($change_password['code']==2)
 			$this->__jsonResponse(404,'password_incorrect');
 		if($change_password['code']==3)
@@ -793,23 +793,41 @@ class apiApp extends CI_Controller {
 
 	}
 
-	function upload(){
+	function changeAvatar(){
+		//$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
+		$access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjcxIiwidXJsX2ZiIjoiIiwiZXhwIjoxNjU0MzA4NDU5fQ.Zp9sAoJNaRwC1Pi099yuC3kT63qnM2Oe55z5YB-JmO4";
+		if(!$access_token){
+			$this->__jsonResponse(400, 'input_not_valid',[]);
+		}
+		$data_profile = $this->__getProfilebyToken($access_token);
+		if($data_profile =='Expired token' ){
+			$this->__jsonResponse(405, 'token_expires');
+		}
+		if($data_profile =='Signature verification failed' ){
+			$this->__jsonResponse(406, 'token_false');
+		}
+		$member_id = $data_profile->id;
+		if(!$member_id)
+		$this->__jsonResponse(404, 'not_found');
 		$filename = md5(uniqid(rand(), true));
-		//var_dump($filename);die;
 		$config = array(
 			'upload_path' => 'uploads',
 			'allowed_types' => "gif|jpg|png|jpeg",
 			'file_name' => $filename
-		);
-		
+		);		
 		$rs=$this->load->library('upload', $config);
-		if($this->upload->do_upload())
+		if($this->upload->do_upload('avatar'))
 			{
 			$file_data = $this->upload->data();
-			$data['file_dir'] = $file_data['file_name'];
-			$data['date_uploaded'] = date('Y-m-d H:i:s');
-			$rs =$this->member_model->save_image($data);
-			var_dump($rs);
+			$data_image = $file_data['file_name'];
+			$rs =$this->member_model->save_image($data_image, $member_id);
+			if($rs['code'] == 1){
+				$data = getImageUrl($data_image);
+				$this->__jsonResponse(200, 'success', $data);
+			}
+			if($rs['code'] == 2){
+				$this->__jsonResponse(400, 'an_error_has_occurred');
+			}		
 			}
 		}
 }
