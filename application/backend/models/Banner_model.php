@@ -75,6 +75,7 @@
             if($type>0){
                 $this->db->where('type',$type);
             }
+            $this->db->order_by('position',"ASC");
             $this->db->where('status','1');
             $this->db->limit($limit, $offset);
             $data = $this->db->get()->result();
