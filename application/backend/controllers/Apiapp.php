@@ -234,6 +234,8 @@ class apiApp extends CI_Controller {
 		if(!$post)
 			$this->__jsonResponse(404, 'not_found');	
 		$post->thumbnail = getImageUrl($post->thumbnail);
+		unset($post->news_id);
+		unset($post->term_order);
 		$this->__jsonResponse(200, 'success', $post);
 	}
 	
