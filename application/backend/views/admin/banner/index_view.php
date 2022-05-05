@@ -39,9 +39,17 @@
                             <?php if( ! empty($banners)) : $bannerGroup = config_item('bannerGroup'); 
                                 foreach($banners as $key => $banner) : ?>
                                 <tr>
+<<<<<<< Updated upstream
                                     <td style=" text-align: center;"><?= ++$key;?></td>
                                     <td style="max-width:150px ; text-align:center;">                                        
                                         <img src="<?= get_image($banner->image);?>" width="100">
+=======
+                                    <td><?= ++$key;?></td>
+                                    <td style="max-width:350px" class="text-center">
+                                                           
+                                        <img src="<?= get_image($banner->image);?>" width="100">
+                                
+>>>>>>> Stashed changes
                                     </td>
                                     <td><a href="<?= base_url("banner/?type={$banner->type}");?>"><?= $bannerGroup[$banner->type];?></a></td>
                                     <td><?= $banner->name; ?></td>
