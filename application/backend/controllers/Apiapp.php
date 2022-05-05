@@ -651,13 +651,13 @@ class apiApp extends CI_Controller {
 				$this->__jsonResponse(200, 'success');
 			}
 			if( $rs == 2){
-				$this->__jsonResponse(400, 'an_error_has_occurred');
+				$this->__jsonResponse(404, 'an_error_has_occurred');
 			}
 			if( $rs == 3){
-				$this->__jsonResponse(400, 'password_incorrect');
+				$this->__jsonResponse(404, 'password_incorrect');
 			}
 			if( $rs == 4){
-				$this->__jsonResponse(500, 'input_not_valid');
+				$this->__jsonResponse(500, 'confirm_expiration_code');
 			}
 		}
 		$this->__jsonResponse(400, 'input_not_valid');

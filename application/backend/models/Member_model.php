@@ -376,18 +376,22 @@
         }
         public function update_password($password,$key,$password_confirm){
             if($this->__check_key_email($key)){
-                if(password_verify($password_confirm, $password)){
-                $update = [
-                    'key_email'     =>  NULL,
-                    'expire'        =>  NULL,
-                    'password'      =>  $password
-                ];
+                $this->db->set('expire', time() - 60 * 60);
                 $this->db->where('key_email',$key);
-                $result =$this->db->update($this->_table_name, $update);
-                if($result == true){
-                    return 1;
-                }else{
-                    return 2;
+                $result =$this->db->update($this->_table_name);
+                if( $result == true ){
+                    if(password_verify($password_confirm, $password)){
+                    $update = [
+                        'key_email'     =>  NULL,
+                        'password'      =>  $password
+                    ];
+                    $this->db->where('key_email',$key);
+                    $result =$this->db->update($this->_table_name, $update);
+                    if($result == true){
+                        return 1;
+                    }else{
+                        return 2;
+                    }
                 }
             } 
             return 3;
