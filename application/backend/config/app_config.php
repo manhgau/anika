@@ -39,8 +39,8 @@ $config['menuGroup'] = [
 ];
 
 $config['bannerGroup'] = [
-	1 => 'Slider (1920x760)',
-	// 2 => 'Accelerator Banner',
+	1 => 'Slider',
+	2 => 'Banner',
 	// 3 => 'Partnership Circle-around (256x256)',
 	// 4 => 'Content Banner',
 	// 5 => 'Popup Banner',

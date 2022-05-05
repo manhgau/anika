@@ -75,15 +75,15 @@
         })
     })
 
-    // const numberMask = {
-    //     mask: Number,
-    //     min: 0,
-    //     max: 999999999999,
-    //     thousandsSeparator: ','
-    // };
+    const numberMask = {
+        mask: Number,
+        min: 0,
+        max: 99999999999999999,
+        thousandsSeparator: ','
+    };
 
-    // var priceMask = IMask(document.getElementById('price-mask'), numberMask);
-    // var sale_bonusMask = IMask(document.getElementById('sale_bonus-mask'), numberMask);
+    var priceMask = IMask(document.getElementById('price-mask'), numberMask);
+    var sale_bonusMask = IMask(document.getElementById('sale_bonus-mask'), numberMask);
 
     var user_province = $('select[name="province_id"]');
     var user_district = $('select[name="district_id"]');

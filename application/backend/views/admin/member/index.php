@@ -107,14 +107,14 @@
             }
         }
     ];
-    // function bunk_delete(e, dt, node, config) {
-    //     var confirm_msg = 'Bạn muốn xóa dữ liệu?';
-    //     var buttons = {
-    //         'Ok' : function(){ exec_delete(dt); },
-    //         'Cancel': function(){ $(this).dialog('close'); }
-    //     };
-    //     confirm_dialog(confirm_msg,buttons);
-    // }
+    function bunk_delete(e, dt, node, config) {
+        var confirm_msg = 'Bạn muốn xóa dữ liệu?';
+        var buttons = {
+            'Ok' : function(){ exec_delete(dt); },
+            'Cancel': function(){ $(this).dialog('close'); }
+        };
+        confirm_dialog(confirm_msg,buttons);
+    }
     var confirmRemove = (id) => {
         confirmAction('execRemove('+id+')', 'Xóa bản ghi này?', 'Xóa');
     }

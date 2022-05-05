@@ -41,7 +41,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <button type="submit" class="btn btn-sm btn-primary"> <i class="fa fa-search"></i> Tìm kiếm</button>
-                                <a class="btn btn-sm btn-default" href="<?php echo base_url('product');?>"> <i class="fa fa-refresh"></i> Reset</a>
+                                <a class="btn btn-sm btn-default" href="<?php echo base_url('manage_product');?>"> <i class="fa fa-refresh"></i> Reset</a>
                             </div>
                         </div>
                     </div>
@@ -57,10 +57,9 @@
                             'price' => 'Giá bán',
                             'status_name' => 'Tình trạng',
                             'category_id' => 'Danh mục',
-                            'is_public' => 'Công khai',
                             'created_time' => 'Thời gian',
                             'created_by' => 'Người đăng',
-                            '' => 'Thao tác',
+                            'status' => 'Thao tác',
                         ], true, true);
                         ?>
                     </div>
@@ -102,29 +101,20 @@
             }
         },
         {
-            targets: 6,
-            className:"text-center",
-            render: function (data, type, full, meta){
-                return `
-                    <span class="${(data==1) ? 'text-success' : 'text-muted'}">${(data==1) ? 'Công khai' : 'Tạm ẩn'}</span><br>
-                    <a href="#" onclick="confirmTogglePublic(${full.id}, ${data}); return false;" class="btn btn-xs btn-default" title="${(data==1) ? 'Ẩn bài' : 'Công khai'}"><i class="fa fa-refresh"></i></a>
-                `;
-                // <i class="fa ${(data==1) ? 'fa-check green' : 'fa-minus text-muted'}"></i><br>
-            }
-        },
-        {
-            targets: 8,
+            targets: 7,
             render: function (data, type, full, meta){
                 return `${full.created_by_user.name}`;
             }
         },
         {
-            targets: 9,
+            targets: 8,
             render: function (data, type, full, meta){
                 return `
                 <p>
                     <a href="/manage_product/edit/${full.id}" class="btn btn-xs btn-default"><i class="fa fa-pencil-square-o text-primary"></i></a>
                     <a href="#" onclick="confirmRemoveNews(${full.id}); return false;" class="btn btn-xs btn-default"><i class="fa fa-trash-o text-danger"></i></a>
+                   
+                    <a href="#" onclick="confirmTogglePublic(${full.id},'${data}'); return false;" class="btn btn-xs btn-default" title="${(data=='public') ? 'Ẩn bài' : 'Công khai'}"><i class="fa fa-refresh"></i></a>
                 </p>
                 `;
             }
@@ -138,6 +128,11 @@
             action: function ( e, dt, node, config ) {
                 location.href = '/manage_product/edit'
             }
+        },
+        {   text : '<i class="fa fa-trash"></i> Xóa',
+            className:"btn btn-sm btn-danger",
+            action: function() {callApiSelectedRows('/manage_product/delete', 'Có xóa danh sách đã chọn không ?')},
+               
         },
         {
             text: '<i class="fa fa-upload"></i> Tải lên danh sách',
@@ -153,22 +148,26 @@
     }
 
     var execRemoveNews = (id) => {
-        $.post('/manage_product/apis/removeNews', {id}, (res) => {
+        $.post('/manage_product/apis/delete', {id}, (res) => {
             (res.code===200)
                 ? _redrawPage()
                 : showMessage(res.msg, 'error')
         })
     }
 
-    var confirmTogglePublic = (id, currentPublic=1) => {
-        let msg = (currentPublic==1) ? 'Ẩn bài viết này?' : 'Công khai bài viết này?';
-        confirmAction('togglePublic('+id+')', msg, (currentPublic==1) ? 'Ẩn bài' : 'Công khai');
+    var confirmTogglePublic = (id, currentPublic='public') => {
+        let msg = (currentPublic=='public') ? 'Ẩn bài viết này?' : 'Công khai bài viết này?';
+        confirmAction('togglePublic('+id+')', msg, (currentPublic=='public') ? 'Ẩn bài' : 'Công khai');
     }
 
     var togglePublic = (id) => {
         $.post('/manage_product/apis/togglePublic', {id}, (res) => {
             _redrawPage()
         })
+    }
+
+    function exec_delete() {
+    console.log(rows_selected);
     }
 
 </script>

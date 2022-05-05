@@ -8,7 +8,7 @@ $(function(){
        $.get( url, function( data ) {
            location.reload();
         });
-        return false;
+        return false;   
    }); 
 });
 </script>

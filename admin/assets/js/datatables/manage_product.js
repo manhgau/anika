@@ -1,29 +1,15 @@
 $(document).ready(function () {
     var rows_selected = [];
     var controller = $('#datatable').data('controller');
-    
     var table = $('#datatable').DataTable({
-        dom: "Bfrtip",
-        pageLength: 10,
-        "oLanguage": {
-            "sSearch": "Tìm kiếm:&nbsp;"
-        },
-        lengthMenu: [ 10, 20, 50, 75, 100],
-        columnDefs: [
-            {
-                targets: 0,
-                searchable: false,
-                orderable: false,
-                width: '1%',
-                className: 'dt-body-center',
-                render: function (data, type, full, meta){
-                    return '<input type="checkbox" name="id[]">';
-                }
-            }
-        ],
+//        dom: "Bfrtip",
+     
+             
+          
+        
         buttons : [
             {text : '<i class="fa fa-plus"></i> Thêm mới', action : bunk_addnew, className:"btn btn-sm btn-success"},
-            // {text : '<i class="fa fa-trash"></i> Xóa', action : bunk_delete, className:"btn btn-sm btn-danger"},
+            {text : '<i class="fa fa-trash"></i> Xóa', action : bunk_delete, className:"btn btn-sm btn-danger"},
         ],
         order: [[0, 'desc']],
         rowCallback: function (row, data, dataIndex) {
@@ -37,8 +23,8 @@ $(document).ready(function () {
         }
     });
 
-     // SINGLE SELECTION
-     $('#datatable tbody').on('click', 'input[type="checkbox"]', function (e) {
+    // SINGLE SELECTION
+    $('#datatable tbody').on('click', 'input[type="checkbox"]', function (e) {
         var $row = $(this).closest('tr');
         // Get row data
         var data = table.row($row).data();
@@ -188,7 +174,7 @@ function exec_lock(dt) {
         data:{ids:ids,status:2}
     }).done(function(resp){
         if(resp.code==0){
-            dt.rows('.selected').remove().draw();
+            //dt.rows('.selected').remove().draw();
             close_dialog();
             location.reload();
         } else {
@@ -216,7 +202,7 @@ function exec_public(dt) {
         data:{ids:ids,status:1}
     }).done(function(resp) {
         if (resp.code==0) {
-            dt.rows('.selected').remove().draw();
+            //dt.rows('.selected').remove().draw();
             close_dialog();
             location.reload();
         } else {
