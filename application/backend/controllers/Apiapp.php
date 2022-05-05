@@ -632,7 +632,7 @@ class apiApp extends CI_Controller {
 		if($data == TRUE){
 			$email =$email_post;
 			$name = $rs->fullname;
-			$title = 'Password Verification';
+			$title = "Password Verification";
 			$body = $key;
 			$htmlContent = true;
 			if ($this->my_phpmailer->send_mail($email, $name, $title, $body, $htmlContent)) {
