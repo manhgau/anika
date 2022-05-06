@@ -38,6 +38,7 @@ class Partner_model extends MY_Model
         $this->db->select('*');
         $this->db->from($this->_table_name);
         $this->db->order_by('is_hot', 'DESC');
+        $this->db->order_by('id', 'DESC');
         $this->db->where('status', 1);
         $this->db->limit($limit, $offset);
         $data = $this->db->get()->result();
