@@ -170,3 +170,12 @@ CREATE TABLE `notifycation_user` (
   KEY `notify_id` (`notify_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- add table: tag
+CREATE TABLE `tag` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tag` varchar(250) NOT NULL,
+  `tag_md5` varchar(250) NOT NULL,
+  `status` int(1) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

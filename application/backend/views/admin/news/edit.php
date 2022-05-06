@@ -153,6 +153,8 @@
                             <input id="uploadFile" type="file" name="thumbnail" class="img" id="thumbnail" />
                             <div id="imagePreview" style="background-image: url(<?php echo ($article->thumbnail) ? get_image($article->thumbnail) : '';?>);"></div>
                         </div>
+                        <?php /*
+                        
                         <div class="form-group">
                             <label for="exampleInputEmail1">Highlight Image <small style="font-weight:400">(1200x410)</small></label><br>
                             <button id="upload-single" type="button" class="btn btn-sm btn-primary" data-name="highlight_image"><span><i class="fa fa-upload"></i> Upload ảnh</span></button> 
@@ -165,6 +167,7 @@
                             <input type="text" name="highlight_alt" value="<?php echo $article->highlight_alt; ?>" placeholder="ghi chú ảnh" class="form-control">
                             
                         </div>
+                        */?>
                         <div class="form-group">
                             <label for="tag">Tags</label> <?php echo form_error('tags_id');?>
                             <textarea rows="1" id="tags" name="tags" style="width:200px;padding:5px;height:auto"></textarea>

@@ -310,7 +310,7 @@ class Apis extends MY_Controller {
             $this->json_output(-2,'Lỗi! Bạn không có quyền thực hiện thao tác này');
         }
         
-        $data = array('status'=>5);
+        $data = array('status'=>STATUS_PENDING);
         if($this->news_model->save($data,$id))
         {
             $this->history_model->add_history(NULL,'return_news',$id,'news');

@@ -9,30 +9,12 @@
     });
 </script>
 
-<script type="text/javascript" src="<?=base_url('admin/assets/js/me/thcl-upload.jquery.js');?>"></script>
+<!-- <script type="text/javascript" src="<?=base_url('admin/assets/js/me/thcl-upload.jquery.js');?>"></script> -->
 
 <script type="text/javascript" src="<?php echo base_url('admin/assets/js/jquery.tokeninput.js'); ?>"></script>
 <script type="text/javascript">
 $(document).ready(function () {
-    $("#news-event").tokenInput(adminUrl+"/Apis/token_search_event",{
-        theme : "facebook",
-        tokenDelimiter: ",",
-        preventDuplicates: true,
-        <?php if(isset($events)) : ?>
-        prePopulate:<?=$events;?>,
-        <?php endif; ?>
-        
-    });
-    $("#news-golfer").tokenInput(adminUrl+"/Apis/token_search_golfer",{
-        theme : "facebook",
-        tokenDelimiter: ",",
-        preventDuplicates: true,
-        <?php if(isset($golfers)) : ?>
-        prePopulate:<?=$golfers;?>,
-        <?php endif; ?>
-        
-    });
-    $("#relate-news").tokenInput(adminUrl+"/Apis/token_search_news",{
+    $("#relate-news").tokenInput("/Apis/token_search_news", {
         theme : "facebook",
         tokenDelimiter: ",",
         preventDuplicates: true,
@@ -43,4 +25,4 @@ $(document).ready(function () {
     });
 });
 </script>
-<script type="text/javascript" src="<?php echo base_url();?>/admin/assets/js/ajaxUpload/single-upload.js"></script>
+<!-- <script type="text/javascript" src="<?php echo base_url();?>/admin/assets/js/ajaxUpload/single-upload.js"></script> -->
