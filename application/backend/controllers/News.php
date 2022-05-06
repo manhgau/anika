@@ -210,7 +210,7 @@
             $rules = $this->news_model->rules;
             $this->form_validation->set_rules($rules);
             if($this->form_validation->run() == TRUE) {
-                $data = $this->news_model->array_from_post(array('title','description','content','meta_title','meta_description','meta_keyword','public_time','category','status','is_hot','is_popular','source_url','relate_news', 'highlight_image', 'highlight_alt', 'display_author', 'display_ads_box', 'slugname'));
+                $data = $this->news_model->array_from_post(array('title','description','content','meta_title','meta_description','meta_keyword','public_time','category','status','is_hot','is_popular','source_url','relate_news', 'display_author', 'display_ads_box', 'slugname'));
 
                 $data['display_author'] = intval($data['display_author']);
                 $data['display_ads_box'] = intval($data['display_ads_box']);
@@ -296,41 +296,6 @@
                 if($id) $_action = 'Updated';
                 else $_action = 'Added';
 
-                print_r($article);
-                exit();
-                if ($_action == 'Updated') {
-                    # Luu ban backup tin sang table: news_version
-                    $backupNews = array (
-                        'news_id' => $article->id,
-                        'title' => $article->title,
-                        'slugname' => $article->slugname,
-                        'description' => $article->description,
-                        'content' => $article->content,
-                        'meta_title' => $article->meta_title,
-                        'meta_description' => $article->meta_description,
-                        'meta_keyword' => $article->meta_keyword,
-                        'tags_id' => $article->tags_id,
-                        'create_time' => time(),
-                        'public_time' => $article->public_time,
-                        'update_time' => NULL,
-                        'create_by' => $this->data['userdata']['id'],
-                        'update_by' => ($article->update_by) ? $article->update_by : $article->create_by,
-                        'thumbnail' => $article->thumbnail,
-                        'category' => $article->category,
-                        'status' => (isset($article->status)) ? $article->status : NULL,
-                        'hit_view' => $article->hit_view,
-                        'is_hot' => $article->is_hot,
-                        'is_popular' => $article->is_popular,
-                        'relate_news' => $article->relate_news,
-                        'audio_file' => (isset($article->audio_file)) ? $article->audio_file : NULL,
-                        'source_url' => $article->source_url,
-                        'highlight_alt' => $article->highlight_alt,
-                        'highlight_image' => $article->highlight_image,
-                        'display_author' => $article->display_author,
-                        'display_ads_box' => $article->display_ads_box
-                    );
-                    $this->news_version_model->save($backupNews, NULL);
-                }
 
                 if($id = $this->news_model->save($data,$id)) {
                     //save history
@@ -394,6 +359,7 @@
                     $this->category_news_model->addCategoryNews($id, $__inputCategory);
                 }
                 else {
+                    exit($this->db->last_query());
                     $this->session->set_flashdata('session_error','Không thể cập nhật dữ liệu.');
                 }
                 removeEditLog($id,$this->data['userdata']['id']);
