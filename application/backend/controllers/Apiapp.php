@@ -352,10 +352,40 @@ class apiApp extends CI_Controller {
 		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
 		$this->__jsonResponse(200, 'success',$data);   
 	}
-
+	function getAuthorizationHeader(){
+		$headers = null;
+		if (isset($_SERVER['Authorization'])) {
+			$headers = trim($_SERVER["Authorization"]);
+		}
+		else if (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
+			$headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
+		} elseif (function_exists('apache_request_headers')) {
+			$requestHeaders = apache_request_headers();
+			// Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
+			$requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+			//print_r($requestHeaders);
+			if (isset($requestHeaders['Authorization'])) {
+				$headers = trim($requestHeaders['Authorization']);
+			}
+		}
+		return $headers;
+	}
+	/**
+	 * get access token from header
+	 * */
+	function getBearerToken() {
+		$headers = $this->getAuthorizationHeader();
+		// HEADER: Get the access token from the header
+		if (!empty($headers)) {
+			if (preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
+				return $matches[1];
+			}
+		}
+		return null;
+	}
 	public function  getProfile()
 	{
-		$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
+		$access_token =$this->getBearerToken();
 		if(!$access_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
@@ -379,7 +409,7 @@ class apiApp extends CI_Controller {
 	}
 
 	public function updateProfile(){
-		$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
+		$access_token =$this->getBearerToken();
 		if(!$access_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
@@ -649,7 +679,7 @@ class apiApp extends CI_Controller {
 	}
 
 	public function listNotification(){
-		$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
+		$access_token =$this->getBearerToken();
 		if(!$access_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
@@ -729,7 +759,7 @@ class apiApp extends CI_Controller {
 	$this->__jsonResponse(200, 'success', $data);		
 }
 	public function refreshToken(){
-		$refresh_token = isset($_GET['refresh_token'])?$_GET['refresh_token']:"";
+		$access_token =$this->getBearerToken();
 		if(!$refresh_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
@@ -746,7 +776,7 @@ class apiApp extends CI_Controller {
 
 
 	public function changePassword(){
-		$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
+		$access_token =$this->getBearerToken();
 		if(!$access_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
@@ -779,7 +809,7 @@ class apiApp extends CI_Controller {
 	}
 
 	function changeAvatar(){
-		$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
+		$access_token =$this->getBearerToken();
 		if(!$access_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
@@ -823,7 +853,7 @@ class apiApp extends CI_Controller {
 			$rs =$this->member_model->save_image($data_image, $member_id);
 			if($rs['code'] == 1){
 				$data = getImageUrl($data_image);
-				//$this->__jsonResponse(200, 'success', $data);
+				$this->__jsonResponse(200, 'success', $data);
 			}
 			if($rs['code'] == 2){
 				$this->__jsonResponse(400, 'an_error_has_occurred');
@@ -832,5 +862,6 @@ class apiApp extends CI_Controller {
 		else {
 			$this->__jsonResponse(500, $msg);
 		}
+
 	}
 }
