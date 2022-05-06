@@ -391,7 +391,6 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(406, 'token_false');
 		}
 		$id = $data_profile->id;
-		//var_dump($id);die;
 		if(!$id){
 			$this->__jsonResponse(404, 'not_found');
 		}
@@ -399,7 +398,6 @@ class apiApp extends CI_Controller {
         $profile['fullname'] = $this->request['fullname'];
         $profile['email'] 	= $this->request['email'];
         $profile['phone'] 	= $this->request['phone'];
-        //$profile['avatar'] 	= $this->request['avatar'];
         $profile['addres'] 	= $this->request['addres'];
 		if(!empty( $profile['email']) && !empty( $profile['phone'])  && !empty( $profile['fullname']) && !empty( $profile['addres'])){
 			$rs= $this->member_model->update_profile($profile,$id);
@@ -484,115 +482,100 @@ class apiApp extends CI_Controller {
 		if($key >2)
 			$this->__jsonResponse(400,"input_not_valid");
 		if($token && $type == 'facebook'){
-				$userData = array(); 
-				$userData['fb_id']    		= '12345977';
-				$userData['email']        	= 'lilmoi090978@gmail.com';
-				$userData['phone']        	= '04937336';
-				$first_name    	= 'Nguyễn';
-				$last_name    	= 'Mạnh';
-				$userData['fullname']       =  $first_name ." ".$last_name;
-			$rs = $this->member_model->auth_facebook($userData,$key );
-			if($rs['code']== 1){
-				$member = $this->member_model->get_detail_member($rs['data']);
-				$token = $this->__returnToken($member);		
-				$data = [
-					'profile'	=> $member,
-					'token' 	=> $token,
-				];
-					$this->__jsonResponse(200,"success",$data);
-			}
+		// 		$userData = array(); 
+		// 		$userData['fb_id']    		= '12345977';
+		// 		$userData['email']        	= 'lilmoi090978@gmail.com';
+		// 		$userData['phone']        	= '04937336';
+		// 		$first_name    	= 'Nguyễn';
+		// 		$last_name    	= 'Mạnh';
+		// 		$userData['fullname']       =  $first_name ." ".$last_name;
+		// 	$rs = $this->member_model->auth_facebook($userData,$key );
+		// 	if($rs['code']== 1){
+		// 		$member = $this->member_model->get_detail_member($rs['data']);
+		// 		$token = $this->__returnToken($member);		
+		// 		$data = [
+		// 			'profile'	=> $member,
+		// 			'token' 	=> $token,
+		// 		];
+		// 			$this->__jsonResponse(200,"success",$data);
+		// 	}
 
-			if($rs['code']== 2){
-				$this->__jsonResponse(400,"request_already");
-			}
+		// 	if($rs['code']== 2){
+		// 		$this->__jsonResponse(400,"request_already");
+		// 	}
 
-			if($rs['code'] == 3 && in_array($key, ['1','2'])){
-				if($key == 1){
-					$rs = $this->member_model->update_id($userData);
-					if($rs['code'] == 1)
+		// 	if($rs['code'] == 3 && in_array($key, ['1','2'])){
+		// 		if($key == 1){
+		// 			$rs = $this->member_model->update_id($userData);
+		// 			if($rs['code'] == 1)
+		// 			$member = $this->member_model->get_detail_member($rs['data']);
+		// 			$token = $this->__returnToken($member);		
+		// 			$data = [
+		// 				'profile'	=> $member,
+		// 				'token' 	=> $token,
+		// 			];
+		// 				$this->__jsonResponse(200,"success",$data);
+		// 		$this->__jsonResponse(404, 'notfound');
+
+		// 		}
+		// 		if($key == 2){
+		// 			$this->__jsonResponse(400,"an_error_has_occurred");
+		// 		}
+		//    }
+
+		//    if($rs['code'] == 3){
+		// 		$this->__jsonResponse(500,"synchronizing_documents");
+		//    }
+			/* Authenticate user with facebook */
+			// if($this->facebook->is_authenticated()){ 
+			/* Get user info from facebook */
+				$fbUser = $this->facebook->request('get', '/me?fields=id,first_name,last_name,email,link,gender,picture', $token); 
+				var_dump($fbUser);die;
+				/* Preparing data for database insertion */
+				// $userData['oauth_provider'] = 'facebook'; 
+				$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';; 
+				$userData['first_name']    = !empty($fbUser['first_name'])?$fbUser['first_name']:''; 
+				$userData['last_name']    = !empty($fbUser['last_name'])?$fbUser['last_name']:''; 
+				$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:'';
+
+				$rs = $this->member_model->auth_facebook($userData);
+				if($rs['code']== 1){
 					$member = $this->member_model->get_detail_member($rs['data']);
 					$token = $this->__returnToken($member);		
 					$data = [
 						'profile'	=> $member,
 						'token' 	=> $token,
 					];
-						$this->__jsonResponse(200,"success",$data);
-				//$this->__jsonResponse(404, 'notfound');
-
+					$this->__jsonResponse(200,"success",$data);
 				}
-				if($key == 2){
-					$this->__jsonResponse(400,"an_error_has_occurred");
+				if($rs['code']== 2){
+					$this->__jsonResponse(400,"request_already");
 				}
-		   }
 
-		   if($rs['code'] == 3){
-				$this->__jsonResponse(500,"synchronizing_documents");
-		   }
-			/* Authenticate user with facebook */
-	// 		if($this->facebook->is_authenticated()){ 
-	// 		/* Get user info from facebook */
-	// 			$fbUser = $this->facebook->request('get', '/me?fields=id,first_name,last_name,email,link,gender,picture'); 
-	
-	// 			/* Preparing data for database insertion */
-	// 			// $userData['oauth_provider'] = 'facebook'; 
-	// 			$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';; 
-	// 			$userData['first_name']    = !empty($fbUser['first_name'])?$fbUser['first_name']:''; 
-	// 			$userData['last_name']    = !empty($fbUser['last_name'])?$fbUser['last_name']:''; 
-	// 			$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:'';
+				if($rs['code'] == 3 && in_array($key, ['1','2'])){
+					if($key == 1){
+						$rs = $this->member_model->update_id($userData);
+						if($rs['code'] == 1)
+						$member = $this->member_model->get_detail_member($rs['data']);
+						$token = $this->__returnToken($member);		
+						$data = [
+							'profile'	=> $member,
+							'token' 	=> $token,
+						];
+							$this->__jsonResponse(200,"success",$data);
+					$this->__jsonResponse(404, 'notfound');
 
-	// 			$rs = $this->member_model->auth_facebook($userData);
-	// 			if($rs['code']== 1){
-	// 				$member = $this->member_model->get_detail_member($rs['data']);
-	// 				$token = $this->jwttoken::createToken();
-	// 				$payload[] = [
-	// 					'id'  				=> $member->id,
-	// 					'url_fb' 			=> $member->url_fb,
-	// 					'token'				=> $token
-	// 				];
+					}
+					if($key == 2){
+						$this->__jsonResponse(400,"an_error_has_occurred");
+					}
+				}
 
-	// 				$jwt_encode = $this->jwttoken::encode($payload);
-	// 				$data = [
-	// 					'profile'	=> $member,
-	// 					'token' 	=> $jwt_encode
-	// 				];
-	// 					$this->__jsonResponse(200,"success",$data);
-	// 			}
-	// 			if($rs['code']== 2){
-	// 				$this->__jsonResponse(400,"request_already");
-	// 			} 
-
-	// 		if($rs['code'] == 3 && in_array($key, ['1','2'])){
-	// 			if($key == 1){
-	// 				$rs = $this->member_model->update_id_fb_gg($userData);
-	// 				if($rs['code'] == 1)
-	// 				$member = $this->member_model->get_detail_member($rs['data']);
-	// 				$token = $this->jwttoken::createToken();
-	// 				$payload[] = [
-	// 					'id'  				=> $member->id,
-	// 					'url_fb' 			=> $member->url_fb,
-	// 					'token'				=> $token,
-	// 					"exp" 				=> time() + (60 * 60)
-	// 				];
-	
-	// 				$jwt_encode = $this->jwttoken::encode($payload);
-	// 				$data = [
-	// 					'profile'	=> $member,
-	// 					'token' 	=> $jwt_encode
-	// 				];
-	// 					$this->__jsonResponse(200,"success",$data);
-	// 			$this->__jsonResponse(404, 'notfound');
-
-	// 			}
-	// 			if($key == 2){
-	// 				$this->__jsonResponse(400,"an_error_has_occurred");
-	// 			}
-	// 	   }
-
-	// 	   if($rs['code'] == 3){
-	// 			$this->__jsonResponse(500,"synchronizing_documents");
-	// 	   }
-	// 	}
-	// 	$this->__jsonResponse(404, 'notfound');
+				if($rs['code'] == 3){
+						$this->__jsonResponse(500,"synchronizing_documents");
+				}
+		// }
+		// $this->__jsonResponse(404, 'notfound');
 	}  
 	$this->__jsonResponse(400, 'input_not_valid');
 }
@@ -602,7 +585,7 @@ class apiApp extends CI_Controller {
 		$type = $_GET['type'];
 		$key  = isset($_Get['key'])?$_Get['key']:0;
 		if($token && $type == 'google'){
-			$google_data=$this->google->validate();
+			$google_data=$this->google->validate($token);
 			$data_gg=array(
 					'gg_id'=>$google_data['id'],
 					'name'=>$google_data['name'],
@@ -796,8 +779,7 @@ class apiApp extends CI_Controller {
 	}
 
 	function changeAvatar(){
-		//$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
-		$access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjcxIiwidXJsX2ZiIjoiIiwiZXhwIjoxNjU0MzA4NDU5fQ.Zp9sAoJNaRwC1Pi099yuC3kT63qnM2Oe55z5YB-JmO4";
+		$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
 		if(!$access_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
@@ -816,7 +798,7 @@ class apiApp extends CI_Controller {
 			'upload_path' => 'uploads',
 			'allowed_types' => "gif|jpg|png|jpeg",
 			'file_name' => $filename
-		);		
+		);	
 		$rs=$this->load->library('upload', $config);
 		if($this->upload->do_upload('avatar'))
 			{
