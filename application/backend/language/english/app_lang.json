@@ -34,7 +34,7 @@
 	"price":"Giá bán",
 	"token_expires_and_login":"Token hết hạn, vui lòng đăng nhập lại",
 	"token_false":"Token sai",
-	"confirm_expiration_code":"Mã xác nhận của bạn đã hết hạn",
+	"confirm_expiration_code":"Mã xác nhận Không tồn tại, Vui lòng thử lại",
 	"an_error_has_occurred":"Đã có lỗi xảy ra",
 	"synchronizing_documents":"Lựa chọn có muốn đồng bộ tài khoản hay không ?",
 	"rent_price_hour":"Giá thuê giờ",
