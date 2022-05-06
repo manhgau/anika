@@ -823,7 +823,7 @@ class apiApp extends CI_Controller {
 			$rs =$this->member_model->save_image($data_image, $member_id);
 			if($rs['code'] == 1){
 				$data = getImageUrl($data_image);
-				$this->__jsonResponse(200, 'success', $data);
+				//$this->__jsonResponse(200, 'success', $data);
 			}
 			if($rs['code'] == 2){
 				$this->__jsonResponse(400, 'an_error_has_occurred');
