@@ -506,7 +506,7 @@ class apiApp extends CI_Controller {
 	}
 
 	public function authFacebook(){
-		$token = $_GET['token'];
+		$token= $this->getBearerToken();
 		$type = $_GET['type'];
 		$key  = (int)isset($_GET['key'])? intval($_GET['key']):0;
 		if($key >2)
@@ -611,7 +611,7 @@ class apiApp extends CI_Controller {
 }
 
 	public function authGoogle(){
-		$token = $_GET['token'];
+		$token= $this->getBearerToken();
 		$type = $_GET['type'];
 		$key  = isset($_Get['key'])?$_Get['key']:0;
 		if($token && $type == 'google'){
