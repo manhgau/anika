@@ -792,18 +792,34 @@ class apiApp extends CI_Controller {
 		}
 		$member_id = $data_profile->id;
 		if(!$member_id)
-		$this->__jsonResponse(404, 'not_found');
+			$this->__jsonResponse(404, 'not_found');
+		
 		$filename = md5(uniqid(rand(), true));
 		$config = array(
 			'upload_path' => 'uploads',
 			'allowed_types' => "gif|jpg|png|jpeg",
-			'file_name' => $filename
+			'file_name' => $filename,
+			'max_size' => 4*1024,
+			'encrypt_name' => TRUE
 		);	
+
+		$today = date('Y/m/d', time());
+		# kiểm tra thư mục ngày tháng trong folder uploads
+		# nếu chưa có thì tạo folder
+		$data_image = '';
+		foreach (explode('/', $today) as $fName) {
+			$config['upload_path'] .= '/' . $fName;
+			$data_image .= $fName . '/';
+			if (! file_exists($config['upload_path'])) {
+				mkdir($config['upload_path']);
+			}
+		}
+
 		$this->load->library('upload', $config);
 		if($this->upload->do_upload('avatar'))
-			{
+		{
 			$file_data = $this->upload->data();
-			$data_image = $file_data['file_name'];
+			$data_image .= $file_data['file_name'];
 			$rs =$this->member_model->save_image($data_image, $member_id);
 			if($rs['code'] == 1){
 				$data = getImageUrl($data_image);
@@ -812,6 +828,9 @@ class apiApp extends CI_Controller {
 			if($rs['code'] == 2){
 				$this->__jsonResponse(400, 'an_error_has_occurred');
 			}		
-			}
 		}
+		else {
+			$this->__jsonResponse(500, $msg);
+		}
+	}
 }
