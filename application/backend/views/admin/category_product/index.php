@@ -6,7 +6,7 @@
                     <table id="datatable" class="table table-bordered" data-controller="<?=$this->router->class;?>">
                         <thead>
                             <tr>
-                                <th><input name="select_all" value="1" id="example-select-all" type="checkbox" class="simple" /></th>
+                                <th style="width: 15%"><input name="select_all" value="1" id="example-select-all" type="checkbox" class="simple"/></th>
                                 <th>Tên</th>    
                                 <th>Link</th>
                                 <th>Trạng thái</th>
@@ -25,7 +25,7 @@
                                 <td><img src="<?php echo getImageUrl($cat['image']);?>" width="15" height="20" /></td>
                                 <td class="text-right">
                                     <?php echo btn_edit('category_product/edit/'.$cat['id']); ?>
-                                    <?php echo btn_delete('category_product/delete/' . $cat['id']); ?>
+                                    <?php echo btn_delete('category_product/delete/'. $cat['id']); ?>
                                         
                                 </td>
                                 

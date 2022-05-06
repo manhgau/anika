@@ -9,9 +9,10 @@
                     <div class="box-body">
                         <div class="form-group row">
                             <div class="col-xs-4">
-                                <label for="exampleInputEmail1">Chọn nhóm:&nbsp;</label>
-                                <?php echo form_dropdown('type',$banner_type,(isset($banner->type)) ? $banner->type : 1,'class="form-control"');?>
+                                <label for="exampleInputEmail1">Chọn nhóm</label>
+                                <?php echo form_dropdown('type',$banner_type,(isset($banner->type)) ? $banner->type : 1,'class="form-control"'); ?>
                             </div>
+                           
                             <div class="col-xs-4">
                                 <label for="position">Vị trí:&nbsp;</label>
                                 <input type="text" class="form-control" id="position" name="position" placeholder="banner position: " value="<?php echo $banner->position;?>">
@@ -33,9 +34,8 @@
                             </div>
                             <div class="col-xs-4">
                                 <p style="margin-bottom:0">&nbsp;</p>
-                                    <label for="status"><?php echo form_checkbox('status','1',($banner->status==1) ? TRUE : FALSE,'class="simple" id="status"');?>&nbsp;Hiển thị quảng cáo</label>
+                                    <label for="status"><?php echo form_checkbox('status','1',($banner->status==1) ? TRUE : FALSE,'class="simple" id="status"');?>&nbsp;Hiển thị </label>
                                     <br>
-                                    <label><?php echo form_checkbox('is_blank','1',($banner->is_blank==1) ? TRUE : FALSE,'class="simple" id="is_blank"');?>&nbsp;Blank click</label>
                             </div>
                             
                         </div>

@@ -1,4 +1,3 @@
-
 /*====== start init databales =====*/
 var table;
 var rows_selected = [];
@@ -11,11 +10,11 @@ const _redrawPage = () =>
 }
 
 const callApi = (api, data)=>{
-    $.post(api, data, (response) => {
+  
         (response.code===200)
         ? _redrawPage()
         : showMessage(response.msg, 'error');
-    })
+    
 }
 
 const callApiSelectedRows = (api, alert='Chưa chọn bản ghi nào')=>{
@@ -29,6 +28,7 @@ const callApiSelectedRows = (api, alert='Chưa chọn bản ghi nào')=>{
 
 const execSelectedAction = (api) => {
     callApi(api, {selectedId:rows_selected})
+   
 }
 
 const button = (title, href=null, onclick=null, icon='fa fa-pencil-square-o') => 

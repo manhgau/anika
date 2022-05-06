@@ -70,14 +70,11 @@
                         <h3 class="box-title">Thông tin</h3>
                     </div>
                     <div class="box-body">
-                        <div class="form-group">
-                            <label><input type="checkbox" class="simple" name="is_public" value="1" <?php echo $product->is_public ? 'checked="checked"' : '' ?>> Công khai</label>
-                        </div>
-                      
+                       
                         <div class="form-group">
                             <label>Giá bán</label>
                             <div class="input-group">
-                                <input type="number" name="price" min="0" step="1000" class="form-control" value="<?php echo set_value('price', $product->price) ?>" placeholder="ví dụ: 1200000">
+                                <input type="number" name="price" min="0" step="" class="form-control" value="<?php echo set_value('price', $product->price) ?>" placeholder="ví dụ: 1200000">
                                 <span class="input-group-addon" id="basic-addon2">VND</span>
                             </div>
                         </div>
@@ -99,11 +96,10 @@
                               
                         <div class="form-group">
                             <?php 
-                             $product = $this->category_product_model->getList();
                                 $allType = $this->category_product_model->getList();
                                 $options = ['' => 'Chọn nhóm'] + array_combine(array_column($allType, 'id'), array_column($allType, 'title'));
                                 echo form_element([
-                                    'name' => 'category_id',
+                                    'name' => 'category_name',
                                     'value' => $product->category_id,
                                     'label' => 'Danh mục sản phẩm',
                                     'required' => true,

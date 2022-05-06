@@ -23,7 +23,7 @@ $(document).ready(function () {
         ],
         buttons : [
             {text : '<i class="fa fa-plus"></i> Thêm mới', action : bunk_addnew, className:"btn btn-sm btn-success"},
-            
+            // {text : '<i class="fa fa-trash"></i> Xóa', action : bunk_delete, className:"btn btn-sm btn-danger"},
         ],
         order: [[0, 'desc']],
         rowCallback: function (row, data, dataIndex) {
@@ -37,8 +37,8 @@ $(document).ready(function () {
         }
     });
 
-    // SINGLE SELECTION
-    $('#datatable tbody').on('click', 'input[type="checkbox"]', function (e) {
+     // SINGLE SELECTION
+     $('#datatable tbody').on('click', 'input[type="checkbox"]', function (e) {
         var $row = $(this).closest('tr');
         // Get row data
         var data = table.row($row).data();
@@ -106,10 +106,10 @@ function bunk_lock(e, dt, node, config) {
     confirm_dialog(confirm_msg,buttons);
 }
 
-function bunk_unlock(e, dt, node, config) {
+function bunk_public(e, dt, node, config) {
     var confirm_msg = 'Bạn muốn thực hiện thao tác này?';
     var buttons = { 
-        'Ok' : function(){ exec_unlock(dt); },
+        'Ok' : function(){ exec_public(dt); },
         'Cancel': function(){ $(this).dialog('close'); }
     };
     confirm_dialog(confirm_msg,buttons);
@@ -166,15 +166,7 @@ function exec_delete(dt) {
         type:'post',
         dataType:'json',
         data:{ids:ids}
-    }).done(function(resp){
-        if(resp.code==0) {
-            dt.rows('.selected').remove().draw();
-            close_dialog();
-        } else {
-            var msg = 'Lỗi! Không thể xóa dữ liệu';
-            showMessage(msg);
-        }
-    });
+    }).done(location.reload());
 }
 
 function exec_lock(dt) {
@@ -190,21 +182,22 @@ function exec_lock(dt) {
         return false;
     }
     $.ajax({
-        url: baseUrl+'cms/'+controller+'/publish',
+        url: baseUrl+''+controller+'/publish',
         type:'post',
         dataType:'json',
-        data:{ids:ids,unPublish:1}
+        data:{ids:ids,status:2}
     }).done(function(resp){
         if(resp.code==0){
             dt.rows('.selected').remove().draw();
             close_dialog();
+            location.reload();
         } else {
             showMessage(resp.msg);
         }
     });
 }
 
-function exec_unlock(dt) {
+function exec_public(dt) {
     var controller = $('#datatable').data('controller');
     var sRows = dt.rows('.selected');
     var dts = sRows.data();
@@ -217,14 +210,15 @@ function exec_unlock(dt) {
         return false;
     }
     $.ajax({
-        url: baseUrl+'cms/'+controller+'/publish',
+        url: baseUrl+''+controller+'/publish',
         type:'post',
         dataType:'json',
-        data:{ids:ids,unPublish:0}
-    }).done(function(resp){
-        if(resp.code==0){
+        data:{ids:ids,status:1}
+    }).done(function(resp) {
+        if (resp.code==0) {
             dt.rows('.selected').remove().draw();
             close_dialog();
+            location.reload();
         } else {
             showMessage(resp.msg);
         }

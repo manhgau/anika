@@ -10,7 +10,7 @@ class Products_model extends MY_Model {
             $this->db->where('a.category_id',$category_id);
         }
         $this->db->order_by('a.id',"DESC");
-        $this->db->where('a.is_public',"1");
+        $this->db->where('a.status',"public");
         $this->db->limit($limit, $offset);
         $data = $this->db->get()->result();
         return $data;

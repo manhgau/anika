@@ -7,7 +7,7 @@
         
                     //fetch breadcrumbs
                     $this->data['breadcrumbs'] = array( 
-                        // 'Danh sách sản phẩm' => base_url('products'),
+                     
                         'Đối tác kinh doanh' => base_url('partner')
                     );
                 }

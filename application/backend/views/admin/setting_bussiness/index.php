@@ -6,7 +6,7 @@
                     <table id="datatable" class="table table-bordered" data-controller="<?=$this->router->class;?>">
                         <thead>
                             <tr>
-                                <th style="width: 15%"><input name="select_all" value="1" id="example-select-all" type="checkbox" class="simple"/></th>
+                            <th style="width: 15%"><input name="select_all" value="1" id="example-select-all" type="checkbox" class="simple"/></th>
                                 <th>Tên</th>    
                                 <th>Ảnh</th> 
                                 <th>Trạng thái</th>
