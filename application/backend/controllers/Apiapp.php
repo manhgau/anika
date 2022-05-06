@@ -864,4 +864,24 @@ class apiApp extends CI_Controller {
 		}
 
 	}
+	public function listDepartment (){
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		if ($page < 1) $page = 1;
+        $offset = ($page - 1) * $limit;
+		$data = [
+        	'pagination' => [
+        		'page' => $page,
+        		'limit' => $limit,
+        		'prev' => ($page>1) ? $page-1 : 1,
+        		'next' => false 
+        	]
+        ];
+        $rs = $this->member_model->get_list_department($offset, $limit);	
+		if (!$rs) 
+			$this->__jsonResponse(404, 'notfound', $data);			
+		$data['list'] = $rs;
+		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
+		$this->__jsonResponse(200, 'success',$data);   
+	}
 }
