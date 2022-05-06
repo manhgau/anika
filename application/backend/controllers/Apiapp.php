@@ -799,7 +799,7 @@ class apiApp extends CI_Controller {
 			'allowed_types' => "gif|jpg|png|jpeg",
 			'file_name' => $filename
 		);	
-		$rs=$this->load->library('upload', $config);
+		$this->load->library('upload', $config);
 		if($this->upload->do_upload('avatar'))
 			{
 			$file_data = $this->upload->data();
