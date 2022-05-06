@@ -92,6 +92,7 @@ class Facebook
      */ 
     public function is_authenticated(){ 
         $access_token = $this->authenticate(); 
+        
         if(isset($access_token)){ 
             return $access_token; 
         } 
@@ -166,7 +167,7 @@ class Facebook
      * @return array|AccessToken|null|object|void 
      */ 
     private function authenticate(){ 
-        $access_token = $this->get_access_token(); 
+        $access_token = $this->get_access_token();
         if($access_token && $this->get_expire_time() > (time() + 30) || $access_token && !$this->get_expire_time()){ 
             $this->fb->setDefaultAccessToken($access_token); 
             return $access_token; 
