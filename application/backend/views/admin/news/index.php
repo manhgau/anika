@@ -70,7 +70,7 @@
                                 <tr id="row-<?php echo $article->id; ?>">
                                     <td><?php echo $article->id; ?></td>
                                     <td style="max-width:150px">
-                                        <img src="<?php echo getImageUrl($article->highlight_image);?>" alt="Image" style="max-width:200px;height:60px">
+                                        <img src="<?php echo getImageUrl($article->thumbnail);?>" alt="Image" style="max-width:200px;height:60px">
                                     </td>
                                     <td>
                                         <p><a href="<?php echo base_url('news/edit/'.$article->id);?>"><?php echo $article->title; ?></a></p>                               

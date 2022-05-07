@@ -32,6 +32,10 @@
             'thumbnail' => array(
                 'field'   => 'thumbnail',
                 'rules'   => 'trim' ),
+            'highlight_image' => array(
+                'field' => 'highlight_image',
+                'rules' => 'trim'
+            )
         );
 
         public function __construct(){
