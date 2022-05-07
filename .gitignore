@@ -11,3 +11,4 @@ application/backend/config/development/*
 application/backend/ci_sessions/*
 !application/backend/ci_sessions
 application/backend/thcl-log.txt
+application/backend/thcl-log.txt
