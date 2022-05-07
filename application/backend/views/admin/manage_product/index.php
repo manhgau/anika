@@ -11,7 +11,7 @@
                         <div class="row form-group">
                             <div class="col-md-3">
                                 <label for="find-keyword">Tìm kiếm</label>
-                                <input id="find-keyword" class="form-control" name="keyword" value="" placeholder="Mã bài/Sđt chủ/Tên sản phẩm">
+                                <input id="find-keyword" class="form-control" name="keyword" value="" placeholder="Tên sản phẩm">
                             </div>
                             <div class="col-md-2">
                                 <label>Danh mục</label>
@@ -132,7 +132,7 @@
         {   text : '<i class="fa fa-trash"></i> Xóa',
             className:"btn btn-sm btn-danger",
             action: function() {
-            callApiSelectedRows('/manage_product/delete', 'Có xóa danh sách đã chọn không ?', 'Đồng ý')
+            callApiSelectedRows('/manage_product/apis/deleteAll', 'Có xóa danh sách đã chọn không ?', 'Đồng ý')
             
             },
 

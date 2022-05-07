@@ -4,7 +4,7 @@
             <div class="col-md-9">
                 <div class="box box-primary">
                     <div class="box-header">
-                        <h3 class="box-title">Nội dung bài viết</h3>
+                        <h3 class="box-title">Nội dung sản phẩm</h3>
                     </div>
                     <div class="box-body">
                         <div class="form-group">
@@ -17,7 +17,7 @@
                         </div>
 
                         <div class="form-group" id="list-image">
-                            <label for="tinymce" style="width:100%;"> Nội dung bài viết </label> <?php echo my_form_error('content');?>
+                            <label for="tinymce" style="width:100%;"> Nội dung sản phẩm </label> <?php echo my_form_error('content');?>
                             <div class="row">
                                 <div class="col-xs-6">
                                     <p>

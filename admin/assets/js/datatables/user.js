@@ -3,7 +3,7 @@ $(document).ready(function () {
     var controller = $('#datatable').data('controller');
     
     var table = $('#datatable').DataTable({
-        dom: "fBlrtip",
+        dom: "Bfrtip",
         pageLength: 50,
         "oLanguage": {
             "sSearch": "Tìm kiếm:&nbsp;"

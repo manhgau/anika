@@ -27,9 +27,9 @@
                                 <td class="text-center"> 
                                     <?php echo ($part['is_hot'] == 1) ? '<i class="fa fa-star orange"></i>' : ''; ?>
                                 </td>
-                               
+
                                 <td class="text-center">
-                                    <?php echo ($part['status'] == 1) ?  '<i class="fa fa-check green"></i>' : ''; ?>
+                                    <i class="fa <?= ($part['status'] == 1) ? 'fa-check-square-o text-success' : 'fa-square-o text-muted' ?>">
                                 </td>
                                
                                 <td class="text-right text-center" >

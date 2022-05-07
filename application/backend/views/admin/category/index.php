@@ -19,7 +19,7 @@
                                 <td><?=$category->id;?></td>
                                 <td><?php for($i=1;$i<$category->level;$i++){echo '&mdash;';} echo '&nbsp;' . $category->title; ?></td>
                                 <td><?php echo link_preview_news_category($category->id, $category->slugname); ?></td>
-                                <td class="text-center"><?=$category->status;?></td>
+                                <td class="text-center"><i class="fa <?= ($category->status == 1) ? 'fa-check-square-o text-success' : 'fa-square-o text-muted' ?>"></td>
                                 <td class="text-right">
                                     <?php echo btn_edit('category/edit/'.$category->id); ?>
                                     <?php echo btn_delete('category/delete/' . $category->id); ?>
