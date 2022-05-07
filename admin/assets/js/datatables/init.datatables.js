@@ -31,7 +31,7 @@ const execSelectedAction = (api) => {
    
 }
 
-const button = (title, href=null, onclick=null, icon='fa fa-pencil-square-o') => 
+const button = (title, href=null, onclick=null, icon='fa fa-pencil-square-o') =>
 {
     return `<a href="${(href!==null) ? href : 'javascript:;'}" ${(onclick==null) ? '' : `onclick="${onclick}"`} class="btn btn-xs btn-default" title="${title}"><i class="${icon}"></i></a>`
 }
@@ -103,8 +103,10 @@ const exportButton = {
         'print'
     ]
 };
-if (hasExport==1)
+
+if (hasExport==1) {
     tableButtons.push(exportButton);
+}
 
 $(document).ready(function () {
 

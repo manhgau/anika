@@ -99,7 +99,7 @@
                                 $allType = $this->category_product_model->getList();
                                 $options = ['' => 'Chọn nhóm'] + array_combine(array_column($allType, 'id'), array_column($allType, 'title'));
                                 echo form_element([
-                                    'name' => 'category_name',
+                                    'name' => 'category_id',
                                     'value' => $product->category_id,
                                     'label' => 'Danh mục sản phẩm',
                                     'required' => true,
