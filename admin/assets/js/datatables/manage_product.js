@@ -2,11 +2,7 @@ $(document).ready(function () {
     var rows_selected = [];
     var controller = $('#datatable').data('controller');
     var table = $('#datatable').DataTable({
-//        dom: "Bfrtip",
-     
-             
-          
-        
+       dom: "Bfrtip",
         buttons : [
             {text : '<i class="fa fa-plus"></i> Thêm mới', action : bunk_addnew, className:"btn btn-sm btn-success"},
             {text : '<i class="fa fa-trash"></i> Xóa', action : bunk_delete, className:"btn btn-sm btn-danger"},

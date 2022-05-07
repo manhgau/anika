@@ -35,7 +35,7 @@ class Manage_product_model extends MY_Model {
             'rules'   => 'trim|max_length[500]' ),   
         'category_id' => array(
             'field'   => 'category_id',
-            'rules'   => 'trim|max_length[250]' ),   
+            'rules'   => 'intval' ),   
         'price'     => array(
             'field'   => 'price',
             'rules'   => 'trim|max_length[250]' ),  

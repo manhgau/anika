@@ -52,7 +52,7 @@
                         
                         echo dataTable([
                             'id' => '<input type="checkbox" name="select_all" class="simple" />',
-                            'thumbnail' => 'Ảnh',                           
+                            'thumbnail' => 'Ảnh',                                    
                             'title' => 'Tên sản phẩm',
                             'price' => 'Giá bán',
                             'status_name' => 'Tình trạng',

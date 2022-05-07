@@ -95,24 +95,21 @@ class Manage_product extends MY_Controller
 
     {
         $api = $this->input->post('selectedId');
-        // print_r($api);
-        // exit();
-        if (!$this->has_permission('delete')) $this->not_permission();
-        if ($this->userdata['level'] = 1) {
-            if ($api) {
-                $data = array('status' => 'delete');
-                $member = $this->manage_product_model->get($api);
-                if ($member) $this->manage_product_model->save($data, $api);
 
-                //                    $this->session->set_flashdata('session_msg','Xóa thành công');
-                $this->jsonResponse(200, 'success', []);
-                //                    redirect(base_url('member'));
-            }
-        }
-        //            $this->session->set_flashdata('session_error','Xóa không thành công');
-        $this->jsonResponse(400, lang('not_permission'), []);
-                   redirect(base_url('member'));
+        if(!empty($api)){
+            $data = array('status' => 'delete');
+        
+            $member = $this->manage_product_model->get($api);
+            if ($member) $this->manage_product_model->save($data, $api);
+        
+            $this->jsonResponse(200, 'success', []);
+        }else{
+            $this->jsonResponse(400, lang('not_permission'), []);
+            redirect(base_url('member'));
+        };
+   
     }
+    
     public function apis($action)
     {
         $fnc = "__{$action}";
@@ -120,7 +117,6 @@ class Manage_product extends MY_Controller
     }
 
     public function __delete($id = NULL)
-
     {
         $id = intval($this->input->post('id'));
         if (!$this->has_permission('delete')) $this->not_permission();
