@@ -19,6 +19,7 @@
                         <option value="2" <?php if($status==2) echo 'selected="selected"';?>> Chờ duyệt </option>
                         <option value="3" <?php if($status == 3) echo 'selected="selected"';?>> Đã xóa </option>
                     </select>
+                    <a class="btn btn-sm btn-default" href="<?php echo base_url('banner');?>"> <i class="fa fa-refresh"></i> Reset</a>
                 </div>
                 <style type="text/css">#example2 img{max-width:300px!important}</style>
                 <div class="box-body table-responsive">
