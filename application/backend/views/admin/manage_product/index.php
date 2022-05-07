@@ -113,7 +113,7 @@
                 <p>
                     <a href="/manage_product/edit/${full.id}" class="btn btn-xs btn-default"><i class="fa fa-pencil-square-o text-primary"></i></a>
                     <a href="#" onclick="confirmRemoveNews(${full.id}); return false;" class="btn btn-xs btn-default"><i class="fa fa-trash-o text-danger"></i></a>
-                   
+
                     <a href="#" onclick="confirmTogglePublic(${full.id},'${data}'); return false;" class="btn btn-xs btn-default" title="${(data=='public') ? 'Ẩn bài' : 'Công khai'}"><i class="fa fa-refresh"></i></a>
                 </p>
                 `;
@@ -131,17 +131,49 @@
         },
         {   text : '<i class="fa fa-trash"></i> Xóa',
             className:"btn btn-sm btn-danger",
-            action: function() {callApiSelectedRows('/manage_product/delete', 'Có xóa danh sách đã chọn không ?')},
-               
+            action: function() {
+            callApiSelectedRows('/manage_product/delete', 'Có xóa danh sách đã chọn không ?', 'Đồng ý')
+            
+            },
+
         },
-        {
-            text: '<i class="fa fa-upload"></i> Tải lên danh sách',
-            className: 'btn btn-sm btn-primary',
-            action: function ( e, dt, node, config ) {
-                showModal('/manage_product/importModal')
-            }
-        }
+        // {   text : '<i class="fa fa-trash"></i> Xóa',
+        //     className:"btn btn-sm btn-danger",
+        //     action: function ( e, dt, node, config ) {
+        //         callApiSelectedRows('/manage_product/delete', 'Có xóa danh sách đã chọn không ?')
+        //         var buttons = {
+        //             'Ok' : function(){ exec_delete(dt); },
+        //             'Cancel': function(){ $(this).dialog('close'); }
+        //         };
+        //     }
+        // },
+        // {
+        //     text: '<i class="fa fa-upload"></i> Tải lên danh sách',
+        //     className: 'btn btn-sm btn-primary',
+        //     action: function ( e, dt, node, config ) {
+        //         showModal('/manage_product/importModal')
+        //     }
+        // }
     ];
+    // function exec_delete(dt) {
+    //     var controller = $('#datatable').data('controller');
+    //     var sRows = dt.rows('.selected');
+    //     var dts = sRows.data();
+    //     var ids = [];
+    //     for (var i = 0; i < dts.length; i++) {
+    //         ids.push(dts[i][0]);
+    //     }
+    //     if(ids.length==0) {
+    //         showMessage('Sorry! Bạn chưa chọn item nào.');
+    //         return false;
+    //     }
+    //     $.ajax({
+    //         url: baseUrl+controller+'/delete',
+    //         type:'post',
+    //         dataType:'json',
+    //         data:{ids:ids}
+    //     }).done(location.reload());
+    // }
 
     var confirmRemoveNews = (id) => {
         confirmAction('execRemoveNews('+id+')', 'Xóa bài viết này?', 'Xóa');
@@ -165,7 +197,15 @@
             _redrawPage()
         })
     }
-
+    // $(function(){
+    //     $('.delete-btn').on('click',function(){
+    //         var url = $(this).attr('href');
+    //         $.get( url, function( data ) {
+    //             location.reload();
+    //         });
+    //         return false;
+    //     });
+    // });
     function exec_delete() {
     console.log(rows_selected);
     }

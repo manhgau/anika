@@ -6,7 +6,7 @@
                 <table id="datatable" class="table table-bordered" data-controller="<?=$this->router->class;?>">
                         <thead>
                             <tr>
-                                <th style="width:20px">STT</th>
+                                <th><input name="select_all" value="1" id="example-select-all" type="checkbox" class="simple" /></th>
                                 <th>Logo</th>
                                 <th>Tên</th>
                                 <th>Hot</th>
@@ -16,8 +16,8 @@
                         </thead>
                         <tbody>
                             <?php if(!empty($partner)) : foreach($partner as $key => $part) : ?>
-                            <tr id="row-item-<?=$part['id'];?>">
-                                <td><?= ++$key;?></td>
+                            <tr>
+                                <td><?= $part['id'];?></td>
                                 <td style="max-width:150px">
                                     <img src="<?php echo getImageUrl($part['image']);?>" alt="Logo" style="max-width:100px;height:60px">
                                 </td>

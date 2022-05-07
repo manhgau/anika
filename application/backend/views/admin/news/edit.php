@@ -114,11 +114,6 @@
                         <?php if($userdata['level'] <= 2) : ?>
                             <ul class="list-unstyled">
                                 <li>
-                                    <label >
-                                    <input type="checkbox" name="status" value="1" class="simple" id="status" <?php if($article->status==1) echo 'checked="checked"'; ?>> Xuất bản</label> 
-                                    <?php echo form_error('status');?>
-                                </li>
-                                <li>
                                     <label for="is-hot"><input type="checkbox" name="is_hot" value="1" class="simple" id="is-hot" <?php if($article->is_hot==1) echo 'checked="checked"'; ?>> Nổi bật chuyên mục</label> <?php echo form_error('is_hot');?>
                                 </li>
                                 <li><label for="is_popular"><input type="checkbox" name="is_popular" value="1" class="simple" id="is_popular" <?php if($article->is_popular==1) echo 'checked="checked"'; ?>> Tin đọc nhiều</label> <?php echo form_error('is_popular');?></li>

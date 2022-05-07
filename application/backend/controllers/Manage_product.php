@@ -60,7 +60,6 @@ class Manage_product extends MY_Controller
             $data['is_public'] = ($data['is_public']) ? 1 : 0;
             if (!$data['category_id']) $data['category_id'] = $data['category_id'];
             if (!$data['content']) $data['content'] = $data['content'];
-            $data['member_id'] = ($data['member_id']) ? intval($data['member_id']) : 0;
             if (!$data['thumbnail']) unset($data['thumbnail']);
 
 
@@ -80,7 +79,7 @@ class Manage_product extends MY_Controller
         }
 
         //Load View
-        $this->data['meta_title'] = ($id) ? 'Sửa bài viết' : 'Viết bài mới';
+        $this->data['meta_title'] = ($id) ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới';
         $this->data['sub_view'] = 'admin/manage_product/edit';
         $this->data['sub_js'] = 'admin/manage_product/edit-js';
         $this->load->view('admin/_layout_main', $this->data);
@@ -94,24 +93,25 @@ class Manage_product extends MY_Controller
     public function delete($api = NULL)
 
     {
-        $api = $this->input->post('selectedId');
-        print_r($api);
-        exit();
-        // if (!$this->has_permission('delete')) $this->not_permission();
-        // if ($this->userdata['level'] = 1) {
-        //     if ($api) {
-        //         $data = array('status' => 'delete');
-        //         $member = $this->manage_product_model->get($api);
-        //         if ($member) $this->manage_product_model->save($data, $api);
+        $id = intval($this->input->post('selectedId'));
+//        print_r($api);
+//        exit();
+         if (!$this->has_permission('delete')) $this->not_permission();
+        if ($id) {
+            $post_id[] = $id;
+        }
+        if ($this->manage_product_model->updateStatus($post_id, 1)) {
 
-        //         //                    $this->session->set_flashdata('session_msg','Xóa thành công');
-        //         $this->jsonResponse(200, 'success', []);
-        //         //                    redirect(base_url('member'));
-        //     }
-        // }
-        // //            $this->session->set_flashdata('session_error','Xóa không thành công');
-        // $this->jsonResponse(400, lang('not_permission'), []);
-        //            redirect(base_url('member'));
+            //save history
+            foreach ($post_id as $key => $val) {
+                $_action = 'Deleted';
+                $this->history_model->add_history(NULL, $_action, $val, 'product');
+            }
+            $this->session->set_flashdata('session_msg', 'Xóa dữ liệu thành công');
+        } else {
+            $this->session->set_flashdata('session_error', 'Không xóa được dữ liệu');
+        }
+        redirect(base_url('manage_product'));
     }
     public function apis($action)
     {
@@ -129,15 +129,10 @@ class Manage_product extends MY_Controller
                 $data = array('status' => 'delete');
                 $member = $this->manage_product_model->get($id);
                 if ($member) $this->manage_product_model->save($data, $id);
-
-                //                    $this->session->set_flashdata('session_msg','Xóa thành công');
                 $this->jsonResponse(200, 'success', []);
-                //                    redirect(base_url('member'));
             }
         }
-        //            $this->session->set_flashdata('session_error','Xóa không thành công');
         $this->jsonResponse(400, lang('not_permission'), []);
-        //            redirect(base_url('member'));
     }
 
     public function getList($limit = 10, $offset = 0)
