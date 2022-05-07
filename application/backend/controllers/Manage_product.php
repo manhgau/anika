@@ -90,7 +90,7 @@ class Manage_product extends MY_Controller
     //     $fnc = "{$action}";
     //     $this->$fnc();
     // }
-    public function delete($api = NULL)
+    public function __deleteAll($api = NULL)
 
     {
         $id = intval($this->input->post('selectedId'));
@@ -100,18 +100,21 @@ class Manage_product extends MY_Controller
         if ($id) {
             $post_id[] = $id;
         }
-        if ($this->manage_product_model->updateStatus($post_id, 1)) {
+        if ($this->manage_product_model->updateStatus($post_id, 'delete')) {
 
             //save history
             foreach ($post_id as $key => $val) {
                 $_action = 'Deleted';
                 $this->history_model->add_history(NULL, $_action, $val, 'product');
             }
-            $this->session->set_flashdata('session_msg', 'Xóa dữ liệu thành công');
-        } else {
-            $this->session->set_flashdata('session_error', 'Không xóa được dữ liệu');
-        }
-        redirect(base_url('manage_product'));
+//            $this->session->set_flashdata('session_msg', 'Xóa dữ liệu thành công');
+            $this->jsonResponse(200, 'success', []);
+        } 
+//        else {
+//            $this->session->set_flashdata('session_error', 'Không xóa được dữ liệu');
+//        }
+//        redirect(base_url('manage_product'));
+        $this->jsonResponse(400, lang('not_permission'), []);
     }
     public function apis($action)
     {

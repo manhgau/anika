@@ -70,7 +70,7 @@
                                 <tr id="row-<?php echo $article->id; ?>">
                                     <td><?php echo $article->id; ?></td>
                                     <td style="max-width:150px">
-                                        <img src="<?php echo getImageUrl($article->highlight_image);?>" alt="Image" style="max-width:200px;height:60px">
+                                        <img src="<?php echo getImageUrl($article->thumbnail);?>" alt="Image" style="max-width:200px;height:60px">
                                     </td>
                                     <td>
                                         <p><a href="<?php echo base_url('news/edit/'.$article->id);?>"><?php echo $article->title; ?></a></p>                               
@@ -95,15 +95,15 @@
                                                 if($article->status != 1 || ($article->status==1 && $userdata['level']==1))
                                                     echo btn_delete('news/delete/'.$article->id);
                                             ?>
-                                            <?php if($userdata['level']<=3) : ?>
-                                                <?php if($article->status != 1 || ($article->status==1 && $userdata['level']==1)) : ?>
-                                                <a href="javascript:;" class="btn btn-default btn-xs btn-return-news" data-id="<?php echo $article->id;?>" title="Trả bài"> <i class="fa fa-retweet" style="color:#f00;"></i> </a>
-                                                <?php endif; ?>
+<!--                                            --><?php //if($userdata['level']<=3) : ?>
+<!--                                                --><?php //if($article->status != 1 || ($article->status==1 && $userdata['level']==1)) : ?>
+<!--                                                <a href="javascript:;" class="btn btn-default btn-xs btn-return-news" data-id="--><?php //echo $article->id;?><!--" title="Trả bài"> <i class="fa fa-retweet" style="color:#f00;"></i> </a>-->
+<!--                                                --><?php //endif; ?>
 
 <!--                                                --><?php //if($article->update_by) : ?>
 <!--                                                    <a href="--><?php //echo base_url('news/compareVersion/'.$article->id); ?><!--" class="btn btn-default btn-xs" title="Lịch sử thay đổi"> <i class="fa fa-history"></i> </a>-->
 <!--                                                --><?php //endif;?>
-                                            <?php endif; ?>
+<!--                                            --><?php //endif; ?>
 <!--                                            --><?php //if($article->status==1) : ?>
 <!--                                                <a href="--><?php //echo link_preview_detail_news($article->slugname, $article->id);?><!--" class="btn btn-info btn-xs" title="Xem chi tiết" target="_blank"> <i class="fa fa-eye"></i> </a>-->
 <!--                                                --><?php //else : ?>
@@ -123,26 +123,26 @@
                         </tbody>
                     </table>
 
-                    <div class="dataTables_paginate paging_simple_numbers" id="datatable_paginate">
-                        <?php 
-                            $strFilter = array();
-                            if($filters)
-                            {
-                                foreach($filters as $key => $val)
-                                {
-                                    $strFilter[] = "{$key}={$val}";
-                                }
-                            }
-                            if($paging['current'] > 1) : ?>
-                            <a class="paginate_button previous disabled" aria-controls="datatable" data-dt-idx="0" tabindex="0" id="datatable_previous" href="<?php echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['prev']; ?>">Previous</a>
-                            <a class="paginate_button previous disabled" aria-controls="datatable" data-dt-idx="0" tabindex="0" id="datatable_previous" href="<?php echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['prev']; ?>"><?php echo $paging['prev']?></a>
-                            <?php endif; ?>
-                        <a class="paginate_button current" href="<?php echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['prev']; ?>"><?php echo $paging['current']; ?></a>
-                        <?php if(count($articles) >= $paging['limit']) : ?>
-                            <a class="paginate_button next" href="<?php echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['next']; ?>"><?php echo $paging['next']; ?></a>
-                            <a class="paginate_button next" href="<?php echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['next']; ?>">Next</a>
-                            <?php endif; ?>
-                    </div>
+<!--                    <div class="dataTables_paginate paging_simple_numbers" id="datatable_paginate">-->
+<!--                        --><?php //
+//                            $strFilter = array();
+//                            if($filters)
+//                            {
+//                                foreach($filters as $key => $val)
+//                                {
+//                                    $strFilter[] = "{$key}={$val}";
+//                                }
+//                            }
+//                            if($paging['current'] > 1) : ?>
+<!--                            <a class="paginate_button previous disabled" aria-controls="datatable" data-dt-idx="0" tabindex="0" id="datatable_previous" href="--><?php //echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['prev']; ?><!--">Previous</a>-->
+<!--                            <a class="paginate_button previous disabled" aria-controls="datatable" data-dt-idx="0" tabindex="0" id="datatable_previous" href="--><?php //echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['prev']; ?><!--">--><?php //echo $paging['prev']?><!--</a>-->
+<!--                            --><?php //endif; ?>
+<!--                        <a class="paginate_button current" href="--><?php //echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['prev']; ?><!--">--><?php //echo $paging['current']; ?><!--</a>-->
+<!--                        --><?php //if(count($articles) >= $paging['limit']) : ?>
+<!--                            <a class="paginate_button next" href="--><?php //echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['next']; ?><!--">--><?php //echo $paging['next']; ?><!--</a>-->
+<!--                            <a class="paginate_button next" href="--><?php //echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['next']; ?><!--">Next</a>-->
+<!--                            --><?php //endif; ?>
+<!--                    </div>-->
                 </div>
             </div>
         </div>
