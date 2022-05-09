@@ -56,6 +56,15 @@ $config['user_levels'] = [
 	// 4 => 'Phóng viên',
 	// 5 => 'Cộng tác viên',
 ];
+$config['notification_type'] = [
+    'thong_bao_he_thong' =>'Hệ thống',
+    'thong_bao_khuyen_mai' =>'Khuyến mãi'
+];
+$config['notification_sender'] = [
+    'all' =>'Mọi người',
+    'team' =>'Nhóm',
+    'one' =>'Một người'
+];
 
 $config['logEditNewsFile'] = 'thcl-log.txt';
 
