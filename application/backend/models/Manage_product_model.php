@@ -131,8 +131,6 @@ class Manage_product_model extends MY_Model {
 			$this->db->limit($limit, $offset);
 			$data = $this->db->get();
 			return $data;
-	
-	
 		}
 	// public function get_detail_product($id){
 	// 	$this->db->select('a.*, b.title AS category_name');
@@ -412,7 +410,7 @@ class Manage_product_model extends MY_Model {
 	}
     public function updateStatus($ids,$status) {
         $this->db->where_in('id',$ids);
-        $args = array('status' => $status);
+        $args = array('is_public' => $status);
         if($this->db->update($this->_table_name,$args)) {
             return true;
         }

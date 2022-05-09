@@ -73,7 +73,6 @@ class Manage_product extends MY_Controller
             } else {
                 $this->session->set_flashdata('session_error', 'Không thể cập nhật dữ liệu.');
             }
-            print_r($data['title']);
 
             redirect(base_url('manage_product'));;
         }
@@ -96,25 +95,12 @@ class Manage_product extends MY_Controller
         $id = intval($this->input->post('selectedId'));
 //        print_r($api);
 //        exit();
-         if (!$this->has_permission('delete')) $this->not_permission();
+        if (!$this->has_permission('delete')) $this->not_permission();
         if ($id) {
             $post_id[] = $id;
         }
-        if ($this->manage_product_model->updateStatus($post_id, 'delete')) {
-
-            //save history
-            foreach ($post_id as $key => $val) {
-                $_action = 'Deleted';
-                $this->history_model->add_history(NULL, $_action, $val, 'product');
-            }
-//            $this->session->set_flashdata('session_msg', 'Xóa dữ liệu thành công');
-            $this->jsonResponse(200, 'success', []);
-        } 
-//        else {
-//            $this->session->set_flashdata('session_error', 'Không xóa được dữ liệu');
-//        }
-//        redirect(base_url('manage_product'));
-        $this->jsonResponse(400, lang('not_permission'), []);
+        $this->manage_product_model->updateStatus($post_id, 1);
+        $this->jsonResponse(200, 'success', []);
     }
     public function apis($action)
     {

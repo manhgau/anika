@@ -113,18 +113,18 @@
             }
 
             //Pagination Action
-            $paging['current'] = (int)$this->input->get_post('page');
-            if( ! $paging['current']) $paging['current'] = 1;
-            $paging['limit'] = 50;
-            $paging['next'] = 1+$paging['current'];
-            $paging['prev'] = $paging['current']-1;
-            if($paging['current'] <= 1) $paging['prev'] = 0;
-            $this->data['paging'] = $paging;
-            //fetch all news
-            $offset = ($paging['current']-1)*$paging['limit'];
+//            $paging['current'] = (int)$this->input->get_post('page');
+//            if( ! $paging['current']) $paging['current'] = 1;
+//            $paging['limit'] = 50;
+//            $paging['next'] = 1+$paging['current'];
+//            $paging['prev'] = $paging['current']-1;
+//            if($paging['current'] <= 1) $paging['prev'] = 0;
+//            $this->data['paging'] = $paging;
+//            //fetch all news
+//            $offset = ($paging['current']-1)*$paging['limit'];
 
             $this->data['articles'] = array();
-            $list_articles = $this->news_model->get_list_news($offset,$paging['limit'],$_status_filters,$_filter_category,$is_hot,$is_popular,$authorFilterId, $keyword);
+            $list_articles = $this->news_model->get_list_news($_status_filters,$_filter_category,$is_hot,$is_popular,$authorFilterId, $keyword);
 
             //Fetch tree category filter
             $this->data['tree_categories'] = $this->category_model->get_tree_categories();
