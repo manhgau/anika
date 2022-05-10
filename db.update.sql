@@ -170,3 +170,5 @@ CREATE TABLE `notifycation_user` (
   KEY `notify_id` (`notify_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+ALTER TABLE `member` ADD `referral_code` VARCHAR(255) NOT NULL AFTER `birthday`;
