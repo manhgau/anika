@@ -16,6 +16,74 @@
                             <label for="exampleInputEmail1">Chọn nhóm đối tượng</label>
                             <?php echo form_dropdown('sender_type',$notification_sender,(isset($notification->sender_type)) ? $notification->sender_type : 'all','class="form-control"'); ?>
                         </div>
+                        <div class="selectTeam">
+                            <div class="form-group teams">
+                                <label for="exampleInputEmail1">Chọn nhóm team</label>
+                                <select name="team" id="input-status" class="form-control">
+                                    <option value="0" selected>Chọn</option>
+                                    <option value="department">Nhóm phòng ban</option>
+                                    <option value="province">Nhóm tỉnh thành</option>
+                                    <option value="device">Nhóm thiết bị</option>
+                                </select>
+                            </div>
+                        <div class="form-group departments">
+                            <?php
+                            $allType = $this->setting_department_model->getList();
+
+                            $options = ['' => 'Chọn phòng ban'] + array_combine(array_column($allType, 'id'), array_column($allType, 'name'));
+                            echo form_element([
+                                'name' => 'department_id',
+                                'value' => $notification->department_id,
+                                'label' => 'Danh mục phòng ban',
+                                'type' => 'select',
+                                'options' => $options,
+                            ]);
+                            ?>
+                        </div>
+                        <div class="form-group provinces">
+                            <div class="col-xs-6">
+                                <?php
+                                echo form_element([
+                                    'type' => 'select',
+                                    'name' => 'province_id',
+                                    'value' => $notification->province_id,
+                                    'label' => 'Tỉnh/thành',
+                                    'options' => toArray($this->location_model->provinceSelectOption()),
+                                ]);
+                                ?>
+                            </div>
+                            <div class="col-xs-6">
+                                <?php
+                                echo form_element([
+                                    'type' => 'select',
+                                    'name' => 'district_id',
+                                    'value' => $notification->district_id,
+                                    'label' => 'Huyện/quận',
+                                    'options' => toArray($this->location_model->districtSelectOption($notification->province_id)),
+                                ]);
+                                ?>
+                            </div>
+                        </div>
+                            <div class="form-group services">
+                                <label for="exampleInputEmail1">Chọn nhóm thiết bị</label>
+                                <?php echo form_dropdown('device_type',$notification_device,(isset($notification->device_type)) ? $notification->device_type : '','class="form-control"'); ?>
+                            </div>
+                    </div>
+                        <div class="form-group members">
+                            <label class="text-primary">ID khách hàng</label>
+                            <?php
+                            $prepopulate = [];
+                            if ($notification->sender_id) {
+                                $member = $this->member_model->get($notification->sender_id, true);
+                                $prepopulate[] = [
+                                    'id' => $member->id,
+                                    'name' => $member->fullname
+                                ];
+                            }
+                            echo tokeninput('sender_id', '/member/tokenSearch', 1, $prepopulate, 'token-member_id');
+                            ?>
+                        </div>
+
                         <div class="form-group">
                             <label for="input-desc">Nội dung thông báo</label>
                             <textarea name="content" id="input-desc" rows="3" class="form-control"><?php echo $notification->content;?></textarea>
