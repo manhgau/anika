@@ -21,7 +21,6 @@ class Location_model extends MY_Model {
     {
         parent::__construct();
     }
-
     public function getProvince($id=NULL) {
         if (! $id) {
             $data = $this->db->order_by('id ASC')->get($this->tbProvince)->result();

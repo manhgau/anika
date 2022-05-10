@@ -5,6 +5,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         protected $_primary_key = 'id';
         protected $_order_by    = 'id DESC';
+        protected $_data_type = [
+            'id' => 'int',
+            'province_id' => 'int',
+            'district_id' => 'int',
+            'department_id' =>'int',
+            'sender_id' => 'int',
+        ];
         public    $rules        = array (
             'title'            => array(
                 'field'   => 'title',
@@ -18,35 +25,50 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             'sender_type' => array(
                 'field'   => 'sender_type',
                 'rules'   => 'trim' ),
+            'device_type' => array(
+                'field'   => 'device_type',
+                'rules'   => 'trim' ),
             'status'      => array(
                 'field'   => 'status',
                 'rules'   => 'intval'
-            )
+            ),
+            'province_id' => [
+                'field' => 'province_id',
+                'rules' => 'intval'
+            ],
+            'district_id' => [
+                'field' => 'district_id',
+                'rules' => 'intval'
+            ],
+            'department_id'=> array(
+                'field' => 'department_id',
+                'rules'   => 'trim|max_length[50]'
+            ),
+            'sender_id' => [
+                'field' => 'sender_id',
+                'rules' => 'intval'
+            ],
         );
         public function __construct() {
             parent::__construct();
         }
-        const TYPE_HETHONG = 'thong_bao_he_thong';
-        const TYPE_KHUYENMAI = 'thong_bao_khuyen_mai';
-        protected $allTYPE = [
-            self::TYPE_HETHONG => [
-                'name' => 'Hệ thống',
-            ],
-            self::TYPE_KHUYENMAI => [
-                'name' => 'Khuyến mãi',
-            ]
-        ];
+
         public function get_new($type ='thong_bao_he_thong', $sender='all'){
             $data = new stdClass();
             $data->id = NULL;
             $data->title = '';
             $data->content = '';
+            $data->device_type = '';
             $data->type = $type;
             $data->sender_type=$sender;
             $data->meta_keyword = config_item('default_meta_keyword');
             $data->created_time = date('Y-m-d H:i:s');
             $data->created_by = $this->session->userdata['id'];
             $data->status = 0;
+            $data->department_id = NULL;
+            $data->sender_id = NULL;
+            $data->province_id = NULL;
+            $data->district_id =NULL;
             $data->display_author = 1;
             return $data;
         }
@@ -79,7 +101,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
             return $data;
         }
-        public function get_list_notification($offset=0, $limit=10,$authorId=NULL, $keyword=NULL) {
+        public function get_list_notification($authorId=NULL, $keyword=NULL) {
             $this->db->distinct();
             $this->db->select('a.*');
             $this->db->from('notification AS a');
@@ -87,7 +109,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             if($keyword) $this->db->like('a.title',$keyword);
             $this->db->order_by('a.created_time DESC');
             $this->db->group_by('id');
-            $this->db->limit($limit, $offset);
+            $this->db->limit(10);
             $data = $this->db->get()->result();
             return $data;
         }

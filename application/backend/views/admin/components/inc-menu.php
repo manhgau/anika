@@ -52,7 +52,7 @@
     <li class="treeview <?php echo ($this->router->class=='notification') ? 'active' : '';?>">
         <a href="#">
             <i class="fa fa-cc-discover"></i>
-            <span>Tin khuyến mãi</span>
+            <span>Thông báo</span>
             <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
