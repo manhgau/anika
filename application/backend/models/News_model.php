@@ -41,7 +41,11 @@
         public function __construct(){
             parent::__construct();
         }
-
+        public function getList()
+        {
+            $query = $this->db->get('department');
+            return ($query->num_rows() > 0 ) ? $query->result_array() : null;
+        }
         public function get_new(){
             $data = new stdClass();
             $data->id = NULL;
@@ -118,7 +122,7 @@
             return $data[0]->count;
         }
 
-        public function get_list_news($status=array(1),$cat_id=array(),$is_hot=0,$is_popular=0,$authorId=NULL, $keyword=NULL) {
+        public function get_list_news($offset=0, $limit=10,$status=array(1),$cat_id=array(),$is_hot=0,$is_popular=0,$authorId=NULL, $keyword=NULL) {
             $this->db->distinct();
             $this->db->select('a.*');
             $this->db->from('news AS a');
@@ -134,6 +138,7 @@
             if($keyword) $this->db->like('a.title',$keyword);
             $this->db->order_by('a.create_time DESC');
             $this->db->group_by('id');
+            $this->db->limit($limit, $offset);
             $data = $this->db->get()->result();
             return $data;
         }

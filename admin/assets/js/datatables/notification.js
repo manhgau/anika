@@ -4,7 +4,7 @@ $(document).ready(function () {
     var table = $('#datatable').DataTable({
         dom: "fBlrtip",
         // dom: "fBlrtip",
-        pageLength: 50,
+        pageLength: 10,
         "oLanguage": {
             "sSearch": "Tìm kiếm:&nbsp;"
         },

@@ -14,9 +14,10 @@ class Setting_department_model extends MY_Model{
     );
 
 
-    public function __construct() {
-        parent::__construct();
-    }
+
+//    public function __construct() {
+//        parent::__construct();
+//    }
 
     // public function get_new() {
     //     $data = new stdClass();
@@ -51,4 +52,37 @@ class Setting_department_model extends MY_Model{
     //     $this->db->join('category as c','category.parent_id = c.id','left');
     //     return parent::get($id,$single);
     // }
+    public function getDepartment($id=NULL) {
+        if (! $id) {
+            $data = $this->db->order_by('id ASC')->get($this->_table_name)->result();
+            foreach ($data as $key => $value) {
+                $value = $this->setData($value, true);
+                $data[$key] = $value;
+            }
+            return $data;
+        }
+
+        if (is_array($id)) {
+
+            $this->db->select('id, name');
+            $this->db->from($this->_table_name);
+            $this->db->where_in('id', $id);
+            $this->db->limit(count($id));
+            $data = $this->db->get()->result();
+            foreach ($data as $key => $value) {
+                $value = $this->setData($value, true);
+                $data[$key] = $value;
+            }
+            return $data;
+        }
+        else
+            return $this->setData($this->db->get_where($this->_table_name, ['id'=>$id], 1)->row(), true);
+    }
+    public function departmentSelectOption($nullText='phòng ban')
+    {
+        $department = json_decode(json_encode($this->getDepartment()), true);
+        $keys = array_column($department, 'id');
+        $values = array_column($department, 'name');
+        return ['' => "--- {$nullText} ---"] + array_combine($keys, $values);
+    }
 }

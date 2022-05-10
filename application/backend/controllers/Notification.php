@@ -8,7 +8,9 @@ class Notification extends MY_Controller {
     {
         parent::__construct();
         $this->load->model('notification_model');
+        $this->load->model('setting_department_model');
         $this->load->model('user_model');
+        $this->load->model('member_model');
 
         //fetch breadcrumbs
         $this->data['breadcrumbs'] = array(
@@ -44,7 +46,7 @@ class Notification extends MY_Controller {
 
 
         $this->data['notifications'] = array();
-        $list_notification = $this->notification_model->get_list_notification(0, 10,$authorFilterId, $keyword);
+        $list_notification = $this->notification_model->get_list_notification($authorFilterId, $keyword);
         
 
         //fetch category for article
@@ -81,6 +83,8 @@ class Notification extends MY_Controller {
             $this->data['notification'] = $this->notification_model->get_new($type, $sender);
             $this->data['notification']->type = $type;
             $this->data['notification']->sender_type = $sender;
+            $mul_array = $this->input->post('type');
+            $mul_val_string = serialize($mul_array);
             $this->data['breadcrumbs']['Thêm'] = base_url('notification/edit/');
         }
 
@@ -89,12 +93,17 @@ class Notification extends MY_Controller {
         $this->form_validation->set_rules($rules);
         if($this->form_validation->run() == TRUE)
         {
-            $data = $this->notification_model->array_from_post(array('title','content','type','status','sender_type', 'created_by'));
+            $data = $this->notification_model->array_from_post(array('title','content','type','status','sender_type', 'created_by', 'province_id', 'district_id', 'sender_id', 'department_id', 'device_type'));
             if (!$data['title']) $data['title'] = $data['title'];
             if (!$id) {
                 $data['created_by'] = $this->data['userdata']['id'];
                 $data['created_time'] = date('Y-m-d H:i:s', time());
             }
+            $data['sender_id'] = ($data['sender_id']) ? intval($data['sender_id']) : 0;
+            $data['department_id'] = ($data['department_id']) ? intval($data['department_id']) : 0;
+            $data['province_id'] = ($data['province_id']) ? intval($data['province_id']) : 0;
+            $data['district_id'] = ($data['district_id']) ? intval($data['district_id']) : 0;
+            $data['device_type'] = ($data['device_type']) ? $data['device_type'] : '';
             if ($id = $this->notification_model->save($data, $id)) {
 
                 $this->session->set_flashdata('session_msg', 'Cập nhật thành công.');
@@ -105,8 +114,10 @@ class Notification extends MY_Controller {
         }
         $this->data['notification_type'] = config_item('notification_type');
         $this->data['notification_sender'] = config_item('notification_sender');
+        $this->data['notification_device'] = config_item('notification_device');
         //Load view
         $this->data['sub_view'] = 'admin/notification/edit';
+        $this->data['sub_js'] = 'admin/notification/edit-js';
         $this->load->view('admin/_layout_main',$this->data);
 
     }
