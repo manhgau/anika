@@ -15,9 +15,9 @@ class Setting_department_model extends MY_Model{
 
 
 
-//    public function __construct() {
-//        parent::__construct();
-//    }
+    public function __construct() {
+        parent::__construct();
+    }
 
     // public function get_new() {
     //     $data = new stdClass();
