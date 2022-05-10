@@ -254,7 +254,7 @@
 
         // Dùng trong CI APIapp
         public function get_detail_member($id){
-            $this->db->select('a.id,a.fullname,a.email,a.phone,a.addres,a.avatar,a.url_fb, b.name AS office_name,c.name AS department_name');
+            $this->db->select('a.id,a.fullname,a.email,a.phone,a.address,a.avatar,a.url_fb, b.name AS office_name,c.name AS department_name');
             $this->db->from($this->_table_name . ' as a');
             $this->db->join('office as b', 'a.office_id=b.id', 'left');
             $this->db->join('department as c', 'a.department_id=c.id', 'left');

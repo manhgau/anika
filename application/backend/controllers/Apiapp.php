@@ -401,7 +401,9 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(404, 'not_found');
 		}
 		$profile = $this->member_model->get_detail_member($id);
-		$profile->avatar = getImageUrl($profile->avatar);
+		if($profile->avatar){	
+			$profile->avatar = getImageUrl($profile->avatar);
+		}
 		if(!$profile)
 			$this->__jsonResponse(404, 'not_found');
 		$this->__jsonResponse(200, 'success', $profile);
@@ -428,8 +430,8 @@ class apiApp extends CI_Controller {
         $profile['fullname'] = $this->request['fullname'];
         $profile['email'] 	= $this->request['email'];
         $profile['phone'] 	= $this->request['phone'];
-        $profile['addres'] 	= $this->request['addres'];
-		if(!empty( $profile['email']) && !empty( $profile['phone'])  && !empty( $profile['fullname']) && !empty( $profile['addres'])){
+        $profile['address'] 	= $this->request['address'];
+		if(!empty( $profile['email']) && !empty( $profile['phone'])  && !empty( $profile['fullname']) && !empty( $profile['address'])){
 			$rs= $this->member_model->update_profile($profile,$id);
 			if($rs['code'] == 1){
 				$data = $this->member_model->get_detail_member($id);
