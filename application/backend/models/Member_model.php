@@ -273,6 +273,13 @@
             $data = $this->db->get()->result();
             return $data;
         }
+        public function get_list_office($offset=0, $limit=10){
+            $this->db->select('*');
+            $this->db->from('office');
+            $this->db->limit($limit, $offset);
+            $data = $this->db->get()->result();
+            return $data;
+        }
 
         public function do_login(array $data){                        
             $this->db->select('id, email, phone, password');
