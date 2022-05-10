@@ -76,6 +76,7 @@
                 $this->db->where('type',$type);
             }
             $this->db->order_by('position',"ASC");
+            $this->db->order_by('id',"DESC");
             $this->db->where('status','1');
             $this->db->limit($limit, $offset);
             $data = $this->db->get()->result();

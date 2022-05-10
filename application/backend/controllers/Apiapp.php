@@ -479,7 +479,8 @@ class apiApp extends CI_Controller {
         $memberData['email'] 			= $this->request['email'];
         $memberData['phone'] 			= $this->request['phone'];
         $memberData['password'] 		= password_hash($this->request['password'], PASSWORD_DEFAULT);
-        $memberData['department_id'] 	= isset($this->request['department_id'])?$this->request['department_id']:"";
+        $memberData['department_id'] 	= isset($this->request['department_id'])?$this->request['department_id']:'';
+        $memberData['referral_code'] 	= isset($this->request['referral_code'])?$this->request['referral_code']:'';
 		$password_confirm = $this->request['password_confirm'];
 		if(!empty( $memberData['email']) && !empty( $memberData['phone']) && !empty($memberData['password']) && !empty($password_confirm)){
 			if(password_verify($password_confirm, $memberData['password'])){
@@ -762,7 +763,7 @@ class apiApp extends CI_Controller {
 	$this->__jsonResponse(200, 'success', $data);		
 }
 	public function refreshToken(){
-		$access_token =$this->getBearerToken();
+		$refresh_token =$this->getBearerToken();
 		if(!$refresh_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
@@ -881,6 +882,26 @@ class apiApp extends CI_Controller {
         	]
         ];
         $rs = $this->member_model->get_list_department($offset, $limit);	
+		if (!$rs) 
+			$this->__jsonResponse(404, 'notfound', $data);			
+		$data['list'] = $rs;
+		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
+		$this->__jsonResponse(200, 'success',$data);   
+	}
+	public function listOffice (){
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		if ($page < 1) $page = 1;
+        $offset = ($page - 1) * $limit;
+		$data = [
+        	'pagination' => [
+        		'page' => $page,
+        		'limit' => $limit,
+        		'prev' => ($page>1) ? $page-1 : 1,
+        		'next' => false 
+        	]
+        ];
+        $rs = $this->member_model->get_list_office($offset, $limit);	
 		if (!$rs) 
 			$this->__jsonResponse(404, 'notfound', $data);			
 		$data['list'] = $rs;
