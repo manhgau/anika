@@ -458,7 +458,9 @@ class apiApp extends CI_Controller {
 			$rs= $this->member_model->do_login($memberData);
 			if($rs['code'] == 1){
 				$member= $this->member_model->get_detail_member($rs['data']);
-				$member->avatar = getImageUrl($member->avatar);
+				if($member->avatar){	
+					$member->avatar = getImageUrl($member->avatar);
+				}
 				$token = $this->__returnToken($member);		
 			$data = [
 				'profile'	=> $member,
@@ -492,7 +494,9 @@ class apiApp extends CI_Controller {
 						$this->__jsonResponse(401,"request_already",[]);
 					}else{
 						$member= $this->member_model->get_detail_member($do_registration);
-						$member->avatar = getImageUrl($member->avatar);
+						if($member->avatar){	
+							$member->avatar = getImageUrl($member->avatar);
+						}
 						$token = $this->__returnToken($member);		
 						$data = [
 							'profile'	=> $member,
