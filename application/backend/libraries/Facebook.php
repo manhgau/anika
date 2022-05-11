@@ -54,6 +54,7 @@ class Facebook
                 'app_secret'            => $this->config->item('facebook_app_secret'), 
                 'default_graph_version' => $this->config->item('facebook_graph_version') 
             ]); 
+
         } 
         /* Load correct helper depending on login type */
         /* set in the config file */
@@ -90,8 +91,8 @@ class Facebook
      * 
      * @return mixed|boolean 
      */ 
-    public function is_authenticated(){ 
-        $access_token = $this->authenticate(); 
+    public function is_authenticated($token){ 
+        $access_token = $this->authenticate($token); 
         
         if(isset($access_token)){ 
             return $access_token; 
@@ -109,6 +110,7 @@ class Facebook
      * 
      * @return array 
      */ 
+
     public function request($method, $endpoint, $params = [], $access_token = null){ 
         try{ 
             $response = $this->fb->{strtolower($method)}($endpoint, $params, $access_token); 
@@ -118,6 +120,22 @@ class Facebook
         }catch (FacebookSDKException $e){ 
             return $this->logError($e->getCode(), $e->getMessage()); 
         } 
+        // try {
+        //     // Get the \Facebook\GraphNodes\GraphUser object for the current user.
+        //     // If you provided a 'default_access_token', the '{access-token}' is optional.
+        //     $response = $fb->get('/me?fields=id,name,email', $accessToken);
+        //     return $response->getDecodedBody();
+        // } catch(\Facebook\Exceptions\FacebookResponseException $e) {
+        //       // When Graph returns an error
+        //     // $msg= 'Graph returned an error: ' . $e->getMessage();
+        //     // $this->__jsonResponse(500, $msg);
+        //     return $this->logError($e->getCode(), $e->getMessage());
+        // } catch(\Facebook\Exceptions\FacebookSDKException $e) {
+        //       // When validation fails or other local issues
+        //     // $msg = 'Facebook SDK returned an error: ' . $e->getMessage();
+        //     // $this->__jsonResponse(500, $msg);
+        //     return $this->logError($e->getCode(), $e->getMessage());
+        // }
     } 
      
     /** 
