@@ -657,8 +657,8 @@ class apiApp extends CI_Controller {
 		if($data == TRUE){
 			$email =$email_post;
 			$name = $rs->fullname;
-			$title = "Password Verification";
-			$body = $key;
+			$title = lang("Password Verification");
+			$body = sprintf(lang('verify_code_to_change_password'), $key);
 			$htmlContent = true;
 			if ($this->my_phpmailer->send_mail($email, $name, $title, $body, $htmlContent)) {
 				$this->__jsonResponse(200,'success');

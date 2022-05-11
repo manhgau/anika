@@ -28,7 +28,7 @@ class My_phpmailer
 
         // $mail -> Cổng = 25 ;
 
-        $mail->SMTPDebug = 2;
+        $mail->SMTPDebug = config_item('sys_sender_email_debug');
 
         $mail->Host = 'smtp.gmail.com';
 
@@ -55,7 +55,7 @@ class My_phpmailer
         if ($attachmentPath)
             $mail->addAttachment($attachmentPath);
         if (!$mail->send()) {
-            echo "Mailer Error: " . $mail->ErrorInfo;
+            // echo "Mailer Error: " . $mail->ErrorInfo;
             return false;
         } else {
             return true;
