@@ -80,5 +80,7 @@
 	"Do_not_exist":"Yêu cầu của bạn không tồn tại",
 	"password_incorrect":"Mật khẩu không chính xác, Vui lòng thử lại",
 	"manage_product": "Quản lý sản phẩm",
-	"manage_post": "Quản lý bài viết"
+	"manage_post": "Quản lý bài viết",
+	"Password Verification":"Mã xác nhận đổi mật khẩu",
+	"verify_code_to_change_password":"Mã xác nhận tạo mật khẩu mới của bạn là: %s"
 }

@@ -172,4 +172,5 @@ CREATE TABLE `notifycation_user` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 ALTER TABLE `member` ADD `referral_code` VARCHAR(255) NOT NULL AFTER `birthday`;
-ALTER TABLE `notification` ADD `department_id` INT NULL AFTER `device_type`;
+
+ALTER TABLE `member` CHANGE `addres` `address` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;

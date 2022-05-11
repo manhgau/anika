@@ -401,7 +401,9 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(404, 'not_found');
 		}
 		$profile = $this->member_model->get_detail_member($id);
-		$profile->avatar = getImageUrl($profile->avatar);
+		if($profile->avatar){	
+			$profile->avatar = getImageUrl($profile->avatar);
+		}
 		if(!$profile)
 			$this->__jsonResponse(404, 'not_found');
 		$this->__jsonResponse(200, 'success', $profile);
@@ -428,8 +430,8 @@ class apiApp extends CI_Controller {
         $profile['fullname'] = $this->request['fullname'];
         $profile['email'] 	= $this->request['email'];
         $profile['phone'] 	= $this->request['phone'];
-        $profile['addres'] 	= $this->request['addres'];
-		if(!empty( $profile['email']) && !empty( $profile['phone'])  && !empty( $profile['fullname']) && !empty( $profile['addres'])){
+        $profile['address'] 	= $this->request['address'];
+		if(!empty( $profile['email']) && !empty( $profile['phone'])  && !empty( $profile['fullname']) && !empty( $profile['address'])){
 			$rs= $this->member_model->update_profile($profile,$id);
 			if($rs['code'] == 1){
 				$data = $this->member_model->get_detail_member($id);
@@ -456,7 +458,9 @@ class apiApp extends CI_Controller {
 			$rs= $this->member_model->do_login($memberData);
 			if($rs['code'] == 1){
 				$member= $this->member_model->get_detail_member($rs['data']);
-				$member->avatar = getImageUrl($member->avatar);
+				if($member->avatar){	
+					$member->avatar = getImageUrl($member->avatar);
+				}
 				$token = $this->__returnToken($member);		
 			$data = [
 				'profile'	=> $member,
@@ -490,7 +494,9 @@ class apiApp extends CI_Controller {
 						$this->__jsonResponse(401,"request_already",[]);
 					}else{
 						$member= $this->member_model->get_detail_member($do_registration);
-						$member->avatar = getImageUrl($member->avatar);
+						if($member->avatar){	
+							$member->avatar = getImageUrl($member->avatar);
+						}
 						$token = $this->__returnToken($member);		
 						$data = [
 							'profile'	=> $member,
@@ -651,8 +657,8 @@ class apiApp extends CI_Controller {
 		if($data == TRUE){
 			$email =$email_post;
 			$name = $rs->fullname;
-			$title = "Password Verification";
-			$body = $key;
+			$title = lang("Password Verification");
+			$body = sprintf(lang('verify_code_to_change_password'), $key);
 			$htmlContent = true;
 			if ($this->my_phpmailer->send_mail($email, $name, $title, $body, $htmlContent)) {
 				$this->__jsonResponse(200,'success');
