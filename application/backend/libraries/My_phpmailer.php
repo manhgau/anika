@@ -38,12 +38,11 @@ class My_phpmailer
 
         $mail->SMTPAuth = true;
 
-        $mail->Username = 'manhgau0409@gmail.com' ;//config_item('system_mail_address');
+        $mail->Username = config_item('sys_sender_email');
 
-        $mail->Password = 'Rm701299@';//config_item('system_mail_password');
+        $mail->Password = config_item('sys_sender_email_pass');
 
-        //$mail->setFrom(config_item('system_mail_address'), config_item('system_mail_name'));
-        $mail->setFrom('manhgau0409@gmail.com', 'manhgau0409@gmail.com');
+        $mail->setFrom(config_item('sys_sender_email'), config_item('system_mail_name'));
 
         //$mail->addReplyTo('replyto@mynkcms.com', 'MynkCMS Reply');
         $mail->addAddress($email_to, $email_to_name);
