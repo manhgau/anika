@@ -1,11 +1,29 @@
 <script src="/admin/assets/js/jquery.tokeninput.js"></script>
 <script src="https://unpkg.com/imask"></script>
 <script type="text/javascript">
+
+    $(function(){
+        $('select[name="sender_type"]').on('click',function(){
+            if(this.value==='') {
+                document.getElementById("selectBox").style.height = '5px';
+            }
+            else if (this.value==='one')
+            {
+                document.getElementById("selectBox").style.height = 'auto';
+                document.getElementById("members").style.height = 'auto';
+                document.getElementById("selectTeam").style.height = '2px';
+            }
+            else if(this.value==='team'){
+                document.getElementById("selectBox").style.height = 'auto';
+                document.getElementById("selectTeam").style.height = 'auto';
+                document.getElementById("members").style.height = '2px';
+            }
+            else {
+                document.getElementById("selectBox").style.height = '5px';
+            }
+        });
+    });
     $('select[name="sender_type"]').on('change',function (e) {
-        if(this.value===''){
-            $('.members').hidden();
-            $('.selectTeam').hidden();
-        }
         if (this.value==='team') {
             $('.selectTeam').show();
             $('.members').hide();
