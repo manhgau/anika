@@ -61,6 +61,7 @@ $config['notification_type'] = [
     'thong_bao_khuyen_mai' =>'Khuyến mãi'
 ];
 $config['notification_sender'] = [
+    ''=>'Chọn nhóm',
     'all' =>'Mọi người',
     'team' =>'Nhóm',
     'one' =>'Một người'

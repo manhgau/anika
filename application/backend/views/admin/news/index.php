@@ -123,26 +123,26 @@
                         </tbody>
                     </table>
 
-                    <div class="dataTables_paginate paging_simple_numbers" id="datatable_paginate">
-                        <?php
-                            $strFilter = array();
-                            if($filters)
-                            {
-                                foreach($filters as $key => $val)
-                                {
-                                    $strFilter[] = "{$key}={$val}";
-                                }
-                            }
-                            if($paging['current'] > 1) : ?>
-                            <a class="paginate_button previous disabled" aria-controls="datatable" data-dt-idx="0" tabindex="0" id="datatable_previous" href="<?php echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['prev']; ?>">Previous</a>
-                            <a class="paginate_button previous disabled" aria-controls="datatable" data-dt-idx="0" tabindex="0" id="datatable_previous" href="<?php echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['prev']; ?>"><?php echo $paging['prev']?></a>
-                            <?php endif; ?>
-                        <a class="paginate_button current" href="<?php echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['prev']; ?>"><?php echo $paging['current']; ?></a>
-                        <?php if(count($articles) >= $paging['limit']) : ?>
-                            <a class="paginate_button next" href="<?php echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['next']; ?>"><?php echo $paging['next']; ?></a>
-                            <a class="paginate_button next" href="<?php echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['next']; ?>">Next</a>
-                            <?php endif; ?>
-                    </div>
+<!--                    <div class="dataTables_paginate paging_simple_numbers" id="datatable_paginate">-->
+<!--                        --><?php
+//                            $strFilter = array();
+//                            if($filters)
+//                            {
+//                                foreach($filters as $key => $val)
+//                                {
+//                                    $strFilter[] = "{$key}={$val}";
+//                                }
+//                            }
+//                            if($paging['current'] > 1) : ?>
+<!--                            <a class="paginate_button previous disabled" aria-controls="datatable" data-dt-idx="0" tabindex="0" id="datatable_previous" href="--><?php //echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['prev']; ?><!--">Previous</a>-->
+<!--                            <a class="paginate_button previous disabled" aria-controls="datatable" data-dt-idx="0" tabindex="0" id="datatable_previous" href="--><?php //echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['prev']; ?><!--">--><?php //echo $paging['prev']?><!--</a>-->
+<!--                            --><?php //endif; ?>
+<!--                        <a class="paginate_button current" href="--><?php //echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['prev']; ?><!--">--><?php //echo $paging['current']; ?><!--</a>-->
+<!--                        --><?php //if(count($articles) >= $paging['limit']) : ?>
+<!--                            <a class="paginate_button next" href="--><?php //echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['next']; ?><!--">--><?php //echo $paging['next']; ?><!--</a>-->
+<!--                            <a class="paginate_button next" href="--><?php //echo base_url("news/index/?" . implode('&',$strFilter)) . '&page='.$paging['next']; ?><!--">Next</a>-->
+<!--                            --><?php //endif; ?>
+<!--                    </div>-->
                 </div>
             </div>
         </div>

@@ -2,8 +2,8 @@ $(document).ready(function () {
     var rows_selected = [];
     var controller = $('#datatable').data('controller');
     var table = $('#datatable').DataTable({
-       dom: "Bfrt",
-       //  dom: "Bfrtip",
+       // dom: "Bfrt",
+        dom: "fBlrtip",
         pageLength: 10,
         "oLanguage": {
             "sSearch": "Tìm kiếm:&nbsp;"

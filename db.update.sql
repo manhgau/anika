@@ -174,3 +174,4 @@ CREATE TABLE `notifycation_user` (
 ALTER TABLE `member` ADD `referral_code` VARCHAR(255) NOT NULL AFTER `birthday`;
 
 ALTER TABLE `member` CHANGE `addres` `address` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `notification` ADD `department_id` INT(11) NULL AFTER `device_type`;

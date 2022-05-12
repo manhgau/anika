@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 'rules'   => 'trim' ),
             'sender_type' => array(
                 'field'   => 'sender_type',
-                'rules'   => 'trim' ),
+                'rules'   => 'required|trim' ),
             'device_type' => array(
                 'field'   => 'device_type',
                 'rules'   => 'trim' ),
@@ -53,14 +53,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             parent::__construct();
         }
 
-        public function get_new($type ='thong_bao_he_thong', $sender='all'){
+        public function get_new($type ='thong_bao_he_thong'){
             $data = new stdClass();
             $data->id = NULL;
             $data->title = '';
             $data->content = '';
             $data->device_type = '';
             $data->type = $type;
-            $data->sender_type=$sender;
+            $data->sender_type='';
             $data->meta_keyword = config_item('default_meta_keyword');
             $data->created_time = date('Y-m-d H:i:s');
             $data->created_by = $this->session->userdata['id'];
@@ -109,7 +109,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             if($keyword) $this->db->like('a.title',$keyword);
             $this->db->order_by('a.created_time DESC');
             $this->db->group_by('id');
-            $this->db->limit(10);
+
             $data = $this->db->get()->result();
             return $data;
         }

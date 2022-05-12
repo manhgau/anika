@@ -13,6 +13,7 @@
                                 <label>Tác giả</label>
                                 <input id="autoComplete" class="form-control" name="authorName" value="<?php echo $filters['authorName']; ?>">
                             </div>
+
                         </div>
                         <hr class="line" style="margin:0 0 10px;border-color:#e4e4e4">
                         <div class="row">

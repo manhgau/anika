@@ -28,9 +28,9 @@ class Notification extends MY_Controller {
         $keyword = ($this->input->get_post('keyword')) ? $this->input->get_post('keyword') : '' ;
         
         
-        
         $this->data['filters']['authorName'] = $authorName;
         $this->data['filters']['keyword'] = $keyword;
+        
         
         
         //Fetch all author
@@ -80,11 +80,8 @@ class Notification extends MY_Controller {
         else
         {
             if ( ! $this->has_permission('add')) $this->not_permission();
-            $this->data['notification'] = $this->notification_model->get_new($type, $sender);
+            $this->data['notification'] = $this->notification_model->get_new($type);
             $this->data['notification']->type = $type;
-            $this->data['notification']->sender_type = $sender;
-            $mul_array = $this->input->post('type');
-            $mul_val_string = serialize($mul_array);
             $this->data['breadcrumbs']['Thêm'] = base_url('notification/edit/');
         }
 
