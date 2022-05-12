@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
     class Notification_model extends MY_Model {
         protected $_table_name  = 'notification';
+        protected $_table  = 'notifycation_user';
 
         protected $_primary_key = 'id';
         protected $_order_by    = 'id DESC';
@@ -121,8 +122,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return false;
         }
         public function list_notification ($offset=0, $limit=10, $member_id=0, $is_read= NULL, $type= NULL){
-            $this->db->select('a.*, b.title, b.title, b.content, b.sender_id, b.type, b.created_by, b.sender_type');
-            $this->db->from($this->_table_name . ' as a');
+            $this->db->select('a.id AS id_notify_user , a.* , b.id AS notify_id , b.*');
+            $this->db->from($this->_table . ' as a');
             $this->db->join('notification as b', 'a.notify_id = b.id', 'inner');
             $this->db->where('a.member_id',$member_id);
             if($type != NULL){
@@ -136,16 +137,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $data = $this->db->get()->result();
             return $data;
         }
+
         public function count_unread_notifications($member_id=0){
             $this->db->select('*');
             $this->db->where('is_read','0');
             $this->db->where('member_id',$member_id);
-            $data =$this->db->count_all_results($this->_table_name);
+            $data =$this->db->count_all_results($this->_table);
             return $data;
         }
         public function detail_notification ($id = 0, $member_id = 0){
-            $this->db->select('a.*, b.title, b.title, b.content, b.sender_id, b.type, b.created_by, b.sender_type');
-            $this->db->from($this->_table_name . ' as a');
+            $this->db->select('a.id AS id_notify_user , a.*, b.id AS notify_id , b.*');
+            $this->db->from($this->_table . ' as a');
             $this->db->join('notification as b', 'a.notify_id = b.id', 'inner');
             $this->db->where('a.member_id',$member_id);
             $this->db->where('a.id',$id);
@@ -159,7 +161,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         private function __update_is_read($id){
             $this->db->set('is_read', '1');
             $this->db->where('id', $id);
-            $this->db->update($this->_table_name);
-            return TRUE;
+            $result = $this->db->update($this->_table);
+            return $result;
         }
     }

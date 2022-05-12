@@ -23,8 +23,9 @@ class apiApp extends CI_Controller {
 		$this->load->model('fieldActivity_model');
 		$this->load->library('keyemail');	
 		$this->load->library('my_phpmailer');
-		$this->load->library('facebook');
 		$this->load->library('google');
+		$this->load->library('facebook');
+		$this->load->config('facebook'); 
 
 		$reqType = strtolower($this->input->server('REQUEST_METHOD'));
 		if ($reqType === 'post') {
@@ -55,7 +56,7 @@ class apiApp extends CI_Controller {
 				$payload = [
 					'id'  				=> $member->id,
 					'url_fb' 			=> $member->url_fb,
-					'exp' 				=> $time + 60*5
+					'exp' 				=> $time + 60*60*24
 				];
 				$payload_refresh = [
 					'id'  				=> $member->id,
@@ -70,7 +71,35 @@ class apiApp extends CI_Controller {
 				'refresh_token'   => $refresh_token,
 			);	
 	}
+	private function __getFacebookProfileByToken($accessToken){
+		$fb = new \Facebook\Facebook([
+			'app_id'                => $this->config->item('facebook_app_id'), 
+			'app_secret'            => $this->config->item('facebook_app_secret'), 
+			'default_graph_version' => $this->config->item('facebook_graph_version') 
+		  ]);
+		  try {
+			$response = $fb->get('/me?fields=id,name,email', $accessToken);
+			return array(
+				'code'=> 1,
+				'satus'=>'success',
+				'data'=>$response->getGraphUser()
+		  );
 	
+		} catch(\Facebook\Exceptions\FacebookResponseException $e) {
+			  // When Graph returns an error
+			return array(
+				'code'=> $e->getCode(),
+				'satus'=>$e->getMessage()
+		  );
+		} catch(\Facebook\Exceptions\FacebookSDKException $e) {
+			  // When validation fails or other local issues
+			  return array(
+				'code'=> $e->getCode(),
+				'satus'=>$e->getMessage()
+		  );
+	
+		}
+	}
 	private function __jsonResponse($code=200, $msg='success', $data=[])
 	{
         $result['code'] = $code;
@@ -516,68 +545,20 @@ class apiApp extends CI_Controller {
 	}
 
 	public function authFacebook(){
-		$token= $this->getBearerToken();
+		$access_token= $this->getBearerToken();
 		$type = $_GET['type'];
 		$key  = (int)isset($_GET['key'])? intval($_GET['key']):0;
 		if($key >2)
 			$this->__jsonResponse(400,"input_not_valid");
-		if($token && $type == 'facebook'){
-		// 		$userData = array(); 
-		// 		$userData['fb_id']    		= '12345977';
-		// 		$userData['email']        	= 'lilmoi090978@gmail.com';
-		// 		$userData['phone']        	= '04937336';
-		// 		$first_name    	= 'Nguyễn';
-		// 		$last_name    	= 'Mạnh';
-		// 		$userData['fullname']       =  $first_name ." ".$last_name;
-		// 	$rs = $this->member_model->auth_facebook($userData,$key );
-		// 	if($rs['code']== 1){
-		// 		$member = $this->member_model->get_detail_member($rs['data']);
-		// 		$token = $this->__returnToken($member);		
-		// 		$data = [
-		// 			'profile'	=> $member,
-		// 			'token' 	=> $token,
-		// 		];
-		// 			$this->__jsonResponse(200,"success",$data);
-		// 	}
-
-		// 	if($rs['code']== 2){
-		// 		$this->__jsonResponse(400,"request_already");
-		// 	}
-
-		// 	if($rs['code'] == 3 && in_array($key, ['1','2'])){
-		// 		if($key == 1){
-		// 			$rs = $this->member_model->update_id($userData);
-		// 			if($rs['code'] == 1)
-		// 			$member = $this->member_model->get_detail_member($rs['data']);
-		// 			$token = $this->__returnToken($member);		
-		// 			$data = [
-		// 				'profile'	=> $member,
-		// 				'token' 	=> $token,
-		// 			];
-		// 				$this->__jsonResponse(200,"success",$data);
-		// 		$this->__jsonResponse(404, 'notfound');
-
-		// 		}
-		// 		if($key == 2){
-		// 			$this->__jsonResponse(400,"an_error_has_occurred");
-		// 		}
-		//    }
-
-		//    if($rs['code'] == 3){
-		// 		$this->__jsonResponse(500,"synchronizing_documents");
-		//    }
-			/* Authenticate user with facebook */
-			// if($this->facebook->is_authenticated()){ 
-			/* Get user info from facebook */
-				$fbUser = $this->facebook->request('get', '/me?fields=id,first_name,last_name,email,link,gender,picture', $token); 
-				var_dump($fbUser);die;
-				/* Preparing data for database insertion */
-				// $userData['oauth_provider'] = 'facebook'; 
-				$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';; 
-				$userData['first_name']    = !empty($fbUser['first_name'])?$fbUser['first_name']:''; 
-				$userData['last_name']    = !empty($fbUser['last_name'])?$fbUser['last_name']:''; 
+		if($access_token && $type == 'facebook'){
+			$data = $this->__getFacebookProfileByToken($access_token);
+			if($data['code'] == 1){
+				$fbUser = $data['data'];
+				$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';
+				$userData['fullname']     =  !empty($fbUser['name'])?$fbUser['name']:'';; 
 				$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:'';
-
+				$userData['phone']        = !empty($fbUser['phone'])?$fbUser['phone']:'';
+	
 				$rs = $this->member_model->auth_facebook($userData);
 				if($rs['code']== 1){
 					$member = $this->member_model->get_detail_member($rs['data']);
@@ -614,8 +595,10 @@ class apiApp extends CI_Controller {
 				if($rs['code'] == 3){
 						$this->__jsonResponse(500,"synchronizing_documents");
 				}
-		// }
-		// $this->__jsonResponse(404, 'notfound');
+			}
+			if($data['code'] == 190){
+				$this->__jsonResponse(406, 'token_false');
+			}
 	}  
 	$this->__jsonResponse(400, 'input_not_valid');
 }
@@ -631,10 +614,6 @@ class apiApp extends CI_Controller {
 					'name'=>$google_data['name'],
 					'email'=>$google_data['email'],
 					'phone'=>$google_data['phone'],
-					// 'source'=>'google',
-					// 'profile_pic'=>$google_data['profile_pic'],
-					// 'link'=>$google_data['link'],
-					// 'sess_logged_in'=>1
 					);	
 			var_dump($data_gg);die;   
 		}
@@ -689,7 +668,7 @@ class apiApp extends CI_Controller {
 	}
 
 	public function listNotification(){
-		$access_token =$this->getBearerToken();
+		$access_token = $this->getBearerToken();
 		if(!$access_token){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
@@ -729,6 +708,7 @@ class apiApp extends CI_Controller {
 				if($item->type == 'thong_bao_he_thong')
 					$item->image = getImageUrl('ant-design_notification-outlined.png');
 				$rs[$key] = $item;
+				unset($item->id);
 			}
 		}
 		$count= $this->notification_model->count_unread_notifications($member_id);
@@ -740,10 +720,8 @@ class apiApp extends CI_Controller {
 
 	public function detailNotification(){
 		$id = isset($_GET['id'])?intval($_GET['id']):null;
-		if (! $id) 
-			$this->__jsonResponse(400, 'input_not_valid',[]);
-		$access_token = isset($_GET['access_token'])?$_GET['access_token']:"";
-		if(!$access_token){
+		$access_token = $this->getBearerToken();
+		if(!$access_token && !$id){
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 		}
 		$data_profile = $this->__getProfilebyToken($access_token);
@@ -762,6 +740,7 @@ class apiApp extends CI_Controller {
 		if(!$notify)
 			$this->__jsonResponse(404, 'notfound');
 		$notify->type_name = lang($notify->type);
+		unset($notify->id);
 		$data = [];
 		$data['detail_notification'] = $notify;
 		$count= $this->notification_model->count_unread_notifications($member_id);
