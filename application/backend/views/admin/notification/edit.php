@@ -13,17 +13,17 @@
                             <?php echo form_dropdown('type',$notification_type,(isset($notification->type)) ? $notification->type : 'thong_bao_he_thong','class="form-control"'); ?>
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Chọn nhóm đối tượng</label>
-                            <?php echo form_dropdown('sender_type',$notification_sender,(isset($notification->sender_type)) ? $notification->sender_type : 'all','class="form-control"'); ?>
+                            <label for="exampleInputEmail1">Chọn nhóm đối tượng</label><?php echo my_form_error('sender_type');?>
+                            <?php echo form_dropdown('sender_type',$notification_sender,(isset($notification->sender_type)) ? $notification->sender_type : '','class="form-control"'); ?>
                         </div>
                         <div class="selectTeam">
                             <div class="form-group teams">
                                 <label for="exampleInputEmail1">Chọn nhóm team</label>
                                 <select name="team" id="input-status" class="form-control">
-                                    <option value="0" selected>Chọn</option>
-                                    <option value="department">Nhóm phòng ban</option>
-                                    <option value="province">Nhóm tỉnh thành</option>
-                                    <option value="device">Nhóm thiết bị</option>
+                                    <option value="" <?php if($notification->sender_type!=='team') echo 'selected="selected"'; ?>>Chọn</option>
+                                    <option value="department" <?php if($notification->deparment_id!=0) echo 'selected="selected"';?>>Nhóm phòng ban</option>
+                                    <option value="province" <?php if($notification->province_id!=0) echo 'selected="selected"';?>>Nhóm tỉnh thành</option>
+                                    <option value="device" <?php if($notification->device_type!='') echo 'selected="selected"';?>>Nhóm thiết bị</option>
                                 </select>
                             </div>
                         <div class="form-group departments">
