@@ -26,10 +26,13 @@ class Notification extends MY_Controller {
         //Fetch category
         $authorName = ($this->input->get_post('authorName')) ? $this->input->get_post('authorName') : '' ;
         $keyword = ($this->input->get_post('keyword')) ? $this->input->get_post('keyword') : '' ;
+        $this->data['type'] = $type = isset($_GET['type']) ? $_GET['type'] : '';
+
         
         
         $this->data['filters']['authorName'] = $authorName;
         $this->data['filters']['keyword'] = $keyword;
+
         
         
         
@@ -45,8 +48,9 @@ class Notification extends MY_Controller {
 
 
 
+
         $this->data['notifications'] = array();
-        $list_notification = $this->notification_model->get_list_notification($authorFilterId, $keyword);
+        $list_notification = $this->notification_model->get_list_notification($authorFilterId, $keyword, $type);
         
 
         //fetch category for article
@@ -90,7 +94,7 @@ class Notification extends MY_Controller {
         $this->form_validation->set_rules($rules);
         if($this->form_validation->run() == TRUE)
         {
-            $data = $this->notification_model->array_from_post(array('title','content','type','status','sender_type', 'created_by', 'province_id', 'district_id', 'sender_id', 'department_id', 'device_type'));
+            $data = $this->notification_model->array_from_post(array('title','content','type','status','sender_type', 'created_by', 'province_id', 'district_id', 'sender_id', 'department_id', 'device_type', 'url'));
             if (!$data['title']) $data['title'] = $data['title'];
             if (!$id) {
                 $data['created_by'] = $this->data['userdata']['id'];

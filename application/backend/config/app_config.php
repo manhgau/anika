@@ -69,8 +69,7 @@ $config['notification_sender'] = [
 $config['notification_device'] = [
     ''=>'Chọn thiết bị',
     'android' =>'Android',
-    'ios' =>'IOS',
-    'computer' =>'Máy tính'
+    'ios' =>'IOS'
 ];
 
 $config['logEditNewsFile'] = 'thcl-log.txt';
