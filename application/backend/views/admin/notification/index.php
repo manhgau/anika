@@ -13,7 +13,15 @@
                                 <label>Tác giả</label>
                                 <input id="autoComplete" class="form-control" name="authorName" value="<?php echo $filters['authorName']; ?>">
                             </div>
-
+                            <div class="col-xs-3">
+                                <label>Thông báo</label>
+                                <select id="category-filter" name="type" class="form-control filter filter-fields" style="width:200px;display:inline-block">
+                                    <option value="0"> -- Chọn thông báo -- </option>
+                                    <?php foreach(config_item('notification_type') as $id => $name): ?>
+                                        <option value="<?=$id;?>" <?php if($type == $id) echo 'selected="selected"';?>> <?=$name;?> </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </div>
                         <hr class="line" style="margin:0 0 10px;border-color:#e4e4e4">
                         <div class="row">
@@ -34,6 +42,7 @@
                             <th>Nội dung</th>
                             <th>Thông báo</th>
                             <th>Dành cho</th>
+                            <th>Liên kết</th>
                             <th>Trạng thái</th>
                             <th>Action</th>
                             <th>Tác giả</th>
@@ -60,6 +69,9 @@
                                         $notification_sender = config_item('notification_sender');
                                         echo $notification_sender[$notification->sender_type]; ?>
                                     </p>
+                                </td>
+                                <td>
+                                    <a href="<?= $notification->url; ?>" data-toggle="tooltip" data-placement="top" title="<?= $notification->url; ?>">Link</a>
                                 </td>
 <!--                                <td>--><?php //echo date('H:i:s d/m/Y',strtotime($notification->created_time));?><!--</td>-->
 

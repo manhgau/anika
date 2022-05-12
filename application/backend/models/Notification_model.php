@@ -70,6 +70,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $data->sender_id = NULL;
             $data->province_id = NULL;
             $data->district_id =NULL;
+            $data->url = NULL;
             $data->display_author = 1;
             return $data;
         }
@@ -102,11 +103,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
             return $data;
         }
-        public function get_list_notification($authorId=NULL, $keyword=NULL) {
+        public function get_list_notification($authorId=NULL, $keyword=NULL, $type = NULL) {
             $this->db->distinct();
             $this->db->select('a.*');
             $this->db->from('notification AS a');
             if($authorId) $this->db->where('a.created_by',$authorId);
+            if($type) $this->db->where('a.type', $type);
             if($keyword) $this->db->like('a.title',$keyword);
             $this->db->order_by('a.created_time DESC');
             $this->db->group_by('id');
