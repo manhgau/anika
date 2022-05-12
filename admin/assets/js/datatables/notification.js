@@ -2,13 +2,13 @@ $(document).ready(function () {
     var rows_selected = [];
     var controller = $('#datatable').data('controller');
     var table = $('#datatable').DataTable({
+        // dom: "lfrtlip",
         dom: "fBlrtip",
-        // dom: "fBlrtip",
         pageLength: 10,
         "oLanguage": {
             "sSearch": "Tìm kiếm:&nbsp;"
         },
-        //paging: false,
+        paging: true,
         lengthMenu: [ 10, 25, 50, 75, 100 ],
         columnDefs: [
             {
