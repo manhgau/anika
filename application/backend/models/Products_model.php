@@ -24,8 +24,8 @@ class Products_model extends MY_Model {
         $this->db->from($this->_table_name . ' as a');
         $this->db->join('category_products as b', 'a.category_id=b.id', 'left');
         $this->db->where('a.id',$id);
-        $this->db->where('a.is_public',"1");
         $data = $this->db->get()->row();
+        var_dump($data);die;
         return $data;
     }
 
