@@ -25,7 +25,6 @@ class Products_model extends MY_Model {
         $this->db->join('category_products as b', 'a.category_id=b.id', 'left');
         $this->db->where('a.id',$id);
         $data = $this->db->get()->row();
-        var_dump($data);die;
         return $data;
     }
 
