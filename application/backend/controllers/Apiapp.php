@@ -243,8 +243,6 @@ class apiApp extends CI_Controller {
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
 				$item->thumbnail = getImageUrl($item->thumbnail);
-				unset($item->meta_description);
-				unset($item->description);
 				unset($item->content);
 				$rs[$key] = $item;
 			}
