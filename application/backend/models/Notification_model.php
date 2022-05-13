@@ -116,12 +116,54 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $data = $this->db->get()->result();
             return $data;
         }
+        public function get_notification($id) {
+            $this->db->select('a.*');
+            $this->db->from('notification AS a');
+            $this->db->where('status',1);
+            $this->db->where('id', $id);
+            $data = $this->db->get()->row();
+            return $data;
+        }
+        public function get_list_member($sender_id, $department_id ,$id)
+        {
+            $this->db->select('b.id');
+            $this->db->from($this->_table_name . ' as a');
+
+            if($sender_id)
+            {
+                $this->db->join('member as b', 'a.sender_id = b.id', 'inner');
+                $this->db->where('a.sender_id', $sender_id);
+            }
+            if($department_id)
+            {
+                $this->db->join('member as b', 'a.department_id = b.department_id', 'inner');
+                $this->db->where('a.department_id', $department_id);
+            }
+
+            $this->db->where('a.id', $id);
+            $data = $this->db->get()->result();
+            return $data;
+
+        }
+        public function get_member()
+        {
+            $this->db->select('id');
+            $this->db->from('member');
+            $data = $this->db->get()->result();
+            return $data;
+        }
         public function delete_list($ids) {
             $this->db->where_in('id',$ids);
             if($this->db->delete($this->_table_name)) {
                 return true;
             }
             return false;
+        }
+        public function update_push($id, $push_time) {
+            $this->db->set('push_time', $push_time);
+            $this->db->where('id', $id);
+            $result = $this->db->update($this->_table_name);
+            return $result;
         }
         public function list_notification ($offset=0, $limit=10, $member_id=0, $is_read= NULL, $type= NULL){
             $this->db->select('a.id AS id_notify_user , a.* , b.id AS notify_id , b.*');
@@ -138,6 +180,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $this->db->limit($limit, $offset);
             $data = $this->db->get()->result();
             return $data;
+        }
+        public function add_notify_member($id_noti, $member_id = array() ){
+
+            foreach ($member_id as $member) {
+                $this->db->set('notify_id', $id_noti);
+                $this->db->set('member_id', $member->id);
+                $this->db->set('is_read', 0);
+                $result = $this->db->insert('notifycation_user');
+            }
+            return $result;
         }
 
         public function count_unread_notifications($member_id=0){

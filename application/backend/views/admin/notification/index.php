@@ -7,7 +7,7 @@
                         <div class="row form-group">
                             <div class="col-xs-3">
                                 <label for="find-keyword">Từ khóa</label>
-                                <input id="find-keyword" class="form-control" name="keyword" value="<?php echo $filters['keyword']; ?>">
+                                <input id="find-keyword" class="form-control" name="keyword" value="<?php echo $filters['keyword']; ?>" placeholder="Nhập tiêu đề thông báo">
                             </div>
                             <div class="col-xs-3">
                                 <label>Tác giả</label>
@@ -82,6 +82,7 @@
                                         echo btn_edit('notification/edit/'.$notification->id);
                                         $_view_url = config_item('main_domain') .$notification->slugname . '-a'.$notification->id.'.html';
                                         echo btn_delete('notification/delete/'.$notification->id);
+                                        echo btn_send('notification/pushNotify/'.$notification->id);
                                         ?>
                                     </p>
                                 </td>
