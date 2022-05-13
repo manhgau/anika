@@ -21,7 +21,7 @@
                     // exit();
 
                     //load view template
-                    $this->data['meta_title'] = 'Listing category';
+                    $this->data['meta_title'] = 'Danh sách đối tác';
                     $this->data['sub_view'] = 'admin/partner/index';
                     $this->data['sub_js'] = 'admin/partner/index-js';
                     $this->load->view('admin/_layout_main',$this->data);

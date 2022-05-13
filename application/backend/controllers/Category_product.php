@@ -21,7 +21,7 @@
                     // exit();
 
                     //load view template
-                    $this->data['meta_title'] = 'Listing category';
+                    $this->data['meta_title'] = 'Danh mục sản phẩm';
                     $this->data['sub_view'] = 'admin/category_product/index';
                     $this->data['sub_js'] = 'admin/category_product/index-js';
                     $this->load->view('admin/_layout_main',$this->data);

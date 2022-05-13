@@ -21,7 +21,7 @@ class Setting_department extends MY_Controller {
         // exit();
 
         //load view template
-        $this->data['meta_title'] = 'Setting department';
+        $this->data['meta_title'] = 'Phòng ban';
         $this->data['sub_view'] = 'admin/setting_department/index';
         $this->data['sub_js'] = 'admin/setting_department/index-js';
         $this->load->view('admin/_layout_main',$this->data);

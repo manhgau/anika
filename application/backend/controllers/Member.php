@@ -12,7 +12,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
             $this->load->model('postrequest_model');
 
             //Breadcrumbs
-            $this->data['breadcrumbs']['Member'] = base_url('member');
+            $this->data['breadcrumbs']['Khách hàng'] = base_url('member');
         }
 
         public function index() 
