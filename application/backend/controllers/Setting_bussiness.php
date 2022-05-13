@@ -21,7 +21,7 @@
                     // exit();
 
                     //load view template
-                    $this->data['meta_title'] = 'Listing category';
+                    $this->data['meta_title'] = 'Lĩnh vực kinh doanh';
                     $this->data['sub_view'] = 'admin/setting_bussiness/index';
                     $this->data['sub_js'] = 'admin/setting_bussiness/index-js';
                     $this->load->view('admin/_layout_main',$this->data);

@@ -55,7 +55,7 @@ class Notification extends MY_Controller
             $item = $val;
             $this->data['notifications'][] = $item;
         }
-        $this->data['meta_title'] = 'Notification';
+        $this->data['meta_title'] = 'Thông báo';
         $this->data['sub_view'] = 'admin/notification/index';
         $this->data['sub_js'] = 'admin/notification/index-js';
         $this->load->view('admin/_layout_main', $this->data);
@@ -161,7 +161,7 @@ class Notification extends MY_Controller
                 $this->notification_model->add_notify_member($notiData->id, $listId);
                 $this->session->set_flashdata('session_msg', 'Gửi dữ liệu thành công');
                 redirect(base_url('notification'));
-//                $apPushNotify = appNotifyPushToAll($listId, $notifyContent);
+                //$apPushNotify = appNotifyPushToAll($listId, $notifyContent);
 
             }
             else {
@@ -170,7 +170,7 @@ class Notification extends MY_Controller
                 $this->notification_model->add_notify_member($notiData->id, $listId);
                 $this->session->set_flashdata('session_msg', 'Gửi dữ liệu thành công');
                 redirect(base_url('notification'));
-//                $apPushNotify = appNotifyPushToUser($listId, $notifyContent);
+                //$apPushNotify = appNotifyPushToUser($listId, $notifyContent);
 
             }
 
@@ -184,6 +184,8 @@ class Notification extends MY_Controller
 //                ];
 //                if($sentResult['sent_success']) {
 //                    $this->notification_model->add_notify_member($notiData->id, $apPushNotify['id']);
+//                    $this->session->set_flashdata('session_msg', 'Gửi dữ liệu thành công');
+//                    redirect(base_url('notification'));
 //                }
 //
 //                if (!$this->notification_model->save($sentResult, $notiData['id']))
@@ -192,7 +194,8 @@ class Notification extends MY_Controller
 
         }
         else
-            throw new Exception('Trạng thái không hợp lệ', 104);
+            $this->session->set_flashdata('session_error', 'Không thể gửi dữ liệu.');
+            redirect(base_url('notification'));
     }
 }
 

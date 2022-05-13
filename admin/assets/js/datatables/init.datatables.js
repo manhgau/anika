@@ -10,9 +10,11 @@ const _redrawPage = () =>
 }
 
 const callApi = (api, data)=>{
-        (response.code === 200)
+    $.post(api, data, (response) => {
+        (response.code===200)
             ? _redrawPage()
             : showMessage(response.msg, 'error');
+    })
 }
 
 const callApiSelectedRows = (api, alert='Chưa chọn bản ghi nào')=>{
