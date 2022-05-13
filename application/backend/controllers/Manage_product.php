@@ -14,7 +14,7 @@ class Manage_product extends MY_Controller
         $this->load->model('member_model');
 
         //Breadcrumbs
-        $this->data['breadcrumbs']['Bài viết sản phẩm'] = base_url('manage_product');
+        $this->data['breadcrumbs']['Danh sách sản phẩm'] = base_url('manage_product');
     }
 
     public function index()
@@ -22,7 +22,7 @@ class Manage_product extends MY_Controller
         $this->data['category_product'] = $this->category_product_model->get();
 
         //load view template
-        $this->data['meta_title'] = 'Bài viết sản phẩm';
+        $this->data['meta_title'] = 'Danh sách sản phẩm';
         $this->data['sub_view'] = 'admin/manage_product/index';
         $this->data['sub_js'] = 'admin/manage_product/index-js';
         $this->load->view('admin/_layout_main', $this->data);
@@ -89,18 +89,22 @@ class Manage_product extends MY_Controller
     //     $fnc = "{$action}";
     //     $this->$fnc();
     // }
-    public function __deleteAll($api = NULL)
+    public function __deleteAll($id = NULL)
 
     {
-        $id = intval($this->input->post('selectedId'));
+        $post_id = $this->input->post('selectedId');
 //        print_r($api);
 //        exit();
         if (!$this->has_permission('delete')) $this->not_permission();
         if ($id) {
             $post_id[] = $id;
         }
-        $this->manage_product_model->updateStatus($post_id, 1);
-        $this->jsonResponse(200, 'success', []);
+        if($this->manage_product_model->updateStatus($post_id, 'delete')){
+            foreach ($post_id as $key => $val) {
+                $this->jsonResponse(200, 'success', []);
+            }
+        }
+
     }
     public function apis($action)
     {

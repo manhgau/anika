@@ -410,12 +410,13 @@ class Manage_product_model extends MY_Model {
 	}
     public function updateStatus($ids,$status) {
         $this->db->where_in('id',$ids);
-        $args = array('is_public' => $status);
+        $args = array('status' => $status);
         if($this->db->update($this->_table_name,$args)) {
             return true;
         }
         return false;
     }
+
 
 }
 

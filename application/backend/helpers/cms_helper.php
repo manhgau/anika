@@ -87,6 +87,9 @@
     function btn_delete($uri) {
         return '<a class="btn-default btn delete-btns" style="margin:5px 0;padding:0 3px" href="#" data-href="' . base_url($uri) . '" title="Xóa"><i class="fa fa-trash-o" style="color: red;"></i></a>';
     }
+    function btn_send($uri){
+        return '<a class="btn-default btn" style="margin:5px 0;padding:0 3px" href="'.base_url($uri).'" title="Gửi"><i class="fa fa-location-arrow"></i></a>';
+    }
 
     function btn_view($url) {
         return '<a class="btn-default btn" style="margin:5px 0;padding:0 3px" href="' . $url . '" target="_blank" title="Xem nhanh"><i class="fa fa-eye"></i></a>';

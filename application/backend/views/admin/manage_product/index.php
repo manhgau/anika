@@ -131,8 +131,8 @@
         },
         {   text : '<i class="fa fa-trash"></i> Xóa',
             className:"btn btn-sm btn-danger",
-            action: function() {
-            callApiSelectedRows('/manage_product/apis/deleteAll', 'Có xóa danh sách đã chọn không ?', 'Đồng ý')
+            action: function(e, dt, node, config) {
+            callApiSelectedRows('/manage_product/apis/deleteAll)', 'Có xóa danh sách đã chọn không ?', 'Đồng ý')
             
             },
 
