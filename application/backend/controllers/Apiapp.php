@@ -243,8 +243,6 @@ class apiApp extends CI_Controller {
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
 				$item->thumbnail = getImageUrl($item->thumbnail);
-				unset($item->meta_description);
-				unset($item->description);
 				unset($item->content);
 				$rs[$key] = $item;
 			}
@@ -703,10 +701,13 @@ class apiApp extends CI_Controller {
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
 				$item->type_name = lang($item->type);
-				if($item->type == 'thong_bao_khuyen_mai')
-					$item->image = getImageUrl('mdi_sale.png');
-				if($item->type == 'thong_bao_he_thong')
-					$item->image = getImageUrl('ant-design_notification-outlined.png');
+				
+				// if($item->type == 'thong_bao_khuyen_mai')
+				// 	$item->image = getImageUrl('mdi_sale.png');
+				// if($item->type == 'thong_bao_he_thong')
+				// 	$item->image = getImageUrl('ant-design_notification-outlined.png');
+				
+				$item->image = base_url('public/assets/home/images/'. $item->type . '.jpg');
 				$rs[$key] = $item;
 				unset($item->id);
 			}
