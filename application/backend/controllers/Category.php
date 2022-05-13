@@ -19,7 +19,7 @@
             $this->data['categories'] = $this->category_model->get_tree_categories();
 
             //load view template
-            $this->data['meta_title'] = 'Listing category';
+            $this->data['meta_title'] = 'Chuyên mục bài viết';
             $this->data['sub_view'] = 'admin/category/index';
             $this->data['sub_js'] = 'admin/category/index-js';
             $this->load->view('admin/_layout_main',$this->data);
