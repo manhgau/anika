@@ -131,52 +131,16 @@
         },
         {   text : '<i class="fa fa-trash"></i> Xóa',
             className:"btn btn-sm btn-danger",
-            action: function(e, dt, node, config) {
+            action: function() {
             callApiSelectedRows('/manage_product/apis/deleteAll', 'Có xóa danh sách đã chọn không ?', 'Đồng ý')
             
-            },
+            }
 
-        },
-        // {   text : '<i class="fa fa-trash"></i> Xóa',
-        //     className:"btn btn-sm btn-danger",
-        //     action: function ( e, dt, node, config ) {
-        //         callApiSelectedRows('/manage_product/delete', 'Có xóa danh sách đã chọn không ?')
-        //         var buttons = {
-        //             'Ok' : function(){ exec_delete(dt); },
-        //             'Cancel': function(){ $(this).dialog('close'); }
-        //         };
-        //     }
-        // },
-        // {
-        //     text: '<i class="fa fa-upload"></i> Tải lên danh sách',
-        //     className: 'btn btn-sm btn-primary',
-        //     action: function ( e, dt, node, config ) {
-        //         showModal('/manage_product/importModal')
-        //     }
-        // }
+        }
     ];
-    // function exec_delete(dt) {
-    //     var controller = $('#datatable').data('controller');
-    //     var sRows = dt.rows('.selected');
-    //     var dts = sRows.data();
-    //     var ids = [];
-    //     for (var i = 0; i < dts.length; i++) {
-    //         ids.push(dts[i][0]);
-    //     }
-    //     if(ids.length==0) {
-    //         showMessage('Sorry! Bạn chưa chọn item nào.');
-    //         return false;
-    //     }
-    //     $.ajax({
-    //         url: baseUrl+controller+'/delete',
-    //         type:'post',
-    //         dataType:'json',
-    //         data:{ids:ids}
-    //     }).done(location.reload());
-    // }
 
     var confirmRemoveNews = (id) => {
-        confirmAction('execRemoveNews('+id+')', 'Xóa bài viết này?', 'Xóa');
+        confirmAction('execRemoveNews('+id+')', 'Xóa sản phẩm này?', 'Xóa');
     }
 
     var execRemoveNews = (id) => {
@@ -188,8 +152,8 @@
     }
 
     var confirmTogglePublic = (id, currentPublic='public') => {
-        let msg = (currentPublic=='public') ? 'Ẩn bài viết này?' : 'Công khai bài viết này?';
-        confirmAction('togglePublic('+id+')', msg, (currentPublic=='public') ? 'Ẩn bài' : 'Công khai');
+        let msg = (currentPublic=='public') ? 'Ẩn sản phẩm này?' : 'Công khai sản phẩm này?';
+        confirmAction('togglePublic('+id+')', msg, (currentPublic=='public') ? 'Tạm ẩn' : 'Công khai');
     }
 
     var togglePublic = (id) => {

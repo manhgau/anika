@@ -125,9 +125,7 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="boxx">
                             <textarea name="content" class="form-control" id="tinymce" rows=""><?php echo $notification->content; ?></textarea>
-                            </div>
                             </div>
                         <div class="form-group">
                             <label for="url">Liên kết:&nbsp;</label>
