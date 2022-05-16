@@ -82,9 +82,14 @@
                         </div>
                         </div>
                         <div class="form-group">
-                            <label for="image">Ảnh tiêu đề <small style="font-weight:400">(600x400)</small></label> <?php echo form_error('image');?>
-                            <input id="uploadFile" type="file" name="image" class="img" id="thumbnail" />
-                            <div id="imagePreview" style="background-image: url(<?php echo ($notification->image) ? get_image($notification->image) : '';?>);"></div>
+                            <label for="uploadFile">Ảnh đại diện</label>
+                            <?php echo form_element([
+                                'type' => 'fileupload',
+                                'name' => 'image',
+                                'value' => $notification->image,
+                                'button_label' => 'Chọn ảnh'
+                            ]) ?>
+
                         </div>
                         <div class="form-group">
                             <label for="input-title">Tiêu đề thông báo</label> <?php echo my_form_error('title');?>
