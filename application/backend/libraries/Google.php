@@ -29,13 +29,13 @@ class Google {
 
 	}
 
-	public function validate(){		
-		if (isset($_GET['token'])) {
-		  $this->client->authenticate($_GET['token']);
-		  //$_SESSION['access_token'] = $this->client->getAccessToken();
-		  $access_token = $this->client->getAccessToken();
+	public function validate($access_token){		
+		// if ($access_token) {
+		//   $this->client->authenticate($token);
+		//   //$_SESSION['access_token'] = $this->client->getAccessToken();
+		//   $access_token = $this->client->getAccessToken($token);
 
-		}
+		// }
 		if (isset($access_token) && $access_token) {
 		  $this->client->setAccessToken($access_token);
 		  $plus = new Google_Service_Plus($this->client);

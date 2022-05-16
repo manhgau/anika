@@ -353,7 +353,7 @@ class apiApp extends CI_Controller {
 	}
 
 	public function categoryProducts(){
-		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
+		$limit  = 		
 		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
@@ -602,18 +602,13 @@ class apiApp extends CI_Controller {
 }
 
 	public function authGoogle(){
-		$token= $this->getBearerToken();
+		$access_token= $this->getBearerToken();
 		$type = $_GET['type'];
-		$key  = isset($_Get['key'])?$_Get['key']:0;
-		if($token && $type == 'google'){
-			$google_data=$this->google->validate($token);
-			$data_gg=array(
-					'gg_id'=>$google_data['id'],
-					'name'=>$google_data['name'],
-					'email'=>$google_data['email'],
-					'phone'=>$google_data['phone'],
-					);	
-			var_dump($data_gg);die;   
+		//$key  = isset($_Get['key'])?$_Get['key']:0;
+		if($access_token && $type == 'google'){
+			$gpInfo = $this->google->validate($access_token); 
+			var_dump($gpInfo);die;
+
 		}
 		$this->__jsonResponse(400, 'input_not_valid');
 	}
