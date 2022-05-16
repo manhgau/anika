@@ -82,6 +82,16 @@
                         </div>
                         </div>
                         <div class="form-group">
+                            <label for="uploadFile">Ảnh đại diện</label>
+                            <?php echo form_element([
+                                'type' => 'fileupload',
+                                'name' => 'image',
+                                'value' => $notification->image,
+                                'button_label' => 'Chọn ảnh'
+                            ]) ?>
+
+                        </div>
+                        <div class="form-group">
                             <label for="input-title">Tiêu đề thông báo</label> <?php echo my_form_error('title');?>
                             <input type="text" name="title" value="<?= set_value('title', html_entity_decode($notification->title)) ?>" class="form-control" id="input-title">
                         </div>
@@ -95,7 +105,6 @@
                                 <div class="col-xs-6">
                                     <p>
                                         <button id="upload" type="button" name="bt_image"><span>Tải ảnh</span></button>
-                                        hoặc <button id="upload-copyright" type="button" name="bt_image"><span>Tải ảnh và chèn logo</span></button> <small>(640x***)</small>
                                     </p>
                                     <p><span id="status"></span><span id="status-copyright"></span></p>
                                 </div>
@@ -125,9 +134,7 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="boxx">
                             <textarea name="content" class="form-control" id="tinymce" rows=""><?php echo $notification->content; ?></textarea>
-                            </div>
                             </div>
                         <div class="form-group">
                             <label for="url">Liên kết:&nbsp;</label>

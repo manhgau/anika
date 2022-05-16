@@ -1,5 +1,8 @@
 <script src="/admin/assets/js/jquery.tokeninput.js"></script>
 <script src="https://unpkg.com/imask"></script>
+<script type="text/javascript" src="<?php echo base_url();?>/admin/assets/js/ajaxUpload/single-upload.js"></script>
+<script type="text/javascript" src="<?php echo base_url('admin/assets/js/plugins/jquery-textext/js/textext.core.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo base_url('admin/assets/js/plugins/jquery-textext/js/textext.plugin.tags.js'); ?>"></script>
 <script type="text/javascript">
 
     $(function(){

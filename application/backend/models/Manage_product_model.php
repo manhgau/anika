@@ -54,10 +54,10 @@ class Manage_product_model extends MY_Model {
 	const STATUS_DAXOA = 'delete';
 	protected $allStatus = [
 		self::STATUS_HOATDONG => [
-			'name' => 'Hoạt động',
+			'name' => 'Công khai',
 		],
 		self::STATUS_TAMKHOA => [
-			'name' => 'Tạm khóa',
+			'name' => 'Tạm ẩn',
 		],
 		self::STATUS_DAXOA => [
 			'name' => 'Đã xóa',

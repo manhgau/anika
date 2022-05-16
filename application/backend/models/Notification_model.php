@@ -48,7 +48,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             'sender_id' => [
                 'field' => 'sender_id',
                 'rules' => 'intval'
-            ],
+            ]
         );
         public function __construct() {
             parent::__construct();

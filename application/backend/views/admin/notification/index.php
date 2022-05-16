@@ -86,7 +86,7 @@
                                         ?>
                                     </p>
                                 </td>
-                                <td><?php echo (isset($authors[$notification->created_by])) ? $authors[$notification->created_by]->name : '';?></td>
+                                <td><?php echo $authors[$notification->created_by]->name;?></td>
                             </tr>
                         <?php endforeach; ?>
                         <?php else: ?>
