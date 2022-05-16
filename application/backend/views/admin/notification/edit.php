@@ -82,6 +82,11 @@
                         </div>
                         </div>
                         <div class="form-group">
+                            <label for="image">Ảnh tiêu đề <small style="font-weight:400">(600x400)</small></label> <?php echo form_error('image');?>
+                            <input id="uploadFile" type="file" name="image" class="img" id="thumbnail" />
+                            <div id="imagePreview" style="background-image: url(<?php echo ($notification->image) ? get_image($notification->image) : '';?>);"></div>
+                        </div>
+                        <div class="form-group">
                             <label for="input-title">Tiêu đề thông báo</label> <?php echo my_form_error('title');?>
                             <input type="text" name="title" value="<?= set_value('title', html_entity_decode($notification->title)) ?>" class="form-control" id="input-title">
                         </div>
@@ -95,7 +100,6 @@
                                 <div class="col-xs-6">
                                     <p>
                                         <button id="upload" type="button" name="bt_image"><span>Tải ảnh</span></button>
-                                        hoặc <button id="upload-copyright" type="button" name="bt_image"><span>Tải ảnh và chèn logo</span></button> <small>(640x***)</small>
                                     </p>
                                     <p><span id="status"></span><span id="status-copyright"></span></p>
                                 </div>

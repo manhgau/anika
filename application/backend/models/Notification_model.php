@@ -49,6 +49,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 'field' => 'sender_id',
                 'rules' => 'intval'
             ],
+            'image' => array(
+                'field'   => 'image',
+                'rules'   => 'trim' ),
         );
         public function __construct() {
             parent::__construct();
@@ -71,6 +74,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $data->province_id = NULL;
             $data->district_id =NULL;
             $data->url = NULL;
+            $data->image = '';
             $data->display_author = 1;
             return $data;
         }
