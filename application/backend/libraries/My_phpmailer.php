@@ -30,6 +30,8 @@ class My_phpmailer
 
         $mail->SMTPDebug = config_item('sys_sender_email_debug');
 
+        $mail->CharSet ='UTF-8';
+
         $mail->Host = 'smtp.gmail.com';
 
         $mail->Port = 587;

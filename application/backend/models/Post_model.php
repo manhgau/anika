@@ -13,6 +13,7 @@
             if($is_hot > 0){
             $this->db->where('b.is_hot',$is_hot);
             }
+            $this->db->where('b.status',1);
             $this->db->order_by('a.news_id',"DESC");
             $this->db->limit($limit, $offset);
             $data = $this->db->get()->result();

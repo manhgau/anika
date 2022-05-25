@@ -353,7 +353,7 @@ class apiApp extends CI_Controller {
 	}
 
 	public function categoryProducts(){
-		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10; 	
 		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
@@ -553,7 +553,7 @@ class apiApp extends CI_Controller {
 			if($data['code'] == 1){
 				$fbUser = $data['data'];
 				$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';
-				$userData['fullname']     =  !empty($fbUser['name'])?$fbUser['name']:'';; 
+				$userData['fullname']     =  !empty($fbUser['name'])?$fbUser['name']:'';
 				$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:'';
 				$userData['phone']        = !empty($fbUser['phone'])?$fbUser['phone']:'';
 	
@@ -602,20 +602,50 @@ class apiApp extends CI_Controller {
 }
 
 	public function authGoogle(){
-		$token= $this->getBearerToken();
-		$type = $_GET['type'];
-		$key  = isset($_Get['key'])?$_Get['key']:0;
-		if($token && $type == 'google'){
-			$google_data=$this->google->validate($token);
-			$data_gg=array(
-					'gg_id'=>$google_data['id'],
-					'name'=>$google_data['name'],
-					'email'=>$google_data['email'],
-					'phone'=>$google_data['phone'],
-					);	
-			var_dump($data_gg);die;   
+		$ggUser = $this->request['user'];
+		if(!$ggUser){
+			$this->__jsonResponse(400, 'input_not_valid');
 		}
-		$this->__jsonResponse(400, 'input_not_valid');
+		$userData['fb_id']    = !empty($ggUser['id'])?$ggUser['id']:'';
+		$userData['fullname']     =  !empty($ggUser['name'])?$ggUser['name']:'';
+		$userData['email']        = !empty($ggUser['email'])?$ggUser['email']:'';
+		$userData['phone']        = !empty($ggUser['phone'])?$ggUser['phone']:'';
+		$rs = $this->member_model->auth_google($userData);
+		if($rs['code']== 1){
+			$member = $this->member_model->get_detail_member($rs['data']);
+			$token = $this->__returnToken($member);		
+			$data = [
+				'profile'	=> $member,
+				'token' 	=> $token,
+			];
+			$this->__jsonResponse(200,"success",$data);
+		}
+		if($rs['code']== 2){
+			$this->__jsonResponse(400,"request_already");
+		}
+
+		if($rs['code'] == 3 && in_array($key, ['1','2'])){
+			if($key == 1){
+				$rs = $this->member_model->update_id($userData);
+				if($rs['code'] == 1)
+				$member = $this->member_model->get_detail_member($rs['data']);
+				$token = $this->__returnToken($member);		
+				$data = [
+					'profile'	=> $member,
+					'token' 	=> $token,
+				];
+					$this->__jsonResponse(200,"success",$data);
+			$this->__jsonResponse(404, 'notfound');
+
+			}
+			if($key == 2){
+				$this->__jsonResponse(400,"an_error_has_occurred");
+			}
+		}
+
+		if($rs['code'] == 3){
+				$this->__jsonResponse(500,"synchronizing_documents");
+		}
 	}
 
 	public function verificationCodes(){
@@ -700,13 +730,7 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(404, 'notfound');
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
-				$item->type_name = lang($item->type);
-				
-				// if($item->type == 'thong_bao_khuyen_mai')
-				// 	$item->image = getImageUrl('mdi_sale.png');
-				// if($item->type == 'thong_bao_he_thong')
-				// 	$item->image = getImageUrl('ant-design_notification-outlined.png');
-				
+				$item->type_name = lang($item->type);				
 				$item->image = base_url('public/assets/home/images/'. $item->type . '.jpg');
 				$rs[$key] = $item;
 				unset($item->id);
