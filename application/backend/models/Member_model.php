@@ -375,6 +375,7 @@
         }
 
         private function __insert_member(array $data){
+            //var_dump($data);die;
             $this->db->insert($this->_table_name, $data);
             $insert_id = $this->db->insert_id();
             return  $insert_id;
@@ -466,9 +467,10 @@
             return $data;
         }
         public function check_id_gg($id_gg){
-            $this->db->select("id,fb_id");
+            //var_dump($id_gg);die;
+            $this->db->select("id,gg_id");
             $this->db->from($this->_table_name);
-            $this->db->where("fb_id", $id_gg );
+            $this->db->where("gg_id", $id_gg );
             $data = $this->db->get()->row();  
             return $data;
         }
@@ -496,7 +498,12 @@
             }
             $result = $this->db->update($this->_table_name);
             if($result == true){
-                $data = $this->check_id_fb($data['fb_id']);
+                if($data['fb_id']){
+                    $data = $this->check_id_fb($data['fb_id']);
+                }
+                if($data['gg_id']){
+                    $data = $this->check_id_gg($data['gg_id']);
+                }
                 return array(
                     'code'  => 1,
                     'satus' => 'Update thành công',
@@ -577,6 +584,7 @@
 
         public function auth_google(array $data){
             $check_id_gg = $this->check_id_gg($data['gg_id']);
+            //var_dump($check_id_gg);die;
             if($check_id_gg){
                 return array(
                     'code'  => 1,
