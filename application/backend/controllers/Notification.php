@@ -146,10 +146,7 @@ class Notification extends MY_Controller
             $notiData->push_time = date('Y-m-d H:i:s', time());
             $this->notification_model->update_push($notiData->id, $notiData->push_time);
             $notification_type = config_item('notification_type');
-            //var_dump($notiData);die();
-            # send app
             $notifyContent = [
-//            'id' => $notiData->id,
                 'title' => $notiData->title,
                 'content' => $notiData->content,
                 'push_time' => $notiData->push_time,
@@ -159,41 +156,33 @@ class Notification extends MY_Controller
 
             if ($notiData->sender_type == 'all') {
                 $listId = $this->notification_model->get_member();
-                $this->notification_model->add_notify_member($notiData->id, $listId);
-                $this->session->set_flashdata('session_msg', 'Gửi dữ liệu thành công');
-                redirect(base_url('notification'));
-                //$apPushNotify = appNotifyPushToAll($listId, $notifyContent);
+                $apPushNotify = appNotifyPushToAll($listId, $notifyContent);
 
             }
             else {
 
                 $listId = $this->notification_model->get_list_member($notiData->sender_id, $notiData->department_id, $notiData->id);
-                $this->notification_model->add_notify_member($notiData->id, $listId);
-                $this->session->set_flashdata('session_msg', 'Gửi dữ liệu thành công');
-                redirect(base_url('notification'));
-                //$apPushNotify = appNotifyPushToUser($listId, $notifyContent);
-
+                $_listId = array_column($listId,'id');
+                $apPushNotify = appNotifyPushToUser($_listId, $notifyContent);
             }
 
-//            if ($apPushNotify['id'] !== '1')
-//                throw new Exception('Lỗi FCM', 102);
-//            else {
-//
-//                $sentResult = [
-//                    'sent_success' => $apPushNotify['response']['results']['successCount'],
-//                    'sent_failed' => $apPushNotify['response']['results']['failureCount']
-//                ];
-//                if($sentResult['sent_success']) {
-//                    $this->notification_model->add_notify_member($notiData->id, $apPushNotify['id']);
-//                    $this->session->set_flashdata('session_msg', 'Gửi dữ liệu thành công');
-//                    redirect(base_url('notification'));
-//                }
-//
-//                if (!$this->notification_model->save($sentResult, $notiData['id']))
-//                    throw new Exception('Đã gửi thành công, lỗi cập nhật kết quả gửi', 103);
-//            }
+            if ($apPushNotify['id'] != 1)
+                throw new Exception('Lỗi FCM', 102);
+            else {
 
-        }
+                $sentResult = [
+                    'sent_success' => $apPushNotify['response']['successCount'],
+                    'sent_failed' => $apPushNotify['response']['failureCount']
+                ];
+                    $this->notification_model->save($sentResult, $notiData->id);
+                    $this->notification_model->add_notify_member($notiData->id, $apPushNotify['id']);
+                    $this->session->set_flashdata('session_msg', 'Gửi dữ liệu thành công');
+                    redirect(base_url('notification'));
+                }
+
+                if (!$this->notification_model->save($sentResult, $notiData->id))
+                    throw new Exception('Đã gửi thành công, lỗi cập nhật kết quả gửi', 103);
+            }
         else
             $this->session->set_flashdata('session_error', 'Không thể gửi dữ liệu.');
             redirect(base_url('notification'));

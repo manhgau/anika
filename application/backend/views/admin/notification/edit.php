@@ -82,7 +82,7 @@
                         </div>
                         </div>
                         <div class="form-group">
-                            <label for="uploadFile">Ảnh đại diện</label>
+                            <label for="uploadFile">Ảnh tiêu đề</label>
                             <?php echo form_element([
                                 'type' => 'fileupload',
                                 'name' => 'image',

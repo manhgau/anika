@@ -1,14 +1,13 @@
 <?php
-function appNotifyPushToUser($userId, $notiData, $appname='tsl')
+function appNotifyPushToUser($userId, $notiData, $appname='akina')
 {
     $apiDomain = [
-        'tsl' => '', // 'https://us-central1-pgaapp-1762e.cloudfunctions.net/widgets/',
-        'smartroom' => '', // 'https://us-central1-smartroom-fa3cc.cloudfunctions.net/widgets/'
+        'akina' => 'https://us-central1-vn-anika.cloudfunctions.net/widgets/'
     ];
     if (!isset($apiDomain[$appname])) return false;
 
     $api = $apiDomain[ $appname ] . 'api/v1/send_to_users';
-    $desc = get_excerpt($notiData['content'], 100);
+    $desc = get_excerpt(get_plaintext($notiData['content']), 100);
     $data = [
         'message' => [
             'notification' => [
@@ -18,26 +17,18 @@ function appNotifyPushToUser($userId, $notiData, $appname='tsl')
             'data' => [
                 'type' => 'GO_TO_SYSTEM_MSG',
                 'noti' => json_encode($notiData)
-                // 'noti' => json_encode([
-                // 	'content' => 'căng đét căng đét căng đét căng đét căng đét căng đét :P',
-                // 	'id' => '69768',
-                // 	'title' => 'Test thôi lgct',
-                // 	'push_time' => '2020-09-07 11:54:00',
-                // 	'url' => $url
-                // ])
             ]
         ],
         'ids' => $userId
     ];
-
     $response = pushAppNotify($api, $data);
     return $response;
 }
 
 function appNotifyPushToAll($userId,$notiData)
 {
-    $api = ''; // 'https://us-central1-pgaapp-1762e.cloudfunctions.net/widgets/api/v1/send_to_all';
-    $desc = get_excerpt($notiData['content'], 100);
+    $api = 'https://us-central1-vn-anika.cloudfunctions.net/widgets/api/v1/send_to_all';
+    $desc = get_excerpt(get_plaintext($notiData['content']), 100);
     $data = [
         'message' => [
             'notification' => [
@@ -47,20 +38,12 @@ function appNotifyPushToAll($userId,$notiData)
             'data' => [
                 'type' => 'GO_TO_SYSTEM_MSG',
                 'noti' => json_encode($notiData)
-                // 'noti' => json_encode([
-                // 	'content' => 'căng đét căng đét căng đét căng đét căng đét căng đét :P',
-                // 	'id' => '69768',
-                // 	'title' => 'Test thôi lgct',
-                // 	'push_time' => '2020-09-07 11:54:00',
-                // 	'url' => $url
-                // ])
             ]
         ],
         'ids' => $userId
     ];
-
     $response = pushAppNotify($api, $data);
-    return json_decode($response, TRUE);
+    return $response;
 }
 
 function pushAppNotify($api, $data)
@@ -84,7 +67,5 @@ function pushAppNotify($api, $data)
     curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
     $response = curl_exec($ch);
-//    $CI->mylog->add_application_log($response);
-
     return json_decode($response, TRUE);
 }
