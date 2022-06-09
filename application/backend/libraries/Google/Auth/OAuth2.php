@@ -16,7 +16,8 @@
  */
 
 if (!class_exists('Google_Client')) {
-  require_once dirname(__FILE__) . '/../autoload.php';
+  //require_once dirname(__FILE__) . '/../autoload.php';
+  require_once(APPPATH . '/libraries/Google/autoload.php');
 }
 
 /**
