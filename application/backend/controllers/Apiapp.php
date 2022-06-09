@@ -606,8 +606,10 @@ class apiApp extends CI_Controller {
 		if(!$ggUser){
 			$this->__jsonResponse(400, 'input_not_valid');
 		}
-		$userData['fb_id']    = !empty($ggUser['id'])?$ggUser['id']:'';
-		$userData['fullname']     =  !empty($ggUser['name'])?$ggUser['name']:'';
+		$userData['gg_id']    = !empty($ggUser['id'])?$ggUser['id']:'';
+		$familyName =!empty($ggUser['familyName'])?$ggUser['familyName']:'';
+		$givenName =!empty($ggUser['givenName'])?$ggUser['givenName']:'';
+		$userData['fullname']     =  $familyName.$givenName;
 		$userData['email']        = !empty($ggUser['email'])?$ggUser['email']:'';
 		$userData['phone']        = !empty($ggUser['phone'])?$ggUser['phone']:'';
 		$rs = $this->member_model->auth_google($userData);
