@@ -46,11 +46,11 @@
             'public' => [
                 'name' => 'Hoạt động',
             ],
-            
+
             'block' => [
                 'name' => 'Tạm khóa',
             ],
-            
+
             'deleted' => [
                 'name' => 'Đã xóa',
             ],
@@ -115,9 +115,9 @@
 
             if (@$post['department_id']) $where['department_id'] = $post['department_id'];
             if ($post['keyword']) {
-                if (filter_var($post['keyword'], FILTER_VALIDATE_EMAIL)) 
+                if (filter_var($post['keyword'], FILTER_VALIDATE_EMAIL))
                     $where['email'] = $post['keyword'];
-                elseif (preg_match('/^0[1-9][0-9]{8,9}/',$post['keyword'])) 
+                elseif (preg_match('/^0[1-9][0-9]{8,9}/',$post['keyword']))
                     $where['phone'] = $post['keyword'];
                 else
                     $where["fullname LIKE '%".$post['keyword']."%'"] = NULL;
@@ -153,7 +153,7 @@
                     }
                 }
             }
-            
+
             return $result;
         }
 
@@ -263,8 +263,8 @@
             }
             $data = $this->db->get()->row();
             return $data;
-            
-    
+
+
         }
         public function get_list_department($offset=0, $limit=10){
             $this->db->select('*');
@@ -281,7 +281,7 @@
             return $data;
         }
 
-        public function do_login(array $data){                        
+        public function do_login(array $data){
             $this->db->select('id, email, phone, password');
             $this->db->from($this->_table_name);
             if($data['phone'] == NULL){
@@ -290,7 +290,7 @@
             if($data['email'] == NULL){
                 $this->db->where('phone',$data['phone']);
             }
-            $user = $this->db->get()->row();                            
+            $user = $this->db->get()->row();
             if($user){
                 //var_dump($user);die;
                 if(password_verify($data['password'], $user->password)){
@@ -299,7 +299,7 @@
                         'status'=>"OK",
                         'data'  => $user->id
                     );
-                }                  
+                }
                 return array(
                     'code'  => 2,
                     'status'=>"Tài khoản, mật khẩu không chính xác"
@@ -310,7 +310,7 @@
                 'status'=>"Tài khoản không tồn tại"
             );
 
-                                 
+
         }
 
         private function __check_phone_email ($email,$phone){
@@ -318,7 +318,7 @@
             $this->db->from($this->_table_name);
             $this->db->where("email", $email );
             $this->db->or_where("phone", $phone );
-            $data = $this->db->get()->result();  
+            $data = $this->db->get()->result();
             return $data;
         }
         private function __check_profile_email ($email,$id){
@@ -326,7 +326,7 @@
             $this->db->from($this->_table_name);
             $this->db->where_not_in("id", $id );
             $this->db->where("email", $email );
-            $data = $this->db->get()->result();  
+            $data = $this->db->get()->result();
             return $data;
         }
         private function __check_profile_phone ($phone,$id){
@@ -334,7 +334,7 @@
             $this->db->from($this->_table_name);
             $this->db->where_not_in("id", $id );
             $this->db->where("phone", $phone );
-            $data = $this->db->get()->result();  
+            $data = $this->db->get()->result();
             return $data;
         }
         public function do_registration(array $data){
@@ -342,7 +342,11 @@
             if($check){
                 return 1;
             }else{
-                $this->db->insert($this->_table_name, $data);
+                $result = $this->db->insert($this->_table_name, $data);
+                var_dump( $result);
+                if($result == false){
+                    return 1;
+                }
                 $insert_id = $this->db->insert_id();
                 return  $insert_id;
             }
@@ -386,7 +390,7 @@
             $this->db->from($this->_table_name);
             $this->db->where("key_email", $key );
             $this->db->where("expire >", time() );
-            $data = $this->db->get()->result(); 
+            $data = $this->db->get()->result();
             return $data;
         }
         public function update_password($password,$key,$password_confirm){
@@ -407,10 +411,10 @@
                     }else{
                         return 2;
                     }
-                
+
                 }
                 return 3;
-            } 
+            }
             }
             return 4;
         }
@@ -443,7 +447,7 @@
                 'code'  => 2,
                 'status'=>"false"
             );
-            
+
         }
         public function check_email($email){
             $this->db->select("fb_id,gg_id,email,fullname");
@@ -456,14 +460,14 @@
             $this->db->select("fb_id,gg_id,phone");
             $this->db->from($this->_table_name);
             $this->db->where("phone", $phone );
-            $data = $this->db->get()->row();  
+            $data = $this->db->get()->row();
             return $data;
         }
         public function check_id_fb($id_fb){
             $this->db->select("id,fb_id");
             $this->db->from($this->_table_name);
             $this->db->where("fb_id", $id_fb );
-            $data = $this->db->get()->row();  
+            $data = $this->db->get()->row();
             return $data;
         }
         public function check_id_gg($id_gg){
@@ -471,7 +475,7 @@
             $this->db->select("id,gg_id");
             $this->db->from($this->_table_name);
             $this->db->where("gg_id", $id_gg );
-            $data = $this->db->get()->row();  
+            $data = $this->db->get()->row();
             return $data;
         }
         public function update_key_email($email,$key){
@@ -512,7 +516,7 @@
             }
 
         }
-        public function save_image($avatar, $id){		
+        public function save_image($avatar, $id){
             $this->db->set('avatar', $avatar);
             $this->db->where('id',$id);
             $result =$this->db->update($this->_table_name);
@@ -565,7 +569,7 @@
                     );
                 }
             }
-            
+
             if($check_email || $check_phone){
                 if($check_email->fb_id || $check_phone->fb_id){
                     return array(
@@ -621,7 +625,7 @@
                     );
                 }
             }
-            
+
             if($check_email || $check_phone){
                 if($check_email->gg_id || $check_phone->gg_id){
                     return array(
