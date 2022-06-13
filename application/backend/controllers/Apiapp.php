@@ -21,11 +21,11 @@ class apiApp extends CI_Controller {
 		$this->load->model('init_model');
 		$this->load->model('partner_model');
 		$this->load->model('fieldActivity_model');
-		$this->load->library('keyemail');	
+		$this->load->library('keyemail');
 		$this->load->library('my_phpmailer');
 		$this->load->library('google');
 		$this->load->library('facebook');
-		$this->load->config('facebook'); 
+		$this->load->config('facebook');
 
 		$reqType = strtolower($this->input->server('REQUEST_METHOD'));
 		if ($reqType === 'post') {
@@ -63,19 +63,19 @@ class apiApp extends CI_Controller {
 					'url_fb' 			=> $member->url_fb,
 					'exp' 				=> $time + 30*60*60*24
 				];
-		
+
 			$access_token = JWT::encode($payload, $key, 'HS256');
 			$refresh_token = JWT::encode($payload_refresh, $key, 'HS256');
 			return 	array(
 				'access_token'   => $access_token,
 				'refresh_token'   => $refresh_token,
-			);	
+			);
 	}
 	private function __getFacebookProfileByToken($accessToken){
 		$fb = new \Facebook\Facebook([
-			'app_id'                => $this->config->item('facebook_app_id'), 
-			'app_secret'            => $this->config->item('facebook_app_secret'), 
-			'default_graph_version' => $this->config->item('facebook_graph_version') 
+			'app_id'                => $this->config->item('facebook_app_id'),
+			'app_secret'            => $this->config->item('facebook_app_secret'),
+			'default_graph_version' => $this->config->item('facebook_graph_version')
 		  ]);
 		  try {
 			$response = $fb->get('/me?fields=id,name,email', $accessToken);
@@ -84,7 +84,7 @@ class apiApp extends CI_Controller {
 				'satus'=>'success',
 				'data'=>$response->getGraphUser()
 		  );
-	
+
 		} catch(\Facebook\Exceptions\FacebookResponseException $e) {
 			  // When Graph returns an error
 			return array(
@@ -97,7 +97,7 @@ class apiApp extends CI_Controller {
 				'code'=> $e->getCode(),
 				'satus'=>$e->getMessage()
 		  );
-	
+
 		}
 	}
 	private function __jsonResponse($code=200, $msg='success', $data=[])
@@ -109,11 +109,11 @@ class apiApp extends CI_Controller {
         echo json_encode($result);
         exit();
 	}
-	
+
 	public function listBanner()
 	{
-		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
-		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
         $type = isset($_GET['type'])? intval($_GET['type']) : null;
@@ -122,28 +122,28 @@ class apiApp extends CI_Controller {
         		'page' => $page,
         		'limit' => $limit,
         		'prev' => ($page>1) ? $page-1 : 1,
-        		'next' => false 
+        		'next' => false
         	]
         ];
 		if (!$type){
 			$this->__jsonResponse(400, 'input_not_valid');
         }
-        $rs = $this->banner_model->get_list_banners($offset, $limit ,$type);	
-		if (!$rs) 
-		$this->__jsonResponse(404, 'notfound', $data);	
+        $rs = $this->banner_model->get_list_banners($offset, $limit ,$type);
+		if (!$rs)
+		$this->__jsonResponse(404, 'notfound', $data);
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
-				
+
 				$item->image = getImageUrl($item->image);
 				unset($item->order);
 				$rs[$key] = $item;
 			}
-		}		
+		}
 		$data['list'] = $rs;
 		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
-		$this->__jsonResponse(200, 'success',$data);      
+		$this->__jsonResponse(200, 'success',$data);
 	}
-	
+
 	public function appInit()
 	{
 		$sliders = $this->banner_model->get_list_banners(0, 3 ,1);
@@ -156,10 +156,10 @@ class apiApp extends CI_Controller {
 		}
 		$data = $this->init_model->get_app_init();
 		if(is_array($data) && count($data) > 0) {
-			foreach($data as $key => $item){				
-				$settings[$item->name] =$item->value;	
+			foreach($data as $key => $item){
+				$settings[$item->name] =$item->value;
 			}
-		} 
+		}
 
 		$settings['logo_start'] = getImageUrl($settings['logo_start']);
 		$settings['logo_in_app'] = getImageUrl($settings['logo_in_app']);
@@ -170,10 +170,10 @@ class apiApp extends CI_Controller {
 
 		$this->__jsonResponse(200, 'success', $data);
 	}
-	
+
 	public function listPartner() {
-		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
-		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1; 
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
 		$data = [
@@ -181,13 +181,13 @@ class apiApp extends CI_Controller {
         		'page' => $page,
         		'limit' => $limit,
         		'prev' => ($page>1) ? $page-1 : 1,
-        		'next' => false 
+        		'next' => false
         	]
         ];
 
 		$rs = $this->partner_model->get_list_partner($offset, $limit);
-		if (!$rs) 
-		$this->__jsonResponse(404, 'notfound', $data);	
+		if (!$rs)
+		$this->__jsonResponse(404, 'notfound', $data);
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
 				$item->image = getImageUrl($item->image);
@@ -198,10 +198,10 @@ class apiApp extends CI_Controller {
 		}
 		$data['list'] = $rs;
 		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
-		$this->__jsonResponse(200, 'success',$data);    
+		$this->__jsonResponse(200, 'success',$data);
 	}
-	
-	public function detailPartner() {				
+
+	public function detailPartner() {
 		$id = isset($_GET['id'])?$_GET['id']:null;
 		if(!$id){
 			$this->__jsonResponse(400, 'input_not_valid');
@@ -213,10 +213,10 @@ class apiApp extends CI_Controller {
 		$partner->image = getImageUrl($partner->image);
 		$this->__jsonResponse(200, 'success', $partner);
 	}
-	
+
 	public function listPost() {
-		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
-		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
 		$data = [
@@ -224,12 +224,12 @@ class apiApp extends CI_Controller {
         		'page' => $page,
         		'limit' => $limit,
         		'prev' => ($page>1) ? $page-1 : 1,
-        		'next' => false 
+        		'next' => false
         	]
         ];
         $category_id = isset($_GET['category_id'])? intval($_GET['category_id']) : null;
 		$is_hot = isset($_GET['is_hot'])?intval($_GET['is_hot']):null;
-		
+
 		if (!$category_id)
 			$this->__jsonResponse(400, 'input_not_valid');
 		$get_category = $this->post_model->get_category($category_id, true);
@@ -237,38 +237,38 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400, 'bad_request', $data);
 
 		$data['category'] = $get_category;
-        $rs = $this->post_model->list_post($offset, $limit, $category_id, $is_hot);	
-		if (!$rs) 
-		$this->__jsonResponse(404, 'notfound', $data);				
+        $rs = $this->post_model->list_post($offset, $limit, $category_id, $is_hot);
+		if (!$rs)
+		$this->__jsonResponse(404, 'notfound', $data);
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
 				$item->thumbnail = getImageUrl($item->thumbnail);
 				unset($item->content);
 				$rs[$key] = $item;
 			}
-		}		
+		}
 		$data['list'] = $rs;
 		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
-		$this->__jsonResponse(200, 'success',$data);  
+		$this->__jsonResponse(200, 'success',$data);
 
 	}
-	
-	public function detailPost() {				
+
+	public function detailPost() {
 		$id = isset($_GET['id'])?intval($_GET['id']):null;
 		if(!$id)
 		$this->__jsonResponse(400, 'input_not_valid',[]);
 		$post = $this->post_model->detail_post($id);
 		if(!$post)
-			$this->__jsonResponse(404, 'not_found');	
+			$this->__jsonResponse(404, 'not_found');
 		$post->thumbnail = getImageUrl($post->thumbnail);
 		unset($post->news_id);
 		unset($post->term_order);
 		$this->__jsonResponse(200, 'success', $post);
 	}
-	
+
 	public function listProducts() {
-		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
-		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
         $category_id = isset($_GET['category_id'])? intval($_GET['category_id']) : null;
@@ -277,22 +277,23 @@ class apiApp extends CI_Controller {
         		'page' => $page,
         		'limit' => $limit,
         		'prev' => ($page>1) ? $page-1 : 1,
-        		'next' => false 
+        		'next' => false
         	]
         ];
-		
+
 		if (!$category_id)
 			$this->__jsonResponse(400, 'input_not_valid');
 
 		$category = $this->products_model->get_category($category_id, true);
-		$category->image = getImageUrl($category->image);
+        //var_dump($category_id);
+       // var_dump($category);die;
 		if (!$category)
 			$this->__jsonResponse(400, 'bad_request', $data);
 
 		$data['category'] = $category;
 
-        $rs = $this->products_model->get_list_products($limit, $offset, $category_id);	
-        if (!$rs) 
+        $rs = $this->products_model->get_list_products($limit, $offset, $category_id);
+        if (!$rs)
 			$this->__jsonResponse(404, 'notfound', $data);
 
 		if(is_array($rs) && count($rs) > 0){
@@ -304,7 +305,7 @@ class apiApp extends CI_Controller {
 				$rs[$key] = $item;
 			}
 		}
-		
+
 		$data['list'] = $rs;
 		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
 		$this->__jsonResponse(200, 'success',$data);
@@ -312,21 +313,21 @@ class apiApp extends CI_Controller {
 
 	public function detailProduct() {
 		$id = isset($_GET['id'])?intval($_GET['id']):null;
-		if (! $id) 
+		if (! $id)
 			$this->__jsonResponse(400, 'input_not_valid',[]);
 
 		$product = $this->products_model->get_detail_product($id);
 		if(!$product)
-			$this->__jsonResponse(404, 'not_found');	
+			$this->__jsonResponse(404, 'not_found');
 
 		$product->status_name = lang($product->status);
 		$product->thumbnail = getImageUrl($product->thumbnail);
-		$this->__jsonResponse(200, 'success', $product);		
+		$this->__jsonResponse(200, 'success', $product);
 	}
 
 	public function fieldActivity(){
-		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
-		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
 		$data = [
@@ -334,12 +335,12 @@ class apiApp extends CI_Controller {
         		'page' => $page,
         		'limit' => $limit,
         		'prev' => ($page>1) ? $page-1 : 1,
-        		'next' => false 
+        		'next' => false
         	]
         ];
 		$rs = $this->fieldActivity_model->get_list_field($offset, $limit);
-		if (!$rs) 
-		$this->__jsonResponse(404, 'notfound', $data);	
+		if (!$rs)
+		$this->__jsonResponse(404, 'notfound', $data);
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
 				$item->image = getImageUrl($item->image);
@@ -349,12 +350,12 @@ class apiApp extends CI_Controller {
 		}
 		$data['list'] = $rs;
 		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
-		$this->__jsonResponse(200, 'success',$data);   
+		$this->__jsonResponse(200, 'success',$data);
 	}
 
 	public function categoryProducts(){
-		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10; 	
-		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
 		$data = [
@@ -362,12 +363,12 @@ class apiApp extends CI_Controller {
         		'page' => $page,
         		'limit' => $limit,
         		'prev' => ($page>1) ? $page-1 : 1,
-        		'next' => false 
+        		'next' => false
         	]
         ];
 		$rs = $this->products_model->get_list_category_products($offset, $limit);
-		if (!$rs) 
-		$this->__jsonResponse(404, 'notfound', $data);	
+		if (!$rs)
+		$this->__jsonResponse(404, 'notfound', $data);
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
 				$item->image = getImageUrl($item->image);
@@ -377,7 +378,7 @@ class apiApp extends CI_Controller {
 		}
 		$data['list'] = $rs;
 		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
-		$this->__jsonResponse(200, 'success',$data);   
+		$this->__jsonResponse(200, 'success',$data);
 	}
 	function getAuthorizationHeader(){
 		$headers = null;
@@ -428,7 +429,7 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(404, 'not_found');
 		}
 		$profile = $this->member_model->get_detail_member($id);
-		if($profile->avatar){	
+		if($profile->avatar){
 			$profile->avatar = getImageUrl($profile->avatar);
 		}
 		if(!$profile)
@@ -473,22 +474,22 @@ class apiApp extends CI_Controller {
 			}
 		}
 		$this->__jsonResponse(400,$this->lang->line('request'),[]);
-		
+
 	}
 
 	public function loginForm(){
 		$memberData = array();
         $memberData['email'] = $this->request['email'];
         $memberData['phone'] = $this->request['phone'];
-        $memberData['password'] = $this->request['password'];	
-		if(!empty($memberData['password']) && (!empty($memberData['email']) || !empty( $memberData['phone'])) ){			
+        $memberData['password'] = $this->request['password'];
+		if(!empty($memberData['password']) && (!empty($memberData['email']) || !empty( $memberData['phone'])) ){
 			$rs= $this->member_model->do_login($memberData);
 			if($rs['code'] == 1){
 				$member= $this->member_model->get_detail_member($rs['data']);
-				if($member->avatar){	
+				if($member->avatar){
 					$member->avatar = getImageUrl($member->avatar);
 				}
-				$token = $this->__returnToken($member);		
+				$token = $this->__returnToken($member);
 			$data = [
 				'profile'	=> $member,
 				'token' 	=> $token,
@@ -496,16 +497,16 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(200,'OK',$data);
 			}
 			if($rs['code'] == 2){
-				$this->__jsonResponse(404,"password_incorrect",[]);	
+				$this->__jsonResponse(404,"password_incorrect",[]);
 			}
 			if($rs['code'] == 3){
-				$this->__jsonResponse(500,"not_found",[]);				
+				$this->__jsonResponse(500,"not_found",[]);
 			}
 		}
 		$this->__jsonResponse(400,"request",[]);
 	}
 
-	public function registrationForm(){			
+	public function registrationForm(){
 		$memberData = array();
         $memberData['email'] 			= $this->request['email'];
         $memberData['phone'] 			= $this->request['phone'];
@@ -521,10 +522,10 @@ class apiApp extends CI_Controller {
 						$this->__jsonResponse(401,"request_already",[]);
 					}else{
 						$member= $this->member_model->get_detail_member($do_registration);
-						if($member->avatar){	
+						if($member->avatar){
 							$member->avatar = getImageUrl($member->avatar);
 						}
-						$token = $this->__returnToken($member);		
+						$token = $this->__returnToken($member);
 						$data = [
 							'profile'	=> $member,
 							'token' 	=> $token,
@@ -556,11 +557,11 @@ class apiApp extends CI_Controller {
 				$userData['fullname']     =  !empty($fbUser['name'])?$fbUser['name']:'';
 				$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:'';
 				$userData['phone']        = !empty($fbUser['phone'])?$fbUser['phone']:'';
-	
+
 				$rs = $this->member_model->auth_facebook($userData);
 				if($rs['code']== 1){
 					$member = $this->member_model->get_detail_member($rs['data']);
-					$token = $this->__returnToken($member);		
+					$token = $this->__returnToken($member);
 					$data = [
 						'profile'	=> $member,
 						'token' 	=> $token,
@@ -576,7 +577,7 @@ class apiApp extends CI_Controller {
 						$rs = $this->member_model->update_id($userData);
 						if($rs['code'] == 1)
 						$member = $this->member_model->get_detail_member($rs['data']);
-						$token = $this->__returnToken($member);		
+						$token = $this->__returnToken($member);
 						$data = [
 							'profile'	=> $member,
 							'token' 	=> $token,
@@ -597,12 +598,13 @@ class apiApp extends CI_Controller {
 			if($data['code'] == 190){
 				$this->__jsonResponse(406, 'token_false');
 			}
-	}  
+	}
 	$this->__jsonResponse(400, 'input_not_valid');
 }
 
 	public function authGoogle(){
 		$ggUser = $this->request['user'];
+        $key  = (int)isset($_GET['key'])? intval($_GET['key']):0;
 		if(!$ggUser){
 			$this->__jsonResponse(400, 'input_not_valid');
 		}
@@ -615,7 +617,7 @@ class apiApp extends CI_Controller {
 		$rs = $this->member_model->auth_google($userData);
 		if($rs['code']== 1){
 			$member = $this->member_model->get_detail_member($rs['data']);
-			$token = $this->__returnToken($member);		
+			$token = $this->__returnToken($member);
 			$data = [
 				'profile'	=> $member,
 				'token' 	=> $token,
@@ -631,7 +633,7 @@ class apiApp extends CI_Controller {
 				$rs = $this->member_model->update_id($userData);
 				if($rs['code'] == 1)
 				$member = $this->member_model->get_detail_member($rs['data']);
-				$token = $this->__returnToken($member);		
+				$token = $this->__returnToken($member);
 				$data = [
 					'profile'	=> $member,
 					'token' 	=> $token,
@@ -671,7 +673,7 @@ class apiApp extends CI_Controller {
 			$htmlContent = true;
 			if ($this->my_phpmailer->send_mail($email, $name, $title, $body, $htmlContent)) {
 				$this->__jsonResponse(200,'success');
-			}			
+			}
 		}
 	}
 
@@ -698,25 +700,26 @@ class apiApp extends CI_Controller {
 	}
 
 	public function listNotification(){
-		$access_token = $this->getBearerToken();
-		if(!$access_token){
-			$this->__jsonResponse(400, 'input_not_valid',[]);
-		}
-		$data_profile = $this->__getProfilebyToken($access_token);
-		if($data_profile =='Expired token' ){
-			$this->__jsonResponse(405, 'token_expires');
-		}
-		if($data_profile =='Signature verification failed' ){
-			$this->__jsonResponse(406, 'token_false');
-		}
-		$member_id = $data_profile->id;
+//		$access_token = $this->getBearerToken();
+//		if(!$access_token){
+//			$this->__jsonResponse(400, 'input_not_valid',[]);
+//		}
+//		$data_profile = $this->__getProfilebyToken($access_token);
+//		if($data_profile =='Expired token' ){
+//			$this->__jsonResponse(405, 'token_expires');
+//		}
+//		if($data_profile =='Signature verification failed' ){
+//			$this->__jsonResponse(406, 'token_false');
+//		}
+        //$member_id = $data_profile->id;
+        $member_id = '7';
 		if(!$member_id){
 			$this->__jsonResponse(404, 'not_found');
 		}
 		$type = isset($_GET['type'])?$_GET['type']:null;
 		$is_read = isset($_GET['is_read'])?$_GET['is_read']:null;
-		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
-		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
 		$data = [
@@ -724,7 +727,7 @@ class apiApp extends CI_Controller {
         		'page' => $page,
         		'limit' => $limit,
         		'prev' => ($page>1) ? $page-1 : 1,
-        		'next' => false 
+        		'next' => false
         	]
         ];
 		$rs = $this->notification_model->list_notification($offset, $limit , $member_id, $is_read, $type);
@@ -732,13 +735,14 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(404, 'notfound');
 		if(is_array($rs) && count($rs) > 0){
 			foreach($rs as $key => $item){
-				$item->type_name = lang($item->type);				
-				$item->image = base_url('public/assets/home/images/'. $item->type . '.jpg');
+				$item->type_name = lang($item->type);
+				$item->image_icon = base_url('public/assets/home/images/'. $item->type . '.jpg');
+                $item->image = getImageUrl($item->image);
 				$rs[$key] = $item;
 				unset($item->id);
 			}
 		}
-		$count= $this->notification_model->count_unread_notifications($member_id);
+		$count= $this->notification_model->count_unread_notifications($member_id, $type);
 		$data['count'] = $count;
 		$data['list'] = $rs;
 		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
@@ -772,7 +776,7 @@ class apiApp extends CI_Controller {
 		$data['detail_notification'] = $notify;
 		$count= $this->notification_model->count_unread_notifications($member_id);
 		$data['count'] = $count;
-	$this->__jsonResponse(200, 'success', $data);		
+	$this->__jsonResponse(200, 'success', $data);
 }
 	public function refreshToken(){
 		$refresh_token =$this->getBearerToken();
@@ -786,7 +790,7 @@ class apiApp extends CI_Controller {
 		if($data =='Signature verification failed' ){
 			$this->__jsonResponse(406, 'token_false');
 		}
-		$token = $this->__returnToken($data);		
+		$token = $this->__returnToken($data);
 		$this->__jsonResponse(200,'OK',$token);
 	}
 
@@ -839,7 +843,7 @@ class apiApp extends CI_Controller {
 		$member_id = $data_profile->id;
 		if(!$member_id)
 			$this->__jsonResponse(404, 'not_found');
-		
+
 		$filename = md5(uniqid(rand(), true));
 		$config = array(
 			'upload_path' => 'uploads',
@@ -847,7 +851,7 @@ class apiApp extends CI_Controller {
 			'file_name' => $filename,
 			'max_size' => 4*1024,
 			'encrypt_name' => TRUE
-		);	
+		);
 
 		$today = date('Y/m/d', time());
 		# kiểm tra thư mục ngày tháng trong folder uploads
@@ -873,7 +877,7 @@ class apiApp extends CI_Controller {
 			}
 			if($rs['code'] == 2){
 				$this->__jsonResponse(400, 'an_error_has_occurred');
-			}		
+			}
 		}
 		else {
 			$this->__jsonResponse(500, $msg);
@@ -881,8 +885,8 @@ class apiApp extends CI_Controller {
 
 	}
 	public function listDepartment (){
-		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
-		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
 		$data = [
@@ -890,19 +894,19 @@ class apiApp extends CI_Controller {
         		'page' => $page,
         		'limit' => $limit,
         		'prev' => ($page>1) ? $page-1 : 1,
-        		'next' => false 
+        		'next' => false
         	]
         ];
-        $rs = $this->member_model->get_list_department($offset, $limit);	
-		if (!$rs) 
-			$this->__jsonResponse(404, 'notfound', $data);			
+        $rs = $this->member_model->get_list_department($offset, $limit);
+		if (!$rs)
+			$this->__jsonResponse(404, 'notfound', $data);
 		$data['list'] = $rs;
 		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
-		$this->__jsonResponse(200, 'success',$data);   
+		$this->__jsonResponse(200, 'success',$data);
 	}
 	public function listOffice (){
-		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;		
-		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;  
+		$limit  = (int)isset($_GET['limit'])? intval($_GET['limit']) : 10;
+		$page  = (int)isset($_GET['page'])? intval($_GET['page']) : 1;
 		if ($page < 1) $page = 1;
         $offset = ($page - 1) * $limit;
 		$data = [
@@ -910,14 +914,14 @@ class apiApp extends CI_Controller {
         		'page' => $page,
         		'limit' => $limit,
         		'prev' => ($page>1) ? $page-1 : 1,
-        		'next' => false 
+        		'next' => false
         	]
         ];
-        $rs = $this->member_model->get_list_office($offset, $limit);	
-		if (!$rs) 
-			$this->__jsonResponse(404, 'notfound', $data);			
+        $rs = $this->member_model->get_list_office($offset, $limit);
+		if (!$rs)
+			$this->__jsonResponse(404, 'notfound', $data);
 		$data['list'] = $rs;
 		$data['pagination']['next'] = (count($rs)==$limit) ? $page+1 : false;
-		$this->__jsonResponse(200, 'success',$data);   
+		$this->__jsonResponse(200, 'success',$data);
 	}
 }

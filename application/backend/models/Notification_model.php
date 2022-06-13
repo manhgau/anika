@@ -192,11 +192,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $result;
         }
 
-        public function count_unread_notifications($member_id=0){
-            $this->db->select('*');
-            $this->db->where('is_read','0');
-            $this->db->where('member_id',$member_id);
-            $data =$this->db->count_all_results($this->_table);
+        public function count_unread_notifications($member_id=0,$type =NULL ){
+//            $this->db->select('*');
+//            $this->db->where('is_read','0');
+//            $this->db->where('member_id',$member_id);
+//            $data =$this->db->count_all_results($this->_table);
+//            return $data;
+            $this->db->select('a.id AS id_notify_user , a.* , b.id AS notify_id , b.*');
+            $this->db->from($this->_table . ' as a');
+            $this->db->join('notification as b', 'a.notify_id = b.id', 'inner');
+            $this->db->where('a.member_id',$member_id);
+            if($type != NULL){
+                $this->db->where('b.type',$type);
+            }
+            $this->db->where('a.is_read','0');
+            $data =$this->db->count_all_results();
             return $data;
         }
         public function detail_notification ($id = 0, $member_id = 0){
@@ -208,7 +218,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $data = $this->db->get()->row();
             if($data){
                 if($this->__update_is_read($id) == TRUE){
-                    return $data;  
+                    return $data;
                 }
             }
         }
