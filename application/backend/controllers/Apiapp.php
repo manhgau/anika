@@ -700,19 +700,18 @@ class apiApp extends CI_Controller {
 	}
 
 	public function listNotification(){
-//		$access_token = $this->getBearerToken();
-//		if(!$access_token){
-//			$this->__jsonResponse(400, 'input_not_valid',[]);
-//		}
-//		$data_profile = $this->__getProfilebyToken($access_token);
-//		if($data_profile =='Expired token' ){
-//			$this->__jsonResponse(405, 'token_expires');
-//		}
-//		if($data_profile =='Signature verification failed' ){
-//			$this->__jsonResponse(406, 'token_false');
-//		}
-        //$member_id = $data_profile->id;
-        $member_id = '7';
+		$access_token = $this->getBearerToken();
+		if(!$access_token){
+			$this->__jsonResponse(400, 'input_not_valid',[]);
+		}
+		$data_profile = $this->__getProfilebyToken($access_token);
+		if($data_profile =='Expired token' ){
+			$this->__jsonResponse(405, 'token_expires');
+		}
+		if($data_profile =='Signature verification failed' ){
+			$this->__jsonResponse(406, 'token_false');
+		}
+        $member_id = $data_profile->id;
 		if(!$member_id){
 			$this->__jsonResponse(404, 'not_found');
 		}
@@ -737,7 +736,7 @@ class apiApp extends CI_Controller {
 			foreach($rs as $key => $item){
 				$item->type_name = lang($item->type);
 				$item->image_icon = base_url('public/assets/home/images/'. $item->type . '.jpg');
-                $item->image = getImageUrl($item->image);
+                $item->image = getImageUrl($item->image );
 				$rs[$key] = $item;
 				unset($item->id);
 			}
