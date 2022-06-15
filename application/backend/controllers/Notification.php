@@ -157,11 +157,10 @@ class Notification extends MY_Controller
             if ($notiData->sender_type == 'all') {
                 $listId = $this->notification_model->get_member();
                 $apPushNotify = appNotifyPushToAll($listId, $notifyContent);
-
             }
             else {
 
-                $listId = $this->notification_model->get_list_member($notiData->sender_id, $notiData->department_id, $notiData->id);
+                $listId= $this->notification_model->get_list_member($notiData->sender_id, $notiData->department_id, $notiData->id);
                 $_listId = array_column($listId,'id');
                 $apPushNotify = appNotifyPushToUser($_listId, $notifyContent);
             }
@@ -175,17 +174,20 @@ class Notification extends MY_Controller
                     'sent_failed' => $apPushNotify['response']['failureCount']
                 ];
                     $this->notification_model->save($sentResult, $notiData->id);
-                    $this->notification_model->add_notify_member($notiData->id, $apPushNotify['id']);
-                    $this->session->set_flashdata('session_msg', 'Gửi dữ liệu thành công');
-                    redirect(base_url('notification'));
+                    $data = $this->notification_model->add_notify_member($notiData->id, $listId);
+                    if($data == true) {
+                        $this->session->set_flashdata('session_msg', 'Gửi dữ liệu thành công');
+                        redirect(base_url('notification'));
+                    }
                 }
 
                 if (!$this->notification_model->save($sentResult, $notiData->id))
                     throw new Exception('Đã gửi thành công, lỗi cập nhật kết quả gửi', 103);
             }
-        else
+        else {
             $this->session->set_flashdata('session_error', 'Không thể gửi dữ liệu.');
             redirect(base_url('notification'));
+        }
     }
 }
 
