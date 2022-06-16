@@ -56,7 +56,7 @@
                                     <p><a href="<?php echo base_url('notification/edit/'.$notification->id);?>"><?php echo $notification->title; ?></a></p>
                                 </td>
                                 <td>
-                                    <p><?php echo get_excerpt($notification->content, 400); ?></p>
+                                    <p><?php echo get_excerpt($notification->content, 300); ?></p>
                                 </td>
                                 <td>
                                     <p><?php

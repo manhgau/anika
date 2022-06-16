@@ -769,7 +769,8 @@ class apiApp extends CI_Controller {
 
 		if(!$notify)
 			$this->__jsonResponse(404, 'notfound');
-		$notify->type_name = lang($notify->type);
+        $notify->type_name = lang($notify->type);
+        $notify->image = getImageUrl($notify->image);
 		unset($notify->id);
 		$data = [];
 		$data['detail_notification'] = $notify;
