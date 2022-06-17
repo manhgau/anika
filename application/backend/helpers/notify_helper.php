@@ -7,7 +7,7 @@ function appNotifyPushToUser($userId, $notiData, $appname='akina')
     if (!isset($apiDomain[$appname])) return false;
 
     $api = $apiDomain[ $appname ] . 'api/v1/send_to_users';
-    $desc = get_excerpt(get_plaintext($notiData['content']), 100);
+    $desc = get_excerpt(get_plaintext($notiData['intro']), 100);
     $data = [
         'message' => [
             'notification' => [
@@ -28,7 +28,7 @@ function appNotifyPushToUser($userId, $notiData, $appname='akina')
 function appNotifyPushToAll($userId,$notiData)
 {
     $api = 'https://us-central1-vn-anika.cloudfunctions.net/widgets/api/v1/send_to_all';
-    $desc = get_excerpt(get_plaintext($notiData['content']), 100);
+    $desc = get_excerpt(get_plaintext($notiData['intro']), 100);
     $data = [
         'message' => [
             'notification' => [

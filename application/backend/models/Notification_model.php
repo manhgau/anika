@@ -20,6 +20,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             'content'        => array(
                 'field'   => 'content',
                 'rules'   => 'trim' ),
+            'intro'       =>array(
+                'field'   => 'intro',
+                'rules'   => 'trim'),
             'type'        => array(
                 'field'   => 'type',
                 'rules'   => 'trim' ),

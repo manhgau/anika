@@ -95,10 +95,10 @@
                             <label for="input-title">Tiêu đề thông báo</label> <?php echo my_form_error('title');?>
                             <input type="text" name="title" value="<?= set_value('title', html_entity_decode($notification->title)) ?>" class="form-control" id="input-title">
                         </div>
-<!--                        <div class="form-group">-->
-<!--                            <label for="input-desc">Nội dung thông báo</label>-->
-<!--                            <textarea name="content" id="input-desc" rows="3" class="form-control">--><?php //echo $notification->content;?><!--</textarea>-->
-<!--                        </div>-->
+                        <div class="form-group">
+                            <label for="input-desc">Tóm tắt thông báo</label>
+                            <textarea name="intro" id="input-desc" rows="3" class="form-control"><?php echo $notification->intro;?></textarea>
+                        </div>
                         <div class="form-group" id="list-image">
                             <label for="tinymce" style="width:100%;"> Nội dung bài viết </label> <?php echo my_form_error('content');?>
                             <div class="row">
