@@ -87,8 +87,9 @@ class Notification extends MY_Controller
         $rules = $this->notification_model->rules;
         $this->form_validation->set_rules($rules);
         if ($this->form_validation->run() == TRUE) {
-            $data = $this->notification_model->array_from_post(array('image','title', 'content', 'type', 'status', 'sender_type', 'created_by', 'province_id', 'district_id', 'sender_id', 'department_id', 'device_type', 'url'));
+            $data = $this->notification_model->array_from_post(array('image','title', 'content', 'intro' , 'type', 'status', 'sender_type', 'created_by', 'province_id', 'district_id', 'sender_id', 'department_id', 'device_type', 'url'));
             if (!$data['image']) unset($data['image']);
+            if(!$data['intro']) $data['intro'] = $data['intro'];
             if (!$data['title']) $data['title'] = $data['title'];
             if (!$id) {
                 $data['created_by'] = $this->data['userdata']['id'];
@@ -148,6 +149,7 @@ class Notification extends MY_Controller
             $notification_type = config_item('notification_type');
             $notifyContent = [
                 'title' => $notiData->title,
+                'intro' => $notiData->intro,
                 'content' => $notiData->content,
                 'push_time' => $notiData->push_time,
                 'url' => ($notiData->url) ? $notiData->url : NULL,
