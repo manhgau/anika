@@ -554,10 +554,9 @@ class apiApp extends CI_Controller {
 			if($data['code'] == 1){
 				$fbUser = $data['data'];
 				$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';
-				$userData['fullname']     =  !empty($fbUser['name'])?$fbUser['name']:'';
-				$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:'';
-				$userData['phone']        = !empty($fbUser['phone'])?$fbUser['phone']:'';
-
+				$userData['fullname']     =  !empty($fbUser['name'])?$fbUser['name']:null;
+				$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:null;
+				$userData['phone']        = !empty($fbUser['phone'])?$fbUser['phone']:null;
 				$rs = $this->member_model->auth_facebook($userData);
 				if($rs['code']== 1){
 					$member = $this->member_model->get_detail_member($rs['data']);

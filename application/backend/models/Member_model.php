@@ -456,6 +456,7 @@
             $data = $this->db->get()->row();
             return $data;
         }
+
         public function check_phone($phone){
             $this->db->select("fb_id,gg_id,phone");
             $this->db->from($this->_table_name);
@@ -463,6 +464,7 @@
             $data = $this->db->get()->row();
             return $data;
         }
+
         public function check_id_fb($id_fb){
             $this->db->select("id,fb_id");
             $this->db->from($this->_table_name);
@@ -470,6 +472,7 @@
             $data = $this->db->get()->row();
             return $data;
         }
+
         public function check_id_gg($id_gg){
             //var_dump($id_gg);die;
             $this->db->select("id,gg_id");
@@ -478,6 +481,7 @@
             $data = $this->db->get()->row();
             return $data;
         }
+
         public function update_key_email($email,$key){
             $data =[
                 'key_email'   => $key,
@@ -487,6 +491,7 @@
             $result =$this->db->update($this->_table_name, $data);
             return $result;
         }
+
         public function update_id(array $data){
             if($data['fb_id']){
                 $this->db->set('fb_id',$data['fb_id']);
@@ -516,6 +521,7 @@
             }
 
         }
+
         public function save_image($avatar, $id){
             $this->db->set('avatar', $avatar);
             $this->db->where('id',$id);
@@ -531,8 +537,11 @@
                 'status'=>"Đã có lỗi xảy ra."
             );
         }
+
         public function auth_facebook(array $data){
+            //var_dump($data);die;
             $check_id_fb = $this->check_id_fb($data['fb_id']);
+            //var_dump($check_id_fb);die;
             if($check_id_fb){
                 return array(
                     'code'  => 1,
@@ -588,7 +597,6 @@
 
         public function auth_google(array $data){
             $check_id_gg = $this->check_id_gg($data['gg_id']);
-            //var_dump($check_id_gg);die;
             if($check_id_gg){
                 return array(
                     'code'  => 1,
