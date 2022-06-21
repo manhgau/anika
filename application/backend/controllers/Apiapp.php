@@ -554,10 +554,9 @@ class apiApp extends CI_Controller {
 			if($data['code'] == 1){
 				$fbUser = $data['data'];
 				$userData['fb_id']    = !empty($fbUser['id'])?$fbUser['id']:'';
-				$userData['fullname']     =  !empty($fbUser['name'])?$fbUser['name']:'';
-				$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:'';
-				$userData['phone']        = !empty($fbUser['phone'])?$fbUser['phone']:'';
-
+				$userData['fullname']     =  !empty($fbUser['name'])?$fbUser['name']:null;
+				$userData['email']        = !empty($fbUser['email'])?$fbUser['email']:null;
+				$userData['phone']        = !empty($fbUser['phone'])?$fbUser['phone']:null;
 				$rs = $this->member_model->auth_facebook($userData);
 				if($rs['code']== 1){
 					$member = $this->member_model->get_detail_member($rs['data']);
@@ -609,11 +608,11 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400, 'input_not_valid');
 		}
 		$userData['gg_id']    = !empty($ggUser['id'])?$ggUser['id']:'';
-		$familyName =!empty($ggUser['familyName'])?$ggUser['familyName']:'';
-		$givenName =!empty($ggUser['givenName'])?$ggUser['givenName']:'';
+		$familyName =!empty($ggUser['familyName'])?$ggUser['familyName']:null;
+		$givenName =!empty($ggUser['givenName'])?$ggUser['givenName']:null;
 		$userData['fullname']     =  $familyName.$givenName;
-		$userData['email']        = !empty($ggUser['email'])?$ggUser['email']:'';
-		$userData['phone']        = !empty($ggUser['phone'])?$ggUser['phone']:'';
+		$userData['email']        = !empty($ggUser['email'])?$ggUser['email']:null;
+		$userData['phone']        = !empty($ggUser['phone'])?$ggUser['phone']:null;
 		$rs = $this->member_model->auth_google($userData);
 		if($rs['code']== 1){
 			$member = $this->member_model->get_detail_member($rs['data']);
