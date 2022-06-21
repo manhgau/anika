@@ -450,6 +450,9 @@
 
         }
         public function check_email($email){
+            if($email == null){
+                return null;
+            }
             $this->db->select("fb_id,gg_id,email,fullname");
             $this->db->from($this->_table_name);
             $this->db->where("email", $email );
@@ -458,6 +461,9 @@
         }
 
         public function check_phone($phone){
+            if($phone == null){
+                return null;
+            }
             $this->db->select("fb_id,gg_id,phone");
             $this->db->from($this->_table_name);
             $this->db->where("phone", $phone );
