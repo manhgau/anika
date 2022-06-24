@@ -612,6 +612,8 @@
             }
             $check_phone = $this->check_phone($data['phone']);
             $check_email = $this->check_email($data['email']);
+            //($check_phone);
+            //var_dump($check_email);die;
             if(!$check_email && !$check_phone){
                 $inser_member = $this->__insert_member($data);
                 if($inser_member){
