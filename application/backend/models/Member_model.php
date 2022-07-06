@@ -343,7 +343,6 @@
                 return 1;
             }else{
                 $result = $this->db->insert($this->_table_name, $data);
-                var_dump( $result);
                 if($result == false){
                     return 1;
                 }

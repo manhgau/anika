@@ -285,8 +285,6 @@ class apiApp extends CI_Controller {
 			$this->__jsonResponse(400, 'input_not_valid');
 
 		$category = $this->products_model->get_category($category_id, true);
-        //var_dump($category_id);
-       // var_dump($category);die;
 		if (!$category)
 			$this->__jsonResponse(400, 'bad_request', $data);
 
