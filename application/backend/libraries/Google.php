@@ -52,10 +52,9 @@ class Google {
 		);
 
 		$json_token = json_encode($token);
-		//var_dump($json_token);die;
+
 
 		$client->setAccessToken($json_token);
-		//var_dump($client);die;
 		// get profile info
 		$google_oauth = new Google_Service_Oauth2($client);
 		$google_account_info = $google_oauth->userinfo->get();
